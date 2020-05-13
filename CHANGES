@@ -1,0 +1,48 @@
+2020-05-13:
+
+Big Picture:
+    Renamed project to HamPi
+    Converted manually-created (handmade) image creation to Ansible-created (automated) image creation
+    Set up ~95% of software projects to automagically download latest version from Internet
+    Add installation of x86 apps (versus ARM apps) in some cases for use with Raspbian x86
+    Automatic upgrade of Raspbian packages and cleaning apt cache
+
+
+Added:
+    Initial Chromium Bookmarks for Ham Radio
+    Configuration of image to use 64-bit kernel
+    Pybombs for GNU Radio
+    QSLware nag dialog
+    TeamViewer
+		AirSpy Driver https://github.com/airspy/airspyone_host
+		AirSpy HF Driver https://github.com/airspy/airspyhf
+		SoapySDR Driver for AirSpy https://github.com/pothosware/SoapyAirspy
+		SoapySDR Driver for FUNcube dongle pro+ https://github.com/pothosware/SoapyFCDPP
+		SoapySDR Driver for PlutoSDR https://github.com/pothosware/SoapyPlutoSDR
+		SoapySDR Driver for OsmoSDR https://github.com/pothosware/SoapyOsmo
+		SoapySDR Driver for Red Pitaya https://github.com/pothosware/SoapyRedPitaya
+		SoapySDR Driver for UHD https://github.com/pothosware/SoapyUHD
+		SoapySDR Driver for VOLK-based type converters https://github.com/pothosware/SoapyVOLKConverters
+		AMBEServer https://github.com/marrold/AMBEServer.git
+		PatMenu https://github.com/km4ack/patmenu
+		linpac - (dpkg) terminal for packet radio with mail client
+		wwl - (dpkg) Calculates distance and azimuth between two Maidenhead locators
+
+Replaced:
+		APRS Message App for JS8Call with JS8CallUtilities_V2
+    D-Rats 0.3.3 with D-Rats 0.3.8 https://github.com/maurizioandreotti/D-Rats
+    AX25 support for Pat WinLink with AX25 support for DXSpider and Pat WinLink
+
+Removed (temporarily):
+    SDRAngel
+    Background Images
+
+
+2019-11-12:
+
+Initial announcement to QRZ.com for W3DJS Raspberry Pi for Ham Radio Image v2.0
+
+
+2019-10-29:
+
+Initial announcement to local ham club for W3DJS Raspberry Pi for Ham Radio Image v2.0
