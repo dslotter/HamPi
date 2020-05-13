@@ -1,0 +1,161 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install support for D.R.A.W.S.
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Insert boot config configuration for D.R.A.W.S. / UDRC
+    become: yes
+    blockinfile:
+      dest: /boot/config.txt
+      create: yes
+      block: |
+        # Uncomment these if you have a D.R.A.W.S. / UDRC from NW Digital Radio
+        # Flush all overlays, ie. deprecated overlays loaded from eeprom
+        # dtoverlay=
+        # Enable UDRC/DRAWS if no EEPROM
+        # dtoverlay=draws,alsaname=udrc
+        # https://www.raspberrypi.org/documentation/configuration/config-txt/overclocking.md
+        force_turbo=1
+        # Enable audio (loads snd_bcm2835)
+        # dtparam=audio=0
+        # End of D.R.A.W.S. / UDRC section
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - git
+      - scons
+      - asciidoctor
+      - libudev-dev
+      - nodejs
+      - npm
+      - lm-sensors
+
+#
+# Install D.R.A.W.S. compatible version of GPSd
+#
+  - name: Git clone latest GPSd sources
+    git:
+      repo: https://gitlab.com/gpsd/gpsd.git
+      dest: /home/pi/hamradio/gpsd
+
+  - name: Build GPSd sources
+    shell: scons
+    args:
+      chdir: /home/pi/hamradio/gpsd
+
+  - name: Install GPSd
+    become: yes
+    shell: scons udev-install
+    args:
+      chdir: /home/pi/hamradio/gpsd
+
+  - name: Fix a troublesome gpsd config entry
+    become: yes
+    lineinfile:
+      path: /etc/default/gpsd
+      regexp: '^USBAUTO=\"true\"'
+      line: USBAUTO="false"
+
+  - name: Add D.R.A.W.S. port to gpsd config
+    become: yes
+    lineinfile:
+      path: /etc/default/gpsd
+      regexp: '^DEVICES=\"\"'
+      line: DEVICES="/dev/ttySC0 /dev/pps0"
+
+  - name: Add D.R.A.W.S. gps option to gpsd config
+    become: yes
+    lineinfile:
+      path: /etc/default/gpsd
+      regexp: '^GPSD_OPTIONS=\"\"'
+      line: GPSD_OPTIONS="-n"
+
+#
+# Install D.R.A.W.S. compatible version of Direwolf
+#
+  - name: Download latest Direwolf sources
+    git:
+      repo: https://www.github.com/wb2osz/direwolf
+      dest: /home/pi/hamradio/direwolf
+
+  - name: Checkout Dev Direwolf sources
+    shell: git checkout dev
+    args:
+      chdir: /home/pi/hamradio/direwolf
+
+  - name: Creates directory direwolf/build
+    file:
+      path: /home/pi/hamradio/direwolf/build
+      state: directory
+
+  - name: Build Dev Direwolf CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/pi/hamradio/direwolf/build
+
+  - name: Build Dev Direwolf
+    command: make
+    args:
+      chdir: /home/pi/hamradio/direwolf/build
+
+  - name: Install Dev Direwolf
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/direwolf/build
+
+  - name: Install-conf Dev Direwolf
+    become: yes
+    command: make install-conf
+    args:
+      chdir: /home/pi/hamradio/direwolf/build
+
+  - name: Clean Dev Direwolf
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/direwolf/build
+
+#
+# Install D.R.A.W.S. Manager
+#
+  - name: Update npm
+    become: yes
+    shell: npm install -g npm
+    args:
+      chdir: /home/pi/hamradio/gpsd
+
+  - name: Git clone latest DRAWS Manager sources
+    git:
+      repo: https://github.com/nwdigitalradio/draws-manager.git
+      dest: /home/pi/hamradio/draws-manager
+
+  - name: Install DRAWS Manager service file
+    become: yes
+    shell: cp draws-manager.service /lib/systemd/system
+    args:
+      chdir: /home/pi/hamradio/draws-manager
+
+  - name: Install DRAWS Manager config file
+    become: yes
+    shell: cp draws-manager /etc/default
+    args:
+      chdir: /home/pi/hamradio/draws-manager
+
+  - name: Install DRAWS-Manager webapp
+    become: yes
+    shell: /usr/bin/npm install
+    args:
+      chdir: /home/pi/hamradio/draws-manager/webapp

@@ -4,7 +4,7 @@
 
 ---
 
-- name: HamPi v0.5 Playbook by W3DJS
+- name: HamPi v0.6 Playbook by W3DJS
   #  hosts: all
   hosts: vm
   pre_tasks:
@@ -16,7 +16,8 @@
 
 - import_playbook: configuration_tasks.yml
 #- import_playbook: upgrade_raspbian_packages.yml
-- import_playbook: install_chromium_bookmarks.yml
+#- import_playbook: install_chromium_bookmarks.yml
+- import_playbook: include_DRAWS_support.yml
 #- import_playbook: install_cmake.yml
 #- import_playbook: install_wxwidgets.yml
 #- import_playbook: download_country_files.yml

@@ -25,12 +25,6 @@
       name: soundmodem
       state: present
 
-  - name: Install Direwolf Package
-    become: yes
-    package:
-      name: direwolf
-      state: present
-
   - name: Install Xastir Package
     become: yes
     package:
