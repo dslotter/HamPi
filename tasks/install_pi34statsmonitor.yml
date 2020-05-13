@@ -1,0 +1,59 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Pi 3/4 Stats Monitor
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+    - name: Creates directory hamradio
+      file:
+        path: /home/pi/hamradio
+        state: directory
+
+    - name: Install dependent libraries
+      become: yes
+      package:
+        name: libfltk1.3-dev
+        state: present
+
+    - name: Determine latest version of Pi Stats Monitor on web
+      shell: curl --silent "http://www.w1hkj.com/pi3/" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq
+      args:
+        warn: no
+      register: download_date
+
+    - local_action: command echo item
+      with_items: download_date.stdout_lines[0]
+
+    - name: Download and Unarchive Pi Stats Monitor {{ download_date.stdout_lines[0] }}
+      unarchive:
+        src: "http://www.w1hkj.com/pi3/pistats-{{ download_date.stdout_lines[0] }}.tgz"
+        dest: "/home/pi/hamradio/"
+        remote_src: yes
+
+    - name: Configure Pi Stats Monitor {{ download_date.stdout_lines[0] }}
+      command: ./configure
+      args:
+        chdir: /home/pi/hamradio/pistats-{{ download_date.stdout_lines[0] }}
+
+    - name: Build Pi Stats Monitor {{ download_date.stdout_lines[0] }}
+      command: make all
+      args:
+        chdir: /home/pi/hamradio/pistats-{{ download_date.stdout_lines[0] }}
+
+    - name: Install Pi Stats Monitor {{ download_date.stdout_lines[0] }}
+      become: yes
+      command: make install
+      args:
+        chdir: /home/pi/hamradio/pistats-{{ download_date.stdout_lines[0] }}
+
+    - name: Clean Pi Stats Monitor {{ download_date.stdout_lines[0] }}
+      command: make clean
+      args:
+        chdir: /home/pi/hamradio/pistats-{{ download_date.stdout_lines[0] }}

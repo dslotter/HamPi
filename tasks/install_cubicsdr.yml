@@ -1,0 +1,105 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install CubicSDR Software
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: libliquid-dev
+      state: present
+
+#
+# Build and install rtaudio (CMake 3.10 is a pre-requisite for building RtAudio)
+#
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libjack0
+      - libjack-dev
+      - libpulse-dev
+      - libasound2-dev
+      - libfftw3-dev
+
+  - name: Download latest RtAudio sources
+    git:
+      repo: https://github.com/thestk/rtaudio.git
+      dest: /home/pi/hamradio/rtaudio
+
+  - name: Creates directory rtaudio/build
+    file:
+      path: /home/pi/hamradio/rtaudio/build
+      state: directory
+
+  - name: Build rtaudio CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/pi/hamradio/rtaudio/build
+
+  - name: Build RtAudio
+    command: make
+    args:
+      chdir: /home/pi/hamradio/rtaudio/build
+
+  - name: Install RtAudio
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/rtaudio/build
+
+  - name: Clean RtAudio
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/rtaudio/build
+
+#
+# Build and install CubicSDR
+#
+
+  - name: Download latest CubicSDR sources
+    git:
+      repo: https://github.com/cjcliffe/CubicSDR.git
+      dest: /home/pi/hamradio/CubicSDR
+
+  - name: Creates directory CubicSDR/build
+    file:
+      path: /home/pi/hamradio/CubicSDR/build
+      state: directory
+
+  - name: Build CubicSDR CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/pi/hamradio/CubicSDR/build
+
+  - name: Build CubicSDR
+    command: make
+    args:
+      chdir: /home/pi/hamradio/CubicSDR/build
+
+  - name: Install CubicSDR
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/CubicSDR/build
+
+  - name: Clean CubicSDR
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/CubicSDR/build

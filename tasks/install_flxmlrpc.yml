@@ -1,0 +1,57 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install flxmlrpc
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+    - name: Creates directory hamradio
+      file:
+        path: /home/pi/hamradio
+        state: directory
+
+    - name: Determine latest version of flxmlrpc on web
+      shell: curl --silent "http://www.w1hkj.com/files/flxmlrpc/" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq
+      args:
+        warn: no
+      register: download_date
+
+    - local_action: command echo item
+      with_items: download_date.stdout_lines[0]
+
+    - name: Download and Unarchive flxmlrpc {{ download_date.stdout_lines[0] }}
+      unarchive:
+        src: "http://www.w1hkj.com/files/flxmlrpc/flxmlrpc-{{ download_date.stdout_lines[0] }}.tar.gz"
+        dest: "/home/pi/hamradio/"
+        remote_src: yes
+
+    - name: Configure flxmlrpc {{ download_date.stdout_lines[0] }}
+      command: ./configure
+      args:
+        chdir: /home/pi/hamradio/flxmlrpc-{{ download_date.stdout_lines[0] }}
+
+    - name: Build flxmlrpc {{ download_date.stdout_lines[0] }}
+      command: make all
+      args:
+        chdir: /home/pi/hamradio/flxmlrpc-{{ download_date.stdout_lines[0] }}
+
+    - name: Install flxmlrpc {{ download_date.stdout_lines[0] }}
+      become: yes
+      command: make install
+      args:
+        chdir: /home/pi/hamradio/flxmlrpc-{{ download_date.stdout_lines[0] }}
+
+    - name: Configure dynamic linker run-time bindings
+      become: yes
+      command: ldconfig
+
+    - name: Clean flxmlrpc {{ download_date.stdout_lines[0] }}
+      command: make clean
+      args:
+        chdir: /home/pi/hamradio/flxmlrpc-{{ download_date.stdout_lines[0] }}

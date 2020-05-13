@@ -1,0 +1,58 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install gqrx
+  hosts: all
+  tasks:
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Install dependent libraries for GQRX
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - cmake
+      - qt5-default
+      - libqt5svg5-dev
+      - gnuradio-dev
+      - libgnuradio-osmosdr0.1.4
+      - libgnuradio-iqbalance3.7.11
+      - libpulse-dev
+      - pavucontrol
+
+  - name: Download GQRX sources
+    git:
+      repo: https://github.com/csete/gqrx.git
+      dest: /home/pi/hamradio/gqrx-source
+
+  - name: Creates directory gqrx-source/build
+    file:
+      path: /home/pi/hamradio/gqrx-source/build
+      state: directory
+
+  - name: Build GQRX CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/pi/hamradio/gqrx-source/build
+
+  - name: Build GQRX
+    command: make
+    args:
+      chdir: /home/pi/hamradio/gqrx-source/build
+
+  - name: Install GQRX
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/gqrx-source/build
+
+  - name: Clean GQRX
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/gqrx-source/build

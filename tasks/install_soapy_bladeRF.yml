@@ -1,0 +1,89 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install SoapyBladeRF
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - gr-osmosdr
+      - libfftw3-dev
+      - libusb-1.0-0-dev
+
+  - name: Download latest bladeRF library sources
+    git:
+      repo: https://github.com/nuand/bladeRF
+      dest: /home/pi/hamradio/bladeRF
+
+  - name: Creates directory bladeRF/host/build
+    file:
+      path: /home/pi/hamradio/bladeRF/host/build
+      state: directory
+
+  - name: Build bladeRF library CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/pi/hamradio/bladeRF/host/build
+
+  - name: Build bladeRF library
+    command: make
+    args:
+      chdir: /home/pi/hamradio/bladeRF/host/build
+
+  - name: Install bladeRF library
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/bladeRF/host/build
+
+  - name: Clean bladeRF
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/bladeRF/host/build
+
+  - name: Download latest SoapyBladeRF sources
+    git:
+      repo: https://github.com/pothosware/SoapyBladeRF
+      dest: /home/pi/hamradio/SoapyBladeRF
+
+  - name: Creates directory SoapyBladeRF/build
+    file:
+      path: /home/pi/hamradio/SoapyBladeRF/build
+      state: directory
+
+  - name: Build SoapyBladeRF CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/pi/hamradio/SoapyBladeRF/build
+
+  - name: Build SoapyBladeRF
+    command: make
+    args:
+      chdir: /home/pi/hamradio/SoapyBladeRF/build
+
+  - name: Install SoapyBladeRF
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/SoapyBladeRF/build
+
+  - name: Clean SoapyBladeRF
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/SoapyBladeRF/build

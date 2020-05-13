@@ -1,0 +1,38 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install D-Rats by Maurizio Andreotti
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Install dependent Python components for D-Rats
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - python
+      - python-glade2
+      - python-libxml2
+      - python-libxslt1
+      - python-serial
+
+  - name: Download D-Rats sources
+    git:
+      repo: https://github.com/maurizioandreotti/D-Rats.git
+      dest: /home/pi/hamradio/D-Rats
+
+  - name: Install D-Rats update script
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/update_d-rats"
+      dest: "/usr/local/bin/update_d-rats"
+
+  - name: Set D-Rats update script to executable
+    become: yes
+    file: dest=/usr/local/bin/update_d-rats mode=a+x
+
+  - name: Run D-Rats update script (which builds and installs D-Rats from Git)
+    command: /usr/local/bin/update_d-rats

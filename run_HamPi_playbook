@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+echo "ansible-playbook -i hosts tasks/main.yml"
+ansible-playbook -i hosts tasks/main.yml

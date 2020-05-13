@@ -1,0 +1,65 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install dump1090 Software
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+#    INCLUDE_PATH: /usr/local/include
+#    LIBRARY_PATH: /usr/local/lib
+  tasks:
+
+#  - include_tasks: install_librtlsdr.yml
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+#
+# Install dump1090 for SDRPlay
+#
+
+  - name: Download and unarchive dump1090 1.3.1 for SDRPlay
+    unarchive:
+      src: https://www.sdrplay.com/software/dump1090_1.3.1.rpi.tar.gz
+      dest: /home/pi/hamradio/
+      remote_src: yes
+
+  - name: Make directory name more meaningful
+    command: mv /home/pi/hamradio/dump1090_1.3.1 /home/pi/hamradio/dump1090_sdrplay_1.3.1
+
+#
+# Build and install dump1090 for RTL-SDR
+#
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: librtlsdr-dev
+      state: present
+
+  - name: Download dump1090
+    git:
+      repo: https://github.com/MalcolmRobb/dump1090.git
+      dest: /home/pi/hamradio/dump1090_rtlsdr
+
+  - name: Build dump1090
+    command: make
+    args:
+      chdir: /home/pi/hamradio/dump1090_rtlsdr
+
+  - name: Install dump1090
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/dump1090_rtlsdr
+
+  - name: Clean dump1090
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/dump1090_rtlsdr

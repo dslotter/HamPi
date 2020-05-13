@@ -1,0 +1,109 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install TAPR WSPR Packages
+  hosts: all
+  tasks:
+
+  - name: Install dependent packages
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - git
+      - g++
+      - make
+      - grep
+      - mawk
+      - ntp
+      - python-setuptools
+# x86 can't find this:
+#      - python-imaging
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+#
+# WsprryPi
+#
+
+  - name: Clone WsprryPi source
+    git:
+      repo: https://github.com/JamesP6000/WsprryPi.git
+      dest: /home/pi/hamradio/WsprryPi
+
+  - name: Build WsprryPi
+    command: make
+    args:
+      chdir: /home/pi/hamradio/WsprryPi
+
+  - name: Install WsprryPi
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/WsprryPi
+
+  - name: Clean WsprryPi
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/WsprryPi
+
+#
+# PiCW
+#
+
+  - name: Clone PiCW source
+    git:
+      repo: https://github.com/JamesP6000/PiCW.git
+      dest: /home/pi/hamradio/PiCW
+
+  - name: Build PiCW
+    command: make
+    args:
+      chdir: /home/pi/hamradio/PiCW
+
+  - name: Install PiCW
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/PiCW
+
+  - name: Clean PiCW
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/PiCW
+
+#
+# Freq_Pi
+#
+
+#  - name: Clone Freq_Pi
+#    git:
+#      repo: https://github.com/JennyList/LanguageSpy/blob/master/RaspberryPi/rf/freq_pi/freq_pi.c
+#      dest: /home/pi/hamradio
+
+#
+# PySSTV
+#
+
+  - name: easy_install pip
+    become: yes
+    command: easy_install pip
+    args:
+      chdir: /home/pi/hamradio
+
+  - name: pip install setuptools
+    become: yes
+    command: "pip install setuptools --upgrade --no-binary :all:"
+    args:
+      chdir: /home/pi/hamradio
+
+  - name: pip install PySSTV
+    become: yes
+    command: pip install PySSTV
+    args:
+      chdir: /home/pi/hamradio

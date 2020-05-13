@@ -1,0 +1,66 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install wxtoimg
+  hosts: all
+  tasks:
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+#
+# Raspbian ARM
+#
+
+  - name: Determine latest version of wxtoimg on web (ARM)
+    shell: curl --silent "https://wxtoimgrestored.xyz/beta/" | grep -Po "wxtoimg-armhf-[0-9]+.[0-9]+.[0-9]+-beta.deb" | grep -Po "[0-9]+.[0-9]+.[0-9]+"
+    args:
+      warn: no
+    register: wxtoimg_version
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - local_action: command echo item
+    with_items: wxtoimg_version.stdout_lines[0]
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Download wxtoimg {{ wxtoimg_version.stdout_lines[0] }} (ARM)
+    get_url:
+      url: "https://wxtoimgrestored.xyz/beta/wxtoimg-armhf-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb"
+      dest: /home/pi/hamradio/wxtoimg-armhf-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Install wxtoimg {{ wxtoimg_version.stdout_lines[0] }} (ARM)
+    become: yes
+    apt:
+      deb: /home/pi/hamradio/wxtoimg-armhf-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+#
+# Raspbian x86
+#
+
+  - name: Determine latest version of wxtoimg on web (x86)
+    shell: curl --silent "https://wxtoimgrestored.xyz/beta/" | grep -Po "wxtoimg-i386-[0-9]+.[0-9]+.[0-9]+-beta.deb" | grep -Po "\-[0-9].*\-" | grep -Po "[0-9]+.[0-9]+.[0-9]"
+    args:
+      warn: no
+    register: wxtoimg_version
+    when: ansible_architecture == "i386"
+
+  - local_action: command echo item
+    with_items: wxtoimg_version.stdout_lines[0]
+    when: wxtoimg_version == "i386"
+
+  - name: Download wxtoimg {{ wxtoimg_version.stdout_lines[0] }} (x86)
+    get_url:
+      url: "https://wxtoimgrestored.xyz/beta/wxtoimg-i386-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb"
+      dest: /home/pi/hamradio/wxtoimg-i386-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb
+    when: ansible_architecture == "i386"
+
+  - name: Install wxtoimg {{ wxtoimg_version.stdout_lines[0] }} (x86)
+    become: yes
+    apt:
+      deb: /home/pi/hamradio/wxtoimg-i386-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb
+    when: ansible_architecture == "i386"

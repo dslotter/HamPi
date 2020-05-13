@@ -1,0 +1,118 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Pat (WinLink)
+  hosts: all
+  tasks:
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Download Patmenu
+    git:
+      repo: 'https://github.com/km4ack/patmenu.git'
+      dest: /home/pi/patmenu
+
+  - name: Make Patmenu setup executable
+    become: yes
+    file:
+      path: /home/pi/patmenu/setup
+      mode: a+x
+
+#
+# Raspbian ARM
+#
+
+  - name: Determine latest version of Pat (WinLink) on GitHub
+    shell: curl --silent "https://github.com/la5nta/pat/releases/" | grep "pat.*_linux_armhf.deb" | head -n 1 | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq
+    args:
+      warn: no
+    register: pat_version
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - local_action: command echo item
+    with_items: pat_version.stdout_lines[0]
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Download Pat {{ pat_version.stdout_lines[0] }} (WinLink) ARM
+    get_url:
+      url: https://github.com/la5nta/pat/releases/download/v{{ pat_version.stdout_lines[0] }}/pat_{{ pat_version.stdout_lines[0] }}_linux_armhf.deb
+      dest: /home/pi/hamradio/pat_{{ pat_version.stdout_lines[0] }}_linux_armhf.deb
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Install Pat {{ pat_version.stdout_lines[0] }} (WinLink) ARM
+    become: yes
+    apt:
+      deb: /home/pi/hamradio/pat_{{ pat_version.stdout_lines[0] }}_linux_armhf.deb
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Download Pi Ardop ARM
+    become: yes
+    get_url:
+      url: http://www.cantab.net/users/john.wiseman/Downloads/Beta/piardopc
+      dest: /usr/local/bin/piardopc
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Make Pi Ardop ARM executable
+    become: yes
+    file:
+      path: /usr/local/bin/piardopc
+      mode: a+x
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+#
+# Raspbian x86
+#
+
+  - name: Determine latest version of Pat (WinLink) on GitHub
+    shell: curl --silent "https://github.com/la5nta/pat/releases/" | grep "pat.*_linux_i386.deb" | head -n 1 | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq
+    args:
+      warn: no
+    register: pat_version
+    when: ansible_architecture == "i386"
+
+  - local_action: command echo item
+    with_items: pat_version.stdout_lines[0]
+    when: ansible_architecture == "i386"
+
+  - name: Download Pat {{ pat_version.stdout_lines[0] }} (WinLink) x86
+    get_url:
+      url: https://github.com/la5nta/pat/releases/download/v{{ pat_version.stdout_lines[0] }}/pat_{{ pat_version.stdout_lines[0] }}_linux_i386.deb
+      dest: /home/pi/hamradio/pat_{{ pat_version.stdout_lines[0] }}_linux_i386.deb
+    when: ansible_architecture == "i386"
+
+  - name: Install Pat {{ pat_version.stdout_lines[0] }} (WinLink) x86
+    become: yes
+    apt:
+      deb: /home/pi/hamradio/pat_{{ pat_version.stdout_lines[0] }}_linux_i386.deb
+    when: ansible_architecture == "i386"
+
+#
+# Raspbian amd64
+#
+
+  - name: Determine latest version of Pat (WinLink) on GitHub
+    shell: curl --silent "https://github.com/la5nta/pat/releases/" | grep "pat.*_linux_amd64.deb" | head -n 1 | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq
+    args:
+      warn: no
+    register: pat_version
+    when: ansible_architecture == "amd64"
+
+  - local_action: command echo item
+    with_items: pat_version.stdout_lines[0]
+    when: ansible_architecture == "amd64"
+
+  - name: Download latest Pat (WinLink) amd64
+    get_url:
+      url: https://github.com/la5nta/pat/releases/download/v{{ pat_version.stdout_lines[0] }}/pat_{{ pat_version.stdout_lines[0] }}_linux_amd64.deb
+      dest: /home/pi/hamradio/pat_{{ pat_version.stdout_lines[0] }}_linux_amd64.deb
+    when: ansible_architecture == "amd64"
+
+  - name: Install latest Pat (WinLink) amd64
+    become: yes
+    apt:
+      deb: /home/pi/hamradio/pat_{{ pat_version.stdout_lines[0] }}_linux_amd64.deb
+    when: ansible_architecture == "amd64"

@@ -1,0 +1,22 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Antenna Modeling Software
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Install Antenna Modeling Packages
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - antennavis
+      - gsmc
+      - nec2c
+      - splat
+      - xnec2c
+      - xnecview
+      - yagiuda

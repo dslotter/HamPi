@@ -1,0 +1,67 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install freedv
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Install dependent libraries for freedv-gui
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libfltk1.3-dev
+      - subversion
+      - libwxgtk3.0-dev
+      - portaudio19-dev
+      - libusb-1.0-0-dev
+      - libsamplerate0-dev
+      - libasound2-dev
+      - libao-dev
+      - libgsm1-dev
+      - libsndfile1-dev
+      - libxft-dev
+      - libxinerama-dev
+      - libxcursor-dev
+      - libspeex-dev
+      - libspeexdsp-dev
+      - libsndfile-dev
+      - sox
+#        - libjpeg9-dev
+
+#
+# Build and install FreeDV GUI
+#
+
+  - name: Download and Unarchive latest freedv-gui
+    git:
+      repo: https://github.com/drowe67/freedv-gui.git
+      dest: /home/pi/hamradio/freedv-gui
+
+  - name: Build freedv-gui Binaries
+    command: ./build_linux.sh
+    args:
+      chdir: /home/pi/hamradio/freedv-gui
+
+  - name: Install freedv-gui
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/freedv-gui
+
+  - name: Clean freedv-gui
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/freedv-gui

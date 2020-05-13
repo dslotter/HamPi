@@ -1,0 +1,57 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install wxWidgets Software
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  vars:
+    wxwidgets_version: 3.0.4
+  tasks:
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+#
+# Build and install wxWidgets (dependency for CubicSDR)
+#
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: libgtk-3-dev
+      state: present
+
+  - name: Download and Unarchive wxWidgets {{ wxwidgets_version }}
+    become: yes
+    unarchive:
+      src: https://github.com/wxWidgets/wxWidgets/releases/download/v{{ wxwidgets_version }}/wxWidgets-{{ wxwidgets_version }}.tar.bz2
+      dest: /home/pi/hamradio
+      remote_src: yes
+
+  - name: Configure wxWidgets {{ wxwidgets_version }}
+    command: ./configure
+    args:
+      chdir: /home/pi/hamradio/wxWidgets-{{ wxwidgets_version }}
+
+  - name: Build wxWidgets {{ wxwidgets_version }}
+    command: make
+    args:
+      chdir: /home/pi/hamradio/wxWidgets-{{ wxwidgets_version }}
+
+  - name: Install wxWidgets {{ wxwidgets_version }}
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/wxWidgets-{{ wxwidgets_version }}
+
+#  - name: Clean wxWidgets {{ wxwidgets_version }}
+#    command: make clean
+#    args:
+#      chdir: /home/pi/hamradio/wxWidgets-{{ wxwidgets_version }}

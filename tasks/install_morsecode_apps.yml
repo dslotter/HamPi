@@ -1,0 +1,39 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Morse Code Software
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Install Morse Code Packages
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - cw
+      - cwcp
+      - xcwcp
+      - morsegen
+      - xdemorse
+      - aldo
+      - ebook2cw
+      - ebook2cwgui
+      - morse2ascii
+      - morsegen
+      - hamradio-morse
+      - morse-simulator
+      - python3-morse-simulator
+      - cwdaemon
+      - qrq
+      - morse
+      - multimon-ng
+
+  - name: Install Morse Practice by Martin Minow (K6MAM) S/K
+    become: yes
+    get_url:
+      url: https://www.qsl.net/hz1jw/morse/downloads/MorsePractice.jar
+      dest: /usr/local/bin/MorsePractice.jar
+    when: ansible_architecture == "i386" or ansible_architecture == "amd64"

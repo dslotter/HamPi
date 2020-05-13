@@ -1,0 +1,48 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install SoapyRemote
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Download latest SoapyRemote sources
+    git:
+      repo: https://github.com/pothosware/SoapyRemote.git
+      dest: /home/pi/hamradio/SoapyRemote
+
+  - name: Creates directory SoapyRemote/build
+    file:
+      path: /home/pi/hamradio/SoapyRemote/build
+      state: directory
+
+  - name: Build SoapyRemote CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/pi/hamradio/SoapyRemote/build
+
+  - name: Build SoapyRemote
+    command: make
+    args:
+      chdir: /home/pi/hamradio/SoapyRemote/build
+
+  - name: Install SoapyRemote
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/SoapyRemote/build
+
+  - name: Clean SoapyRemote
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/SoapyRemote/build

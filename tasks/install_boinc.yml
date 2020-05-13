@@ -1,0 +1,26 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install BOINC Software
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Install BOINC Packages
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - boinc
+      - boinctui
+
+  - name: Install BOINC script
+    copy:
+      src: "{{ playbook_dir }}/../files/boinc.sh"
+      dest: "/home/pi/.config/lxsession/LXDE-pi/boinc.sh"
+
+  - name: Set BOINC script to executable
+    become: yes
+    file: dest=/home/pi/.config/lxsession/LXDE-pi/boinc.sh mode=a+x

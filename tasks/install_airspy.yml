@@ -1,0 +1,64 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install AirSpy
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Install dependent libraries for AirSpy driver
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - build-essential
+      - cmake
+      - pkg-config
+      - libusb-1.0-0-dev
+
+  - name: Download and unarchive latest AirSpy driver sources
+    unarchive:
+      src: https://github.com/airspy/airspyone_host/archive/master.zip
+      dest: /home/pi/hamradio
+      remote_src: yes
+
+  - name: Creates directory airspyone_host-master/build
+    file:
+      path: /home/pi/hamradio/airspyone_host-master/build
+      state: directory
+
+  - name: Build AirSpy driver CMakeFiles
+    command: cmake .. -DINSTALL_UDEV_RULES=ON
+    args:
+      chdir: /home/pi/hamradio/airspyone_host-master/build
+
+  - name: Build AirSpy driver
+    command: make
+    args:
+      chdir: /home/pi/hamradio/airspyone_host-master/build
+
+  - name: Install AirSpy driver
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/airspyone_host-master/build
+
+  - name: Clean AirSpy driver
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/airspyone_host-master/build
+
+  - name: Run ldconfig post-AirSpy driver install
+    become: yes
+    command: ldconfig

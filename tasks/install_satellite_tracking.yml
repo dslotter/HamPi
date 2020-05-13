@@ -1,0 +1,24 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Satellite Tracking Software
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Install Satellite Tracking Package
+    become: yes
+    package:
+      name: gpredict
+      state: present
+
+  - name: Install Satellite Tracking Packages (ARM)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - predict
+      - predict-gsat
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"

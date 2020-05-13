@@ -1,0 +1,27 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+[all]
+#127.0.0.1
+
+[vm]
+127.0.0.1
+
+#[hardware]
+#192.168.1.212
+
+[all:vars]
+ansible_user=pi
+ansible_password=raspberry
+ansible_port=8022
+
+[vm:vars]
+ansible_user=pi
+ansible_password=osboxes.org
+ansible_port=8822
+
+#[hardware:vars]
+#ansible_user=
+#ansible_password=
+#ansible_port=

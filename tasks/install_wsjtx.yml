@@ -1,0 +1,80 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install WSJT-X
+  hosts: all
+  tasks:
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Determine latest version of WSJT-X on web
+    shell: curl --silent "https://physics.princeton.edu/pulsar/K1JT/wsjtx.html" | grep --after-context=1 -P "Availability \(GA\) release:&nbsp; \<i\>WSJT-X" | tail -n 1 | grep -Po "[0-9]+\.[0-9]+\.[0-9]+"
+    args:
+      warn: no
+    register: wsjtx_version
+
+  - local_action: command echo item
+    with_items: wsjtx_version.stdout_lines[0]
+
+  - name: Creates directory for documentation
+    become: yes
+    file:
+      path: /usr/share/doc/wsjt-x
+      state: directory
+
+  - name: Download WSJT-X Documentation
+    become: yes
+    get_url:
+      url: https://physics.princeton.edu/pulsar/K1JT/wsjtx-doc/wsjtx-main-{{ wsjtx_version.stdout_lines[0] }}_en%20%28USLetter%29.pdf
+      dest: /usr/share/doc/wsjt-x/wsjtx-main-{{ wsjtx_version.stdout_lines[0] }}_en%20%28USLetter%29.pdf
+      validate_certs: no
+
+#
+# Raspbian ARM
+#
+
+  - name: Download WSJT-X {{ wsjtx_version.stdout_lines[0] }} with check (md5) (ARM)
+    get_url:
+      url: https://physics.princeton.edu/pulsar/K1JT/wsjtx_{{ wsjtx_version.stdout_lines[0] }}_armhf.deb
+      dest: /home/pi/hamradio/wsjtx_{{ wsjtx_version.stdout_lines[0] }}_armhf.deb
+      validate_certs: no
+      checksum: md5:{{ wsjtx_212_md5sum_armf }}
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Install WSJT-X {{ wsjtx_version.stdout_lines[0] }} (ARM)
+    apt:
+      deb: /home/pi/hamradio/wsjtx_{{ wsjtx_version }}_armhf.deb
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+#
+# Raspbian x86
+#
+
+  - name: Install dependent libraries (x86)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libc6:i386
+      - libqt5multimedia5
+      - libqt5multimedia5-plugins
+    when: ansible_architecture == "i386"
+
+  - name: Download WSJT-X {{ wsjtx_version.stdout_lines[0] }} with check (md5) (x86)
+    get_url:
+      url: https://physics.princeton.edu/pulsar/K1JT/wsjtx_{{ wsjtx_version.stdout_lines[0] }}_i386.deb
+      dest: /home/pi/hamradio/wsjtx_{{ wsjtx_version.stdout_lines[0] }}_i386.deb
+      validate_certs: no
+      checksum: md5:{{ wsjtx_212_md5sum_i386 }}
+    when: ansible_architecture == "i386"
+
+  - name: Install WSJT-X {{ wsjtx_version.stdout_lines[0] }} (x86)
+    become: yes
+    apt:
+      deb: /home/pi/hamradio/wsjtx_{{ wsjtx_version.stdout_lines[0] }}_i386.deb
+    when: ansible_architecture == "i386"

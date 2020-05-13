@@ -1,0 +1,70 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install QSSTV
+  hosts: all
+  gather_facts: no
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - g++
+      - libfftw3-dev
+      - qt5-default
+      - libpulse-dev
+      - libhamlib-dev
+      - libasound2-dev
+      - libv4l-dev
+      - libopenjp2-7
+      - libopenjp2-7-dev
+
+  - name: Determine latest version of QSSTV on web
+    shell: curl --silent "http://users.telenet.be/on4qz/qsstv/downloads/" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq
+    args:
+      warn: no
+    register: download_date
+
+  - local_action: command echo item
+    with_items: download_date.stdout_lines[0]
+
+  - name: Download and Unarchive QSSTV {{ download_date.stdout_lines[0] }}
+    unarchive:
+      src: "http://users.telenet.be/on4qz/qsstv/downloads/qsstv_{{ download_date.stdout_lines[0] }}.tar.gz"
+      dest: "/home/pi/hamradio/"
+      remote_src: yes
+
+  - name: Build QSSTV Makefile {{ download_date.stdout_lines[0] }}
+    command: qmake
+    args:
+      chdir: "/home/pi/hamradio/qsstv_{{ download_date.stdout_lines[0] }}"
+
+  - name: Build QSSTV {{ download_date.stdout_lines[0] }}
+    command: make
+    args:
+      chdir: "/home/pi/hamradio/qsstv_{{ download_date.stdout_lines[0] }}"
+
+  - name: Install QSSTV {{ download_date.stdout_lines[0] }}
+    become: yes
+    command: make install
+    args:
+      chdir: "/home/pi/hamradio/qsstv_{{ download_date.stdout_lines[0] }}"
+
+  - name: Clean QSSTV {{ download_date.stdout_lines[0] }}
+    command: make clean
+    args:
+      chdir: "/home/pi/hamradio/qsstv_{{ download_date.stdout_lines[0] }}"

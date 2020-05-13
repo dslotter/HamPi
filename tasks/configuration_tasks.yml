@@ -1,0 +1,151 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Configuration Tasks
+  hosts: all
+  tasks:
+
+  - name: Include needed variables
+    include_vars:
+      file: ../default/main.yml
+
+  # This allows apt-add-repository command to be added
+  - name: Install software-properties-common Packages
+    become: yes
+    package:
+      name: software-properties-common
+      state: present
+
+  - name: Add the user 'pi' to group of 'dialout'
+    user:
+      name: pi
+      groups: dialout
+      append: yes
+
+  - name: Add the user 'pi' to group of 'plugdev'
+    user:
+      name: pi
+      groups: plugdev
+      append: yes
+
+  # Only apply these next two steps to RPi3 and RPi4
+  - name: Configure Pi to use 64-bit kernel
+    become: yes
+    blockinfile:
+      dest: /boot/config.txt
+      block: |
+        arm_64bit=1
+      backup: yes
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Update Pi to use 64-bit Kernel
+    become: yes
+    command: echo "y" | rpi-update
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Enable Pi VNC Server
+    become: yes
+    command: ln /usr/lib/systemd/system/vncserver-x11-serviced.service /etc/systemd/system/multi-user.target.wants/vncserver-x11-serviced.service
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Start Pi VNC Server
+    become: yes
+    command: systemctl start vncserver-x11-serviced
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Creates /usr/local/share/icons/gnome/16x16/categories directory
+    become: yes
+    file:
+      path: /usr/local/share/icons/gnome/16x16/categories
+      state: directory
+
+  - name: Creates /usr/local/share/icons/gnome/32x32/categories directory
+    become: yes
+    file:
+      path: /usr/local/share/icons/gnome/32x32/categories
+      state: directory
+
+  - name: Creates /usr/local/share/icons/gnome/256x256/categories directory
+    become: yes
+    file:
+      path: /usr/local/share/icons/gnome/256x256/categories
+      state: directory
+
+  - name: Creates icons directory for 512x512
+    become: yes
+    file:
+      path: /usr/local/share/icons/gnome/512x512/categories
+      state: directory
+
+  - name: Create HamRadio icon 16x16 in /usr/local/share/icons
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/icons/16x16/categories/ham-radio-icon-25.png"
+      dest: "/usr/local/share/icons/gnome/16x16/categories/ham-radio-icon-25.png"
+
+  - name: Create HamRadio icon 32x32 in /usr/local/share/icons
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/icons/32x32/categories/ham-radio-icon-25.png"
+      dest: "/usr/local/share/icons/gnome/32x32/categories/ham-radio-icon-25.png"
+
+  - name: Create HamRadio icon 256x256 in /usr/local/share/icons
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/icons/256x256/categories/ham-radio-icon-25.png"
+      dest: "/usr/local/share/icons/gnome/256x256/categories/ham-radio-icon-25.png"
+
+  - name: Create HamRadio icon 512x512 in /usr/local/share/icons
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/icons/512x512/categories/ham-radio-icon-25.png"
+      dest: "/usr/local/share/icons/gnome/512x512/categories/ham-radio-icon-25.png"
+
+  - name: Create HamRadio icon 512x512 in /usr/share/icons/gnome/512x512/
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/icons/512x512/categories/ham-radio-icon-25.png"
+      dest: "/usr/share/icons/gnome/512x512/ham-radio-icon-25.png"
+
+  - name: Create HamRadio icon 512x512 in /usr/share/icons/hicolor/128x128
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/icons/512x512/categories/ham-radio-icon-25.png"
+      dest: "/usr/share/icons/hicolor/128x128/ham-radio-icon-25.png"
+
+  - name: Create HamRadio icon 512x512 in /usr/share/icons
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/icons/512x512/categories/ham-radio-icon-25.png"
+      dest: "/usr/share/icons/ham-radio-icon-25.png"
+
+  - name: Insert .bash_local configuration
+    blockinfile:
+      dest: /home/pi/.bash_local
+      create: yes
+      block: |
+        # BUILD OPTIONS
+        export MAKEFLAGS="-j `grep processor /proc/cpuinfo | wc -l`"
+        export CXXFLAGS='-O2 -march=native -mtune=native'
+        export CFLAGS='-O2 -march=native -mtune=native'
+        LIBRARY_PATH='/usr/local/lib'
+        INCLUDE_PATH='/usr/local/include'
+
+        # TO PERMIT LAUNCHING X-WINDOWS APPS FROM TERMINAL
+        export DISPLAY=:0
+
+        # FIX WSJT-X POPUP BAND/FREQUENCY MENU DISPLAY
+        export QT_QPA_PLATFORMTHEME=cleanlooks
+
+        # QRZ.COM AUTHENTICATION FOR WSJTX_TO_N3FJP LOG ADAPTER
+        export QRZ_USERNAME=FILLIN
+        export QRZ_PASSWORD=FILLIN
+
+  - name: Insert .bashrc configuration
+    blockinfile:
+      dest: /home/pi/.bashrc
+      block: |
+        if [ -f ~/.bash_local ]; then
+            . ~/.bash_local
+        fi

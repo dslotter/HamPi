@@ -1,0 +1,109 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install GridTracker
+  hosts: all
+  tasks:
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Creates directory for documentation
+    become: yes
+    file:
+      path: /usr/share/doc/gridtracker
+      state: directory
+
+  - name: Download GridTracker Documentation
+    become: yes
+    get_url:
+      url: https://www.dropbox.com/s/nmgqszm4t85mrg2/GTQS_0406.pdf?dl=1
+      dest: /usr/share/doc/gridtracker/GTQS_0406.pdf
+      validate_certs: no
+
+  - name: Creates directory for desktop files
+    become: yes
+    file:
+      path: /usr/local/share/applications/
+      state: directory
+
+#
+# Raspbian ARM
+#
+
+  - name: Determine latest version of GridTracker (ARM) on web
+    shell: curl --silent "https://tagloomis.com/downloads/" | grep -Po "https:\/\/.*GridTracker-Linux-Arm-.*.tar.gz\?dl=1"
+    args:
+      warn: no
+    register: download_date
+    when: ansible_architecture == "armv7l" or ansible_architecture == "armvhf"
+
+  - local_action: command echo item
+    with_items: download_date.stdout_lines[0]
+    when: ansible_architecture == "armv7l" or ansible_architecture == "armvhf"
+
+  - name: Download and Unarchive GridTracker (ARM)
+    become: yes
+    unarchive:
+      src: "{{ download_date.stdout_lines[0] }}"
+      dest: /usr/local
+      remote_src: yes
+    when: ansible_architecture == "armv7l" or ansible_architecture == "armvhf"
+
+  - name: Copy GridTracker Desktop file (ARM)
+    become: yes
+    copy:
+      src: /usr/local/GridTracker/Pi4-GridTracker.desktop
+      dest: /usr/local/share/applications/Pi4-GridTracker.desktop
+      remote_src: yes
+    when: ansible_architecture == "armv7l" or ansible_architecture == "armvhf"
+
+  - name: Fix the lazy path that GridTracker uses to what we're using
+    become: yes
+    replace:
+      path: /usr/local/share/applications/Pi4-GridTracker.desktop
+      regexp: '\/home\/pi\/Downloads'
+      replace: '/usr/local'
+    when: ansible_architecture == "armv7l" or ansible_architecture == "armvhf"
+
+#
+# Raspbian x86
+#
+
+  - name: Determine latest version of GridTracker (x86) on web
+    shell: curl --silent "https://tagloomis.com/downloads/" | grep -Po "https:\/\/.*GridTracker-Linux-32-.*.tar.gz\?dl=1"
+    args:
+      warn: no
+    register: download_date
+    when: ansible_architecture == "i386"
+
+  - local_action: command echo item
+    with_items: download_date.stdout_lines[0]
+    when: ansible_architecture == "i386"
+
+  - name: Download and Unarchive GridTracker (x86)
+    become: yes
+    unarchive:
+      src: "{{ download_date.stdout_lines[0] }}"
+      dest: /usr/local
+      remote_src: yes
+    when: ansible_architecture == "i386"
+
+  - name: Copy GridTracker Desktop file (x86)
+    become: yes
+    copy:
+      src: /usr/local/GridTracker/GridTracker.desktop
+      dest: /usr/local/share/applications/GridTracker.desktop
+      remote_src: yes
+    when: ansible_architecture == "i386"
+
+  - name: Fix the lazy path that GridTracker uses to what we're using
+    become: yes
+    replace:
+      path: /usr/local/share/applications/GridTracker.desktop
+      regexp: '~\/Downloads'
+      replace: '/usr/local'
+    when: ansible_architecture == "i386"

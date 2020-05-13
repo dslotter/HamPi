@@ -1,0 +1,86 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install SoapyRTLSDR
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: libusb-1.0-0-dev
+      state: present
+
+  - name: Download latest RTL-SDR sources
+    git:
+      repo: https://github.com/steve-m/librtlsdr
+      dest: /home/pi/hamradio/librtlsdr
+
+  - name: Creates directory librtlsdr/build
+    file:
+      path: /home/pi/hamradio/librtlsdr/build
+      state: directory
+
+  - name: Build RTL-SDR CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/pi/hamradio/librtlsdr/build
+
+  - name: Build RTL-SDR
+    command: make
+    args:
+      chdir: /home/pi/hamradio/librtlsdr/build
+
+  - name: Install RTL-SDR
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/librtlsdr/build
+
+  - name: Clean RTL-SDR
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/librtlsdr/build
+
+  - name: Download latest SoapyRTLSDR sources
+    git:
+      repo: https://github.com/pothosware/SoapyRTLSDR.git
+      dest: /home/pi/hamradio/SoapyRTLSDR
+
+  - name: Creates directory SoapyRTLSDR/build
+    file:
+      path: /home/pi/hamradio/SoapyRTLSDR/build
+      state: directory
+
+  - name: Build SoapyRTLSDR CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/pi/hamradio/SoapyRTLSDR/build
+
+  - name: Build SoapyRTLSDR
+    command: make
+    args:
+      chdir: /home/pi/hamradio/SoapyRTLSDR/build
+
+  - name: Install SoapyRTLSDR
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/SoapyRTLSDR/build
+
+  - name: Clean SoapyRTLSDR
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/SoapyRTLSDR/build
+

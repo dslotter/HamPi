@@ -1,0 +1,56 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install CuteSDR
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - qt5-default
+      - qtmultimedia5-dev
+      - libqt5multimediawidgets5
+      - libqt5multimedia5-plugins
+      - libqt5multimedia5
+
+  - name: Download and unarchive latest CuteSDR sources
+    unarchive:
+      src: https://sourceforge.net/code-snapshots/svn/c/cu/cutesdr/code/cutesdr-code-r75-trunk.zip
+      dest: /home/pi/hamradio
+      remote_src: yes
+
+  - name: Build CuteSDR MakeFiles
+    command: qmake
+    args:
+      chdir: /home/pi/hamradio/cutesdr-code-r75-trunk
+
+  - name: Build CuteSDR
+    command: make
+    args:
+      chdir: /home/pi/hamradio/cutesdr-code-r75-trunk
+
+  - name: Install CuteSDR
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/cutesdr-code-r75-trunk
+
+  - name: Clean CuteSDR
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/cutesdr-code-r75-trunk

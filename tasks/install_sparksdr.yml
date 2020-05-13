@@ -1,0 +1,28 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install sparksdr
+  hosts: all
+  tasks:
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Determine latest version of sparksdr on web
+    shell: curl --silent "http://www.ihopper.org/radio/sparksdr2.htm" | grep -Po "http://www.ihopper.org/radio/download.aspx\?file=sparksdr[0-9]+_[0-9]+_[0-9]+_[0-9]+_linux.tar.gz" | grep -Po "[0-9]+_[0-9]+_[0-9]+_[0-9]+"
+    args:
+      warn: no
+    register: sparksdr_version
+
+  - local_action: command echo item
+    with_items: sparksdr_version.stdout_lines[0]
+
+  - name: Download and Unarchive sparksdr {{ sparksdr_version.stdout_lines[0] }}
+    become: yes
+    unarchive:
+      src: "http://www.ihopper.org/radio/download.aspx?file=sparksdr{{ sparksdr_version.stdout_lines[0] }}_linux.tar.gz"
+      dest: "/usr/local/"
+      remote_src: yes

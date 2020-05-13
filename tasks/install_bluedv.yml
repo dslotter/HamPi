@@ -1,0 +1,63 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install BlueDV Software
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Creates directory bluedv
+    become: yes
+    file:
+      path: /usr/local/bluedv
+      state: directory
+
+  - name: Creates directory /usr/local/share/applications
+    become: yes
+    file:
+      path: /usr/local/share/applications
+      state: directory
+
+  - name: Install BlueDV prerequisite packages
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - mono-complete
+
+  - name: Download and Unarchive BlueDV {{ bluedv_version }}
+    become: yes
+    unarchive:
+      src: "http://software.pa7lim.nl/BlueDV/BETA/Linux/BlueDV-Linux-{{ bluedv_version }}-BETA.zip"
+      dest: "/usr/local/bluedv"
+      remote_src: yes
+      validate_certs: no
+
+  - name: Copy BlueDV desktop file
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/BlueDV.desktop"
+      dest: "/usr/local/share/applications/BlueDV.desktop"
+
+  - name: Download latest AMBEServer sources
+    git:
+      repo: https://github.com/marrold/AMBEServer.git
+      dest: /home/pi/hamradio/AMBEServer
+
+  - name: Build AMBEServer
+    command: make
+    args:
+      chdir: /home/pi/hamradio/AMBEServer
+
+  - name: Install AMBEServer
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/AMBEServer
+
+  - name: Clean AMBEServer
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/AMBEServer

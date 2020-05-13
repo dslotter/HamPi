@@ -1,0 +1,58 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install SoapyAirSpyHF
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - gr-osmosdr
+      - libfftw3-dev
+      - libusb-1.0-0-dev
+
+  - name: Download latest SoapyAirSpy HF sources
+    git:
+      repo: https://github.com/pothosware/SoapyAirSpyHF.git
+      dest: /home/pi/hamradio/SoapyAirSpyHF
+
+  - name: Creates directory SoapyAirSpyHF/build
+    file:
+      path: /home/pi/hamradio/SoapyAirSpyHF/build
+      state: directory
+
+  - name: Build SoapyAirSpy HF CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/pi/hamradio/SoapyAirSpyHF/build
+
+  - name: Build SoapyAirSpy HF
+    command: make
+    args:
+      chdir: /home/pi/hamradio/SoapyAirSpyHF/build
+
+  - name: Install SoapyAirSpy HF
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/SoapyAirSpyHF/build
+
+  - name: Clean SoapyAirSpy HF
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/SoapyAirSpyHF/build

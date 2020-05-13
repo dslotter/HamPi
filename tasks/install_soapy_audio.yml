@@ -1,0 +1,76 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install SoapyAudio
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Download and Unarchive latest RTAudio
+    unarchive:
+      src: "http://www.music.mcgill.ca/~gary/rtaudio/release/rtaudio-5.1.0.tar.gz"
+      dest: "/home/pi/hamradio/"
+      remote_src: yes
+
+  - name: Configure RTAudio
+    command: ./configure
+    args:
+      chdir: /home/pi/hamradio/rtaudio-5.1.0
+
+  - name: Build RTAudio
+    command: make all
+    args:
+      chdir: /home/pi/hamradio/rtaudio-5.1.0
+
+  - name: Install RTAudio
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/rtaudio-5.1.0
+
+  - name: Clean RTAudio
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/rtaudio-5.1.0
+
+  - name: Download latest SoapyAudio sources
+    git:
+      repo: https://github.com/pothosware/SoapyAudio.git
+      dest: /home/pi/hamradio/SoapyAudio
+
+  - name: Creates directory SoapyAudio/build
+    file:
+      path: /home/pi/hamradio/SoapyAudio/build
+      state: directory
+
+  - name: Build SoapyAudio CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/pi/hamradio/SoapyAudio/build
+
+  - name: Build SoapyAudio
+    command: make
+    args:
+      chdir: /home/pi/hamradio/SoapyAudio/build
+
+  - name: Install SoapyAudio
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/SoapyAudio/build
+
+  - name: Clean SoapyAudio
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/SoapyAudio/build
+

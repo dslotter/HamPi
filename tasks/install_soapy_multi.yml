@@ -1,0 +1,48 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install SoapyMultiSDR
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Download latest SoapyMultiSDR sources
+    git:
+      repo: https://github.com/pothosware/SoapyMultiSDR.git
+      dest: /home/pi/hamradio/SoapyMultiSDR
+
+  - name: Creates directory SoapyMultiSDR/build
+    file:
+      path: /home/pi/hamradio/SoapyMultiSDR/build
+      state: directory
+
+  - name: Build SoapyMultiSDR CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/pi/hamradio/SoapyMultiSDR/build
+
+  - name: Build SoapyMultiSDR
+    command: make
+    args:
+      chdir: /home/pi/hamradio/SoapyMultiSDR/build
+
+  - name: Install SoapyMultiSDR
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/SoapyMultiSDR/build
+
+  - name: Clean SoapyMultiSDR
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/SoapyMultiSDR/build

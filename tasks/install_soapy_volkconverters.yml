@@ -1,0 +1,100 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install SoapyVOLKConverters
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - gr-osmosdr
+      - libfftw3-dev
+      - libusb-1.0-0-dev
+
+  - name: Install dependent python3 modules
+    become: yes
+    shell: pip3 install mako
+
+  - name: Download latest volk sources
+    git:
+      repo: https://github.com/gnuradio/volk
+      dest: /home/pi/hamradio/volk
+
+  - name: Creates directory volk/build
+    file:
+      path: /home/pi/hamradio/volk/build
+      state: directory
+
+  - name: Build volk CMakeFiles (ARM)
+    command: cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchains/arm_cortex_a72_hardfp_native.cmake ..
+    args:
+      chdir: /home/pi/hamradio/volk/build
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Build volk CMakeFiles (x86)
+    command: cmake ..
+    args:
+      chdir: /home/pi/hamradio/volk/build
+    when: ansible_architecture == "i386"
+
+  - name: Build volk
+    command: make
+    args:
+      chdir: /home/pi/hamradio/volk/build
+
+  - name: Install volk
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/volk/build
+
+  - name: Clean volk
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/volk/build
+
+  - name: Download latest SoapyVOLKConverters sources
+    git:
+      repo: https://github.com/pothosware/SoapyVOLKConverters
+      dest: /home/pi/hamradio/SoapyVOLKConverters
+
+  - name: Creates directory SoapyVOLKConverters/build
+    file:
+      path: /home/pi/hamradio/SoapyVOLKConverters/build
+      state: directory
+
+  - name: Build SoapyVOLKConverters CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/pi/hamradio/SoapyVOLKConverters/build
+
+  - name: Build SoapyVOLKConverters
+    command: make
+    args:
+      chdir: /home/pi/hamradio/SoapySoapyVOLKConvertersOsmo/build
+
+  - name: Install SoapyVOLKConverters
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/SoapyVOLKConverters/build
+
+  - name: Clean SoapyOsmo
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/SoapyVOLKConverters/build

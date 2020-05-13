@@ -1,0 +1,107 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+---
+
+- name: HamPi v0.5 Playbook by W3DJS
+  #  hosts: all
+  hosts: vm
+  pre_tasks:
+    - name: Verify Ansible meets HamPi version requirements.
+      assert:
+        that: "ansible_version.full is version_compare('2.8', '>=')"
+        msg: >
+          "You must update Ansible to at least 2.9 to install this version of HamPi by W3DJS."
+
+- import_playbook: configuration_tasks.yml
+#- import_playbook: upgrade_raspbian_packages.yml
+- import_playbook: install_chromium_bookmarks.yml
+#- import_playbook: install_cmake.yml
+#- import_playbook: install_wxwidgets.yml
+#- import_playbook: download_country_files.yml
+#- import_playbook: install_hamlib.yml
+#- import_playbook: install_flxmlrpc.yml
+#- import_playbook: install_flrig.yml
+#- import_playbook: install_fldigi.yml
+#- import_playbook: install_flaa.yml
+#- import_playbook: install_flamp.yml
+#- import_playbook: install_flcluster.yml
+#- import_playbook: install_fllog.yml
+#- import_playbook: install_flmsg.yml
+#- import_playbook: install_flnet.yml
+#- import_playbook: install_flpost.yml
+#- import_playbook: install_flwkey.yml
+#- import_playbook: install_flwrap.yml
+#- import_playbook: install_pi34statsmonitor.yml
+#- import_playbook: install_antenna_modeling_apps.yml
+#- import_playbook: install_aprs_apps.yml
+#- import_playbook: install_dxspider.yml
+#- import_playbook: install_d-rats_maurizioandreotti.yml
+#- import_playbook: install_logging_apps.yml
+#- import_playbook: install_morsecode_apps.yml
+#- import_playbook: install_satellite_tracking.yml
+#- import_playbook: install_ham_training_apps.yml
+#- import_playbook: install_echolink_apps.yml
+#- import_playbook: install_wsjtx.yml
+#- import_playbook: install_js8call.yml
+#- import_playbook: install_js8callutilities.yml
+#- import_playbook: install_jtdx.yml
+#- import_playbook: install_gridtracker.yml
+#- import_playbook: install_digital_apps.yml
+#- import_playbook: install_miscellaneous_apps.yml
+#- import_playbook: install_bluedv.yml
+#- import_playbook: install_chirp.yml
+#- import_playbook: install_qsstv.yml
+###- import_playbook: install_tapr_wspr.yml
+# OpenDV git repository has some issues preventing clean builds:
+#- import_playbook: install_opendv.yml
+#- import_playbook: install_quisk.yml
+#- import_playbook: install_pat.yml
+#- import_playbook: install_ardop_utils.yml
+#- import_playbook: install_pmon.yml
+#- import_playbook: install_tqsl.yml
+#- import_playbook: install_pybombs.yml
+#- import_playbook: install_boinc.yml
+#- import_playbook: install_qslware.yml
+#- import_playbook: install_twclock.yml
+#- import_playbook: install_twhamqth.yml
+#- import_playbook: install_teamviewer_host.yml
+#- import_playbook: install_voacapl.yml
+#- import_playbook: install_wxtoimg.yml
+### X86 Build Issue? Todo: Try again on Raspbian ARM
+###- import_playbook: install_librtlsdr.yml
+###- import_playbook: install_dump1090.yml
+
+###- import_playbook: install_freedv.yml
+
+# Enable when they finally support Raspberry Pi
+###- import_playbook: install_sparksdr.yml
+
+#- import_playbook: install_airspy.yml
+#- import_playbook: install_airspyhf.yml
+#- import_playbook: install_soapy_sdr.yml
+#- import_playbook: install_soapy_audio.yml
+#- import_playbook: install_soapy_multi.yml
+#- import_playbook: install_soapy_netsdr.yml
+#- import_playbook: install_soapy_remote.yml
+#- import_playbook: install_soapy_bladeRF.yml
+#- import_playbook: install_soapy_airspy.yml
+#- import_playbook: install_soapy_airspyhf.yml
+#- import_playbook: install_soapy_fcdpp.yml
+#- import_playbook: install_soapy_hackrf.yml
+#- import_playbook: install_soapy_osmo.yml
+#- import_playbook: install_soapy_plutosdr.yml
+#- import_playbook: install_soapy_redpitaya.yml
+#- import_playbook: install_soapy_rtlsdr.yml
+#- import_playbook: install_soapy_volkconverters.yml
+###- import_playbook: install_soapy_uhd.yml
+
+# Doesn't work under Raspbian x86 -- try under Pi:
+#- import_playbook: install_soapy_sdrplay.yml
+
+# Install SDR GUI apps after all pre-requisite SDR drivers are installed
+#- import_playbook: install_gqrx.yml
+#- import_playbook: install_lysdr.yml
+#- import_playbook: install_cubicsdr.yml
+###- import_playbook: install_cutesdr.yml

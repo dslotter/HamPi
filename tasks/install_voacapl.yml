@@ -1,0 +1,131 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install VOACAPL
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    # To avoid race condition in VOACAPL pipeline build in v0.7.5
+#    MAKEFLAGS: -j 1
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Install dependent components for VOACAPL
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - build-essential
+      - gfortran
+
+#
+# VOACAPL
+#
+
+  - name: Determine latest version of VOACAPL on GitHub
+    shell: curl --silent "https://github.com/jawatson/voacapl/releases" | grep "voacapl.*.tar.gz" | head -n 1 | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq
+    args:
+      warn: no
+    register: voacapl_version
+
+  - local_action: command echo item
+    with_items: voacapl_version.stdout_lines[0]
+
+  - name: Download and Unarchive VOACAPL {{ voacapl_version.stdout_lines[0] }}
+    unarchive:
+      src: "https://github.com/jawatson/voacapl/releases/download/v{{ voacapl_version.stdout_lines[0] }}/voacapl-{{ voacapl_version.stdout_lines[0] }}.tar.gz"
+      dest: "/home/pi/hamradio/"
+      remote_src: yes
+
+  - name: Configure VOACAPL {{ voacapl_version.stdout_lines[0] }}
+    command: ./configure
+    args:
+      chdir: /home/pi/hamradio/voacapl-{{ voacapl_version.stdout_lines[0] }}
+
+  - name: Build VOACAPL {{ voacapl_version.stdout_lines[0] }}
+    command: make all
+    args:
+      chdir: /home/pi/hamradio/voacapl-{{ voacapl_version.stdout_lines[0] }}
+
+  - name: Install VOACAPL {{ voacapl_version.stdout_lines[0] }}
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/voacapl-{{ voacapl_version.stdout_lines[0] }}
+
+  - name: Create VOACAPL {{ voacapl_version.stdout_lines[0] }} data files
+    command: makeitshfbc
+    args:
+      chdir: /home/pi/hamradio/voacapl-{{ voacapl_version.stdout_lines[0] }}
+
+  - name: Clean VOACAPL {{ voacapl_version.stdout_lines[0] }}
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/voacapl-{{ voacapl_version.stdout_lines[0] }}
+
+#
+# VOACAPL Utility - pythonprop
+#
+
+  - name: Install dependent python module matplotlib
+    become: yes
+    command: pip3 install matplotlib
+    args:
+      chdir: /home/pi/hamradio
+
+  - name: Install dependent python module cartopy
+    become: yes
+    command: pip3 install cartopy
+    args:
+      chdir: /home/pi/hamradio
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"  # i386 fails during installation, so block for now
+
+  - name: Determine latest version of pythonprop on GitHub
+    shell: curl --silent "https://github.com/jawatson/pythonprop/releases" | grep -Po "/jawatson/pythonprop/tree/v[0-9]+.[0-9]+[a-zA-Z0-9\-]+" | head -n 1 | grep -Po "[0-9]+.[0-9]+[a-zA-Z0-9\-]+"
+    args:
+      warn: no
+    register: pythonprop_version
+
+  - local_action: command echo item
+    with_items: pythonprop_version.stdout_lines[0]
+
+  - name: Download and Unarchive pythonprop {{ pythonprop_version.stdout_lines[0] }}
+    unarchive:
+      src: "https://github.com/jawatson/pythonprop/archive/v{{ pythonprop_version.stdout_lines[0] }}.tar.gz"
+      dest: "/home/pi/hamradio/"
+      remote_src: yes
+
+  - name: Autogen pythonprop {{ pythonprop_version.stdout_lines[0] }}
+    command: ./autogen.sh
+    args:
+      chdir: /home/pi/hamradio/pythonprop-{{ pythonprop_version.stdout_lines[0] }}
+
+  - name: Configure pythonprop {{ pythonprop_version.stdout_lines[0] }}
+    command: ./configure
+    args:
+      chdir: /home/pi/hamradio/pythonprop-{{ pythonprop_version.stdout_lines[0] }}
+
+  - name: Build pythonprop {{ pythonprop_version.stdout_lines[0] }}
+    command: make all
+    args:
+      chdir: /home/pi/hamradio/pythonprop-{{ pythonprop_version.stdout_lines[0] }}
+
+  - name: Install pythonprop {{ pythonprop_version.stdout_lines[0] }}
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/pythonprop-{{ pythonprop_version.stdout_lines[0] }}
+
+  - name: Clean pythonprop {{ pythonprop_version.stdout_lines[0] }}
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/pythonprop-{{ pythonprop_version.stdout_lines[0] }}

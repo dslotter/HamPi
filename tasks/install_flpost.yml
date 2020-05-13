@@ -1,0 +1,63 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install flpost
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+    - name: Creates directory hamradio
+      file:
+        path: /home/pi/hamradio
+        state: directory
+
+    - name: Install dependent libraries
+      become: yes
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - libfltk1.3-dev
+        - libcurl4-openssl-dev
+        - libsamplerate0-dev
+
+    - name: Determine latest version of flpost on web
+      shell: curl --silent "http://www.w1hkj.com/alpha/flpost/" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq
+      args:
+        warn: no
+      register: download_date
+
+    - local_action: command echo item
+      with_items: download_date.stdout_lines[0]
+
+    - name: Download and Unarchive flpost {{ download_date.stdout_lines[0] }}
+      unarchive:
+        src: "http://www.w1hkj.com/alpha/flpost/flpost-{{ download_date.stdout_lines[0] }}.tar.gz"
+        dest: "/home/pi/hamradio/"
+        remote_src: yes
+
+    - name: Configure flpost {{ download_date.stdout_lines[0] }}
+      command: ./configure
+      args:
+        chdir: /home/pi/hamradio/flpost-{{ download_date.stdout_lines[0] }}
+
+    - name: Build flpost {{ download_date.stdout_lines[0] }}
+      command: make all
+      args:
+        chdir: /home/pi/hamradio/flpost-{{ download_date.stdout_lines[0] }}
+
+    - name: Install flpost {{ download_date.stdout_lines[0] }}
+      become: yes
+      command: make install
+      args:
+        chdir: /home/pi/hamradio/flpost-{{ download_date.stdout_lines[0] }}
+
+    - name: Clean flpost {{ download_date.stdout_lines[0] }}
+      command: make clean
+      args:
+        chdir: /home/pi/hamradio/flpost-{{ download_date.stdout_lines[0] }}

@@ -1,0 +1,23 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install EchoLink Software
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Install qtel Package (Graphical client for the EchoLink® protocol)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - qtel
+      - qtel-icons
+
+  - name: Install svxlink-server Package (Voice-over-IP server for ham radio operators)
+    become: yes
+    package:
+      name: svxlink-server
+      state: present

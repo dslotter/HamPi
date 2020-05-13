@@ -1,0 +1,17 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Ham Training Packages
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Install Ham Training Software
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - fccexam
+      - hamexam

@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+cd /home/pi/hamradio/D-Rats/
+if [ $? != 0 ]; then
+  exit $?
+fi
+
+git pull
+if [ $? != 0 ]; then
+   exit $?
+fi
+
+python2 setup.py build
+if [ $? != 0 ]; then
+   exit $?
+fi
+
+sudo python2 setup.py install

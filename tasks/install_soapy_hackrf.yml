@@ -1,0 +1,95 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install HackRF
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - gr-osmosdr
+      - libfftw3-dev
+      - libusb-1.0-0-dev
+
+  - name: Download latest HackRF sources
+    git:
+      repo: https://github.com/mossmann/hackrf.git
+      dest: /home/pi/hamradio/hackrf
+
+  - name: Creates directory hackrf/host/build
+    file:
+      path: /home/pi/hamradio/hackrf/host/build
+      state: directory
+
+  - name: Build HackRF CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/pi/hamradio/hackrf/host/build
+
+  - name: Build HackRF
+    command: make
+    args:
+      chdir: /home/pi/hamradio/hackrf/host/build
+
+  - name: Install HackRF
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/hackrf/host/build
+
+  - name: Clean HackRF
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/hackrf/host/build
+
+  - name: Run ldconfig
+    become: yes
+    command: ldconfig
+    args:
+      chdir: /home/pi/hamradio/hackrf/host/build
+
+  - name: Download latest SoapyHackRF sources
+    git:
+      repo: https://github.com/pothosware/SoapyHackRF.git
+      dest: /home/pi/hamradio/SoapyHackRF
+
+  - name: Creates directory SoapyHackRF/build
+    file:
+      path: /home/pi/hamradio/SoapyHackRF/build
+      state: directory
+
+  - name: Build SoapyHackRF CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/pi/hamradio/SoapyHackRF/build
+
+  - name: Build SoapyHackRF
+    command: make
+    args:
+      chdir: /home/pi/hamradio/SoapyHackRF/build
+
+  - name: Install SoapyHackRF
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/SoapyHackRF/build
+
+  - name: Clean SoapyHackRF
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/SoapyHackRF/build

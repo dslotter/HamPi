@@ -1,0 +1,64 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install TQSL
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Creates directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libdb-dev
+      - libssl-dev
+      - libcurl4-openssl-dev
+      - libwxgtk3.0-dev
+
+  - name: Determine latest version of TQSL on web
+    shell: curl --silent "http://www.arrl.org/tqsl-download" | grep -Po "TQSL [0-9]+\.[0-9]+\.[0-9]+ for Linux" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+"
+    args:
+      warn: no
+    register: tqsl_version
+
+  - local_action: command echo item
+    with_items: tqsl_version.stdout_lines[0]
+
+  - name: Download and Unarchive TQSL {{ tqsl_version.stdout_lines[0] }}
+    unarchive:
+      src: "http://www.arrl.org/files/file/LoTW%20Instructions/tqsl-{{ tqsl_version.stdout_lines[0] }}.tar.gz"
+      dest: "/home/pi/hamradio/"
+      remote_src: yes
+
+  - name: Configure TQSL {{ tqsl_version.stdout_lines[0] }}
+    command: cmake .
+    args:
+      chdir: /home/pi/hamradio/tqsl-{{ tqsl_version.stdout_lines[0] }}
+
+  - name: Build TQSL {{ tqsl_version.stdout_lines[0] }}
+    command: make
+    args:
+      chdir: /home/pi/hamradio/tqsl-{{ tqsl_version.stdout_lines[0] }}
+
+  - name: Install TQSL {{ tqsl_version.stdout_lines[0] }}
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/tqsl-{{ tqsl_version.stdout_lines[0] }}
+
+  - name: Clean TQSL {{ tqsl_version.stdout_lines[0] }}
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/tqsl-{{ tqsl_version.stdout_lines[0] }}

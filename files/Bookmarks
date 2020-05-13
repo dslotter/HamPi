@@ -1,0 +1,82 @@
+{
+   "checksum": "a4a3c80f969e07a5e0deaf87335c1811",
+   "roots": {
+      "bookmark_bar": {
+         "children": [ {
+            "date_added": "13233867375401863",
+            "guid": "0b185dcc-420f-4d2b-8cfc-e7c507505888",
+            "id": "11",
+            "name": "HamPi",
+            "type": "url",
+            "url": "https://github.com/dslotter/HamPi"
+         }, {
+            "date_added": "13233862289748642",
+            "guid": "fa3a31bf-938a-490d-943f-870f2cb1c7cd",
+            "id": "2",
+            "name": "ARRL",
+            "type": "url",
+            "url": "http://arrl.org/"
+         }, {
+            "date_added": "13233862311885077",
+            "guid": "fbf59e62-b8ee-4a5b-8f71-db121d1f40fc",
+            "id": "3",
+            "name": "QRZ",
+            "type": "url",
+            "url": "https://qrz.com/"
+         }, {
+            "date_added": "13233862317764869",
+            "guid": "0ac82217-c0b6-4082-bb8c-0ad254ba04d4",
+            "id": "4",
+            "name": "eHam",
+            "type": "url",
+            "url": "https://eham.net/"
+         }, {
+            "date_added": "13233862647041188",
+            "guid": "35204353-931e-4d3e-8b33-f87dad3db456",
+            "id": "5",
+            "name": "qsl.net",
+            "type": "url",
+            "url": "https://qsl.net/"
+         }, {
+            "date_added": "13233863386968931",
+            "guid": "5d0c82fe-181f-4c90-8dab-f6f4622e7a85",
+            "id": "10",
+            "name": "Repeaterbook",
+            "type": "url",
+            "url": "https://repeaterbook.com/"
+         }, {
+            "date_added": "13233860006410802",
+            "guid": "0b1f9999-b692-41dc-961f-b5dcbbf1fd6a",
+            "id": "6",
+            "name": "SW Schedule",
+            "type": "url",
+            "url": "https://shortwaveschedule.com/index.php?now"
+         } ],
+         "date_added": "13233858937971998",
+         "date_modified": "13233867375401863",
+         "guid": "00000000-0000-4000-A000-000000000002",
+         "id": "1",
+         "name": "Bookmarks bar",
+         "type": "folder"
+      },
+      "other": {
+         "children": [  ],
+         "date_added": "13233858937976755",
+         "date_modified": "0",
+         "guid": "00000000-0000-4000-A000-000000000003",
+         "id": "7",
+         "name": "Other bookmarks",
+         "type": "folder"
+      },
+      "synced": {
+         "children": [  ],
+         "date_added": "13233858937976766",
+         "date_modified": "0",
+         "guid": "00000000-0000-4000-A000-000000000004",
+         "id": "8",
+         "name": "Mobile bookmarks",
+         "type": "folder"
+      }
+   },
+   "version": 1
+}
