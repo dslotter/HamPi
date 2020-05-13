@@ -46,4 +46,3 @@
     command: make clean
     args:
       chdir: /home/pi/hamradio/SoapyNetSDR/build
-
