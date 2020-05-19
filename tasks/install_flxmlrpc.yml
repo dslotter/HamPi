@@ -16,6 +16,14 @@
         path: /home/pi/hamradio
         state: directory
 
+    - name: Install dependent libraries
+      become: yes
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - build-essential
+
     - name: Determine latest version of flxmlrpc on web
       shell: curl --silent "http://www.w1hkj.com/files/flxmlrpc/" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq
       args:

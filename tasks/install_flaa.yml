@@ -19,8 +19,11 @@
     - name: Install dependent libraries
       become: yes
       package:
-        name: libfltk1.3-dev
+        name: "{{ item }}"
         state: present
+      with_items:
+        - build-essential
+        - libfltk1.3-dev
 
     - name: Determine latest version of flaa on web
       shell: curl --silent "http://www.w1hkj.com/files/flaa/" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq
