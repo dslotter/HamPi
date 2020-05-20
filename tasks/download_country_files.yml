@@ -27,6 +27,22 @@
       dest: /home/pi/hamradio/CTY_FILES
       remote_src: yes
 
+  - name: Create FLDigi data directory
+    file:
+      path: /home/pi/.fldigi
+      state: directory
+
+  - name: Create WSJT-X data directory
+    file:
+      path: /home/pi/.local/share/WSJT-X
+      state: directory
+
+  - name: Copy cty.dat to FLDigi
+    shell: cp /home/pi/hamradio/CTY_FILES/cty.dat /home/pi/.fldigi
+
+  - name: Copy cty.dat to WSJT-X
+    shell: cp /home/pi/hamradio/CTY_FILES/cty.dat /home/pi/.local/share/WSJT-X
+
   - name: Determine latest version of BIGCTY on web
     shell: curl --silent "https://www.country-files.com/" | grep -Po "https://www.country-files.com/bigcty/download/bigcty-[0-9]+.zip" | head -n 1 | grep -Po "[0-9]+"
     args:
