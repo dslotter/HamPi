@@ -11,6 +11,17 @@
       path: /home/pi/hamradio
       state: directory
 
+  - name: Install dependent libraries (Common)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libgfortran3
+      - libqt5multimedia5
+      - libqt5multimedia5-plugins
+      - libqt5serialport5
+
   - name: Determine latest version of WSJT-X on web
     shell: curl --silent "https://physics.princeton.edu/pulsar/K1JT/wsjtx.html" | grep --after-context=1 -P "Availability \(GA\) release:&nbsp; \<i\>WSJT-X" | tail -n 1 | grep -Po "[0-9]+\.[0-9]+\.[0-9]+"
     args:
@@ -47,7 +58,7 @@
 
   - name: Install WSJT-X {{ wsjtx_version.stdout_lines[0] }} (ARM)
     apt:
-      deb: /home/pi/hamradio/wsjtx_{{ wsjtx_version }}_armhf.deb
+      deb: /home/pi/hamradio/wsjtx_{{ wsjtx_version.stdout_lines[0] }}_armhf.deb
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
 #
@@ -61,8 +72,6 @@
       state: present
     with_items:
       - libc6:i386
-      - libqt5multimedia5
-      - libqt5multimedia5-plugins
     when: ansible_architecture == "i386"
 
   - name: Download WSJT-X {{ wsjtx_version.stdout_lines[0] }} with check (md5) (x86)
