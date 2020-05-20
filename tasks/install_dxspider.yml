@@ -72,9 +72,22 @@
     shell: find /spider -type f -exec chmod 775 {} \;
 
   - name: Build DXSpider source directory
+    become: yes
     command: make
     args:
       chdir: /spider/src
+
+  - name: Change Ownership of /spider to sysop (Pass 2)
+    become: yes
+    shell: chown -R sysop.sysop /spider
+
+  - name: Change permissions of /spider directories to rwxrwsr-x (Pass 2)
+    become: yes
+    shell: find /spider -type d -exec chmod 2775 {} \;
+
+  - name: Change permissions of /spider files to rwxrwxr-x (Pass 2)
+    become: yes
+    shell: find /spider -type f -exec chmod 775 {} \;
 
   - name: Install ax.25 tools
     become: yes
