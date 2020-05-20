@@ -17,6 +17,19 @@
       name: software-properties-common
       state: present
 
+  - name: Install powermgmt-base Package for unattended-upgrades
+    become: yes
+    package:
+      name: powermgmt-base
+      state: present
+
+  - name: Enable mail notifications for unattended-upgrades
+    become: yes
+    lineinfile:
+      path: /etc/apt/apt.conf.d/50unattended-upgrades
+      regexp: '^\/\/Unattended-Upgrade::Mail \"\";'
+      line: Unattended-Upgrade::Mail "pi";
+
   - name: Add the user 'pi' to group of 'dialout'
     user:
       name: pi
@@ -30,13 +43,15 @@
       append: yes
 
   # Only apply these next two steps to RPi3 and RPi4
+  # Note: backup: yes cannot be used on /boot filesystem as
+  # it creates an invalid filename pattern which causes this
+  # to fail
   - name: Configure Pi to use 64-bit kernel
     become: yes
     blockinfile:
       dest: /boot/config.txt
       block: |
         arm_64bit=1
-      backup: yes
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
   - name: Update Pi to use 64-bit Kernel
@@ -46,7 +61,10 @@
 
   - name: Enable Pi VNC Server
     become: yes
-    command: ln /usr/lib/systemd/system/vncserver-x11-serviced.service /etc/systemd/system/multi-user.target.wants/vncserver-x11-serviced.service
+    file:
+      dest: /etc/systemd/system/multi-user.target.wants/vncserver-x11-serviced.service
+      src: /usr/lib/systemd/system/vncserver-x11-serviced.service
+      state: link
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
   - name: Start Pi VNC Server
@@ -76,6 +94,12 @@
     become: yes
     file:
       path: /usr/local/share/icons/gnome/512x512/categories
+      state: directory
+
+  - name: Creates /usr/share/icons/gnome/512x512 directory
+    become: yes
+    file:
+      path: /usr/share/icons/gnome/512x512
       state: directory
 
   - name: Create HamRadio icon 16x16 in /usr/local/share/icons
