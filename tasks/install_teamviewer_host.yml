@@ -48,8 +48,9 @@
       deb: /home/pi/hamradio/teamviewer-host_armhf.deb
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
-  - name: Install TeamViewer Host (ARM)
-    shell: /usr/local/teamviewer/tv-setup install force
+  - name: Setup TeamViewer Host (ARM)
+    become: yes
+    shell: /opt/teamviewer/tv_bin/script/teamviewer_setup install force
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
 #
