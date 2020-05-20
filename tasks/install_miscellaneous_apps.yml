@@ -13,16 +13,6 @@
       name: telnet
       state: present
 
-  - name: Install D-Rats Package
-    become: yes
-    package:
-      name: "{{ item }}"
-      state: present
-    with_items:
-      - python-glade2
-      - python-feedparser
-      - d-rats
-
   - name: Install colrconv Package (convers client with sound and ncurses color support)
     become: yes
     package:
