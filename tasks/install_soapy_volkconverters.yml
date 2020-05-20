@@ -86,7 +86,7 @@
   - name: Build SoapyVOLKConverters
     command: make
     args:
-      chdir: /home/pi/hamradio/SoapySoapyVOLKConvertersOsmo/build
+      chdir: /home/pi/hamradio/SoapyVOLKConverters/build
 
   - name: Install SoapyVOLKConverters
     become: yes
