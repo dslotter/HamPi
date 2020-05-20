@@ -41,7 +41,6 @@
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
   - name: Download JTDX {{ jtdx_name.stdout_lines[0] }} (ARM)
-    become: yes
     get_url:
       url: "https://www.jtdx.tech/downloads/Linux/{{ jtdx_name.stdout_lines[0] }}"
       dest: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
