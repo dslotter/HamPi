@@ -6,10 +6,6 @@
   hosts: all
   tasks:
 
-  - name: Include needed variables
-    include_vars:
-      file: ../default/main.yml
-
   # This allows apt-add-repository command to be added
   - name: Install software-properties-common Packages
     become: yes

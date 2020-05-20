@@ -1,0 +1,12 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Configuration Tasks
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Include needed variables
+    include_vars:
+      file: ../default/main.yml
