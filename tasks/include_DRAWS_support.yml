@@ -43,6 +43,7 @@
       - nodejs
       - npm
       - lm-sensors
+      - libasound2-dev
 
   - name: Insert sensors configuration for D.R.A.W.S. / UDRC
     become: yes
@@ -80,26 +81,26 @@
     args:
       chdir: /home/pi/hamradio/gpsd
 
-  - name: Fix a troublesome gpsd config entry
-    become: yes
-    lineinfile:
-      path: /etc/default/gpsd
-      regexp: '^USBAUTO=\"true\"'
-      line: USBAUTO="false"
+#  - name: Fix a troublesome gpsd config entry
+#    become: yes
+#    lineinfile:
+#      path: /etc/default/gpsd
+#      regexp: '^USBAUTO=\"true\"'
+#      line: USBAUTO="false"
 
-  - name: Add D.R.A.W.S. port to gpsd config
-    become: yes
-    lineinfile:
-      path: /etc/default/gpsd
-      regexp: '^DEVICES=\"\"'
-      line: DEVICES="/dev/ttySC0 /dev/pps0"
+#  - name: Add D.R.A.W.S. port to gpsd config
+#    become: yes
+#    lineinfile:
+#      path: /etc/default/gpsd
+#      regexp: '^DEVICES=\"\"'
+#      line: DEVICES="/dev/ttySC0 /dev/pps0"
 
-  - name: Add D.R.A.W.S. gps option to gpsd config
-    become: yes
-    lineinfile:
-      path: /etc/default/gpsd
-      regexp: '^GPSD_OPTIONS=\"\"'
-      line: GPSD_OPTIONS="-n"
+#  - name: Add D.R.A.W.S. gps option to gpsd config
+#    become: yes
+#    lineinfile:
+#      path: /etc/default/gpsd
+#      regexp: '^GPSD_OPTIONS=\"\"'
+#      line: GPSD_OPTIONS="-n"
 
 #
 # Install D.R.A.W.S. compatible version of Direwolf
@@ -114,13 +115,13 @@
     args:
       chdir: /home/pi/hamradio/direwolf
 
-#  - name: Fix check for D.R.A.W.S. support
-#    lineinfile:
-#      path: /home/pi/hamradio/direwolf/src/dwgpsd.c
-#      regexp: '^#if GPSD_API_MAJOR_VERSION \< 5 \|\| GPSD_API_MAJOR_VERSION \> 8'
-#      line: '#if GPSD_API_MAJOR_VERSION < 5 || GPSD_API_MAJOR_VERSION > 10'
+  - name: Fix check for D.R.A.W.S. support
+    lineinfile:
+      path: /home/pi/hamradio/direwolf/src/dwgpsd.c
+      regexp: '^#if GPSD_API_MAJOR_VERSION \< 5 \|\| GPSD_API_MAJOR_VERSION \> 8'
+      line: '#if GPSD_API_MAJOR_VERSION < 5 || GPSD_API_MAJOR_VERSION > 10'
 
-  - name: Creates directory direwolf/build
+  - name: Create directory direwolf/build
     file:
       path: /home/pi/hamradio/direwolf/build
       state: directory
