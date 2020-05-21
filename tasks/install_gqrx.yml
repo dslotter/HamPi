@@ -4,6 +4,11 @@
 
 - name: Install gqrx
   hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
   - name: Creates directory hamradio
