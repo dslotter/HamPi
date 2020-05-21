@@ -59,9 +59,4 @@
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/freedv-gui
-
-  - name: Clean freedv-gui
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/freedv-gui
+      chdir: /home/pi/hamradio/freedv-gui/build_linux
