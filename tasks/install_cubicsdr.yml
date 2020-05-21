@@ -19,8 +19,16 @@
   - name: Install dependent libraries
     become: yes
     package:
-      name: libliquid-dev
+      name: "{{ item }}"
       state: present
+    with_items:
+      - build-essential
+      - automake
+      - libliquid-dev
+      - libpulse-dev
+      - libgtk-3-dev
+      - freeglut3
+      - freeglut3-dev
 
 #
 # Build and install rtaudio (CMake 3.10 is a pre-requisite for building RtAudio)
@@ -70,21 +78,61 @@
       chdir: /home/pi/hamradio/rtaudio/build
 
 #
+# Build and install liquid-dsp
+#
+
+  - name: Git clone latest liquid-dsp sources
+    git:
+      repo: https://github.com/jgaeddert/liquid-dsp
+      dest: /home/pi/hamradio/liquid-dsp
+
+  - name: Bootstrap liquid-dsp
+    command: ./bootstrap.sh
+    args:
+      chdir: /home/pi/hamradio/liquid-dsp
+
+  - name: Configure liquid-dsp
+    shell: CFLAGS="-march=native -O3" ./configure --enable-fftoverride
+    args:
+      chdir: /home/pi/hamradio/liquid-dsp
+
+  - name: Make liquid-dsp
+    command: make
+    args:
+      chdir: /home/pi/hamradio/liquid-dsp
+
+  - name: Make liquid-dsp
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/liquid-dsp
+
+  - name: Run ldconfig
+    become: yes
+    command: ldconfig
+
+  - name: Clean liquid-dsp
+    become: yes
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/liquid-dsp
+
+#
 # Build and install CubicSDR
 #
 
-  - name: Download latest CubicSDR sources
+  - name: Git clone latest CubicSDR sources
     git:
       repo: https://github.com/cjcliffe/CubicSDR.git
       dest: /home/pi/hamradio/CubicSDR
 
-  - name: Creates directory CubicSDR/build
+  - name: Create directory CubicSDR/build
     file:
       path: /home/pi/hamradio/CubicSDR/build
       state: directory
 
   - name: Build CubicSDR CMakeFiles
-    command: cmake ..
+    command: cmake ../ -DCMAKE_BUILD_TYPE=Release -DwxWidgets_CONFIG_EXECUTABLE=~/hamradio/wxWidgets-staticlib/bin/wx-config
     args:
       chdir: /home/pi/hamradio/CubicSDR/build
 
