@@ -1,0 +1,23 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Finish Tasks
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Autoremove unneeded packages (Part Deux)
+    become: yes
+    apt:
+      autoremove: yes
+
+  - name: Remove unneeded packages from the cache (Part Deux)
+    become: yes
+    apt:
+      autoclean: yes
+
+  - name: Remove SSH trusted keys
+    file:
+      path: /home/pi/.ssh/authorized_keys
+      state: absent
