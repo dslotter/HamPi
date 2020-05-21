@@ -28,6 +28,11 @@
       - libqt5multimedia5-plugins
       - libqt5multimedia5
 
+  - name: Tickle SourceForge so it will provide CuteSDR r75 sources
+    get_url:
+      url: https://sourceforge.net/p/cutesdr/code/HEAD/tarball?path=/trunk
+      dest: /tmp/cutesdr.html
+
   - name: Download and unarchive latest CuteSDR sources
     unarchive:
       src: https://sourceforge.net/code-snapshots/svn/c/cu/cutesdr/code/cutesdr-code-r75-trunk.zip
