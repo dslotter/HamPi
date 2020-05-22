@@ -25,38 +25,56 @@
 #      - python3
 #      - python3-pip
 
-#
 # Raspbian (ARM)
 #
 
   # Sometimes this will fail due to a security check. This is beyond the capabilities of this
   # Playbook, so manual intervention will have to occur.
-  - name: Determine latest version of JTDX on web (ARM)
-    shell: curl --silent --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36" "https://www.jtdx.tech/en/" | grep -Po "https://www.jtdx.tech/downloads/Linux/jtdx-.*_armhf.deb" | grep -Po "jtdx-.*_armhf.deb"
-    args:
-      warn: no
-    register: jtdx_name
+#  - name: Determine latest version of JTDX on web (ARM)
+#    shell: curl --silent --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36" "https://www.jtdx.tech/en/" | grep -Po "https://www.jtdx.tech/downloads/Linux/jtdx-.*_armhf.deb" | grep -Po "jtdx-.*_armhf.deb"
+#    args:
+#      warn: no
+#    register: jtdx_name
+#    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+#  - local_action: command echo item
+#    with_items: jtdx_name.stdout_lines[0]
+#    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+ # - name: Download JTDX {{ jtdx_name.stdout_lines[0] }} (ARM)
+ #   get_url:
+ #     url: "https://www.jtdx.tech/downloads/Linux/{{ jtdx_name.stdout_lines[0] }}"
+ #     dest: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
+ #   when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+#  - name: Install JTDX {{ jtdx_name.stdout_lines[0] }} (ARM)
+#    become: yes
+#    apt:
+#      deb: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
+#    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+#  - name: Remove JTDX {{ jtdx_name.stdout_lines[0] }} installer (ARM)
+#    file:
+#      path: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
+#      state: absent
+#    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Copy JTDX from local file (because automated downloads don't work reliably)
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/jtdx-2.1.0-rc150_u_armhf.deb"
+      dest: "/home/pi/hamradio/jtdx-2.1.0-rc150_u_armhf.deb"
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
-  - local_action: command echo item
-    with_items: jtdx_name.stdout_lines[0]
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
-
-  - name: Download JTDX {{ jtdx_name.stdout_lines[0] }} (ARM)
-    get_url:
-      url: "https://www.jtdx.tech/downloads/Linux/{{ jtdx_name.stdout_lines[0] }}"
-      dest: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
-
-  - name: Install JTDX {{ jtdx_name.stdout_lines[0] }} (ARM)
+  - name: Install JTDX from local file (because automated downloads don't work reliably) (ARM)
     become: yes
     apt:
-      deb: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
+      deb: /home/pi/hamradio/jtdx-2.1.0-rc150_u_armhf.deb
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
-  - name: Remove JTDX {{ jtdx_name.stdout_lines[0] }} installer (ARM)
+  - name: Remove JTDX installer from local file (because automated downloads don't work reliably) (ARM)
     file:
-      path: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
+      path: /home/pi/hamradio/jtdx-2.1.0-rc150_u_armhf.deb
       state: absent
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
@@ -64,31 +82,50 @@
 # Raspbian (x86)
 #
 
-  - name: Determine latest version of JTDX on web (x86)
-    shell: curl --silent --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36" "https://www.jtdx.tech/en/" | grep -Po "https://www.jtdx.tech/downloads/Linux/jtdx-.*_i386.deb"  | grep -Po "jtdx-.*_i386.deb"
-    args:
-      warn: no
-    register: jtdx_name
+#  - name: Determine latest version of JTDX on web (x86)
+#    shell: curl --silent --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36" "https://www.jtdx.tech/en/" | grep -Po "https://www.jtdx.tech/downloads/Linux/jtdx-.*_i386.deb"  | grep -Po "jtdx-.*_i386.deb"
+#    args:
+#      warn: no
+#    register: jtdx_name
+#    when: ansible_architecture == "i386"
+
+#  - local_action: command echo item
+#    with_items: jtdx_name.stdout_lines[0]
+#    when: ansible_architecture == "i386"
+
+#  - name: Download JTDX {{ jtdx_name.stdout_lines[0] }} (x86)
+#    get_url:
+#      url: "https://www.jtdx.tech/downloads/Linux/{{ jtdx_name.stdout_lines[0] }}"
+#      dest: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
+#    when: ansible_architecture == "i386"
+
+#  - name: Install JTDX {{ jtdx_name.stdout_lines[0] }} (x86)
+#    become: yes
+#    apt:
+#      deb: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
+#    when: ansible_architecture == "i386"
+
+#  - name: Remove JTDX {{ jtdx_name.stdout_lines[0] }} installer (x86)
+#    file:
+#      path: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
+#      state: absent
+#    when: ansible_architecture == "i386"
+
+  - name: Copy JTDX from local file (because automated downloads don't work reliably) (x86)
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/jtdx-2.1.0-rc150_u_i386.deb"
+      dest: "/home/pi/hamradio/jtdx-2.1.0-rc150_u_i386.deb"
     when: ansible_architecture == "i386"
 
-  - local_action: command echo item
-    with_items: jtdx_name.stdout_lines[0]
-    when: ansible_architecture == "i386"
-
-  - name: Download JTDX {{ jtdx_name.stdout_lines[0] }} (x86)
-    get_url:
-      url: "https://www.jtdx.tech/downloads/Linux/{{ jtdx_name.stdout_lines[0] }}"
-      dest: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
-    when: ansible_architecture == "i386"
-
-  - name: Install JTDX {{ jtdx_name.stdout_lines[0] }} (x86)
+  - name: Install JTDX from local file (because automated downloads don't work reliably) (x86)
     become: yes
     apt:
-      deb: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
+      deb: /home/pi/hamradio/jtdx-2.1.0-rc150_u_i386.deb
     when: ansible_architecture == "i386"
 
-  - name: Remove JTDX {{ jtdx_name.stdout_lines[0] }} installer (x86)
+  - name: Remove JTDX installer from local file (because automated downloads don't work reliably) (x86)
     file:
-      path: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
+      path: /home/pi/hamradio/jtdx-2.1.0-rc150_u_i386.deb
       state: absent
-      when: ansible_architecture == "i386"
+    when: ansible_architecture == "i386"
