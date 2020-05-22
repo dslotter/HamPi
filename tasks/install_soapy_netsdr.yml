@@ -11,7 +11,7 @@
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -21,7 +21,7 @@
       repo: https://github.com/pothosware/SoapyNetSDR.git
       dest: /home/pi/hamradio/SoapyNetSDR
 
-  - name: Creates directory SoapyNetSDR/build
+  - name: Create directory SoapyNetSDR/build
     file:
       path: /home/pi/hamradio/SoapyNetSDR/build
       state: directory
@@ -42,7 +42,7 @@
     args:
       chdir: /home/pi/hamradio/SoapyNetSDR/build
 
-  - name: Clean SoapyNetSDR
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/SoapyNetSDR/build
+  - name: Remove SoapyNetSDR build directory
+    file:
+      path: /home/pi/hamradio/SoapyNetSDR
+      state: absent

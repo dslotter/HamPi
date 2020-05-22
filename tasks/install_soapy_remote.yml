@@ -11,7 +11,7 @@
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -21,7 +21,7 @@
       repo: https://github.com/pothosware/SoapyRemote.git
       dest: /home/pi/hamradio/SoapyRemote
 
-  - name: Creates directory SoapyRemote/build
+  - name: Create directory SoapyRemote/build
     file:
       path: /home/pi/hamradio/SoapyRemote/build
       state: directory
@@ -42,7 +42,7 @@
     args:
       chdir: /home/pi/hamradio/SoapyRemote/build
 
-  - name: Clean SoapyRemote
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/SoapyRemote/build
+  - name: Remove SoapyRemote build directory
+    file:
+      path: /home/pi/hamradio/SoapyRemote
+      state: absent

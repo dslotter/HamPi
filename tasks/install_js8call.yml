@@ -6,7 +6,7 @@
   hosts: all
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -36,6 +36,12 @@
     become: yes
     apt:
       deb: /home/pi/hamradio/js8call_{{ download_date.stdout_lines[0] }}_armhf.deb
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Remove JS8Call installer (ARM) {{ download_date.stdout_lines[0] }}
+    file:
+      path: /home/pi/hamradio/js8call_{{ download_date.stdout_lines[0] }}_armhf.deb
+      state: absent
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
 #
@@ -74,4 +80,10 @@
     become: yes
     apt:
       deb: /home/pi/hamradio/js8call_{{ download_date.stdout_lines[0] }}_i386.deb
+    when: ansible_architecture == "i386"
+
+  - name: Remove JS8Call installer (x86) {{ download_date.stdout_lines[0] }}
+    file:
+      path: /home/pi/hamradio/js8call_{{ download_date.stdout_lines[0] }}_i386.deb
+      state: absent
     when: ansible_architecture == "i386"

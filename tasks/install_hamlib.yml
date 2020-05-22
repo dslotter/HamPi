@@ -11,12 +11,12 @@
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
-    - name: Creates directory hamradio
+    - name: Create directory hamradio
       file:
         path: /home/pi/hamradio
         state: directory
 
-    - name: Creates directory for library
+    - name: Create directory for library
       file:
         path: /home/pi/hamradio/hamlib-{{ hamlib_version }}
         state: directory
@@ -57,7 +57,7 @@
       become: yes
       command: ldconfig
 
-    - name: Clean hamlib {{ hamlib_version }}
-      command: make clean
-      args:
-        chdir: /home/pi/hamradio/hamlib-{{ hamlib_version }}
+    - name: Remove hamlib {{ hamlib_version }} build directory
+      file:
+        path: /home/pi/hamradio/hamlib-{{ hamlib_version }}
+        state: absent

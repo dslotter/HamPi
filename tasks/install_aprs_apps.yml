@@ -41,7 +41,7 @@
       name: librxtx-java
       state: present
 
-  - name: Creates directory /usr/local/YAAC
+  - name: Create directory /usr/local/YAAC
     become: yes
     file:
       path: /usr/local/YAAC

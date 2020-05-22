@@ -11,7 +11,7 @@
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -56,7 +56,7 @@
     args:
       chdir: /home/pi/hamradio/lysdr
 
-  - name: Clean lysdr
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/lysdr
+  - name: Remove lysdr build directory
+    file:
+      path: /home/pi/hamradio/lysdr
+      state: absent

@@ -11,7 +11,7 @@
     include_vars:
       file: ../default/main.yml
 
-  - name: Creates directory chromium
+  - name: Create directory chromium
     file:
       path: /home/pi/.config/chromium/Default
       state: directory

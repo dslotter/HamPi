@@ -11,7 +11,7 @@
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -33,7 +33,7 @@
       dest: /home/pi/hamradio
       remote_src: yes
 
-  - name: Creates directory airspyhf-master/build
+  - name: Create directory airspyhf-master/build
     file:
       path: /home/pi/hamradio/airspyhf-master/build
       state: directory
@@ -54,11 +54,11 @@
     args:
       chdir: /home/pi/hamradio/airspyhf-master/build
 
-  - name: Clean AirSpy HF driver
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/airspyhf-master/build
-
-  - name: Run ldconfig post-AirSpy HF driver install
+  - name: Configure dynamic linker run-time bindings
     become: yes
     command: ldconfig
+
+  - name: Remove AirSpy HF driver build directory
+    file:
+      path: /home/pi/hamradio/airspyhf-master
+      state: absent

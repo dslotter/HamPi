@@ -11,7 +11,7 @@
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -41,7 +41,7 @@
       repo: https://github.com/analogdevicesinc/libiio
       dest: /home/pi/hamradio/libiio
 
-  - name: Creates directory libiio/build
+  - name: Create directory libiio/build
     file:
       path: /home/pi/hamradio/libiio/build
       state: directory
@@ -67,12 +67,17 @@
     args:
       chdir: /home/pi/hamradio/libiio/build
 
+  - name: Remove LibIIO build directory
+    file:
+      path: /home/pi/hamradio/libiio
+      state: absent
+
   - name: Download latest IIO AD9361 sources
     git:
       repo: https://github.com/analogdevicesinc/libad9361-iio
       dest: /home/pi/hamradio/libad9361-iio
 
-  - name: Creates directory libad9361-iio/build
+  - name: Create directory libad9361-iio/build
     file:
       path: /home/pi/hamradio/libad9361-iio/build
       state: directory
@@ -93,17 +98,17 @@
     args:
       chdir: /home/pi/hamradio/libad9361-iio/build
 
-  - name: Clean IIO AD9361
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/libad9361-iio/build
+  - name: Remove IIO AD9361 build directory
+    file:
+      path: /home/pi/hamradio/libad9361-iio
+      state: absent
 
   - name: Download latest SoapyPlutoSDR sources
     git:
       repo: https://github.com/pothosware/SoapyPlutoSDR.git
       dest: /home/pi/hamradio/SoapyPlutoSDR
 
-  - name: Creates directory SoapyPlutoSDR/build
+  - name: Create directory SoapyPlutoSDR/build
     file:
       path: /home/pi/hamradio/SoapyPlutoSDR/build
       state: directory
@@ -124,7 +129,7 @@
     args:
       chdir: /home/pi/hamradio/SoapyPlutoSDR/build
 
-  - name: Clean SoapyPlutoSDR
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/SoapyPlutoSDR/build
+  - name: Remove SoapyPlutoSDR build directory
+    file:
+      path: /home/pi/hamradio/SoapyPlutoSDR
+      state: absent

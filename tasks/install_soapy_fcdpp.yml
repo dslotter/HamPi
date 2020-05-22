@@ -11,7 +11,7 @@
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -33,7 +33,7 @@
       repo: https://github.com/pothosware/SoapyFCDPP
       dest: /home/pi/hamradio/SoapyFCDPP
 
-  - name: Creates directory SoapyFCDPP/build
+  - name: Create directory SoapyFCDPP/build
     file:
       path: /home/pi/hamradio/SoapyFCDPP/build
       state: directory
@@ -54,7 +54,7 @@
     args:
       chdir: /home/pi/hamradio/SoapyFCDPP/build
 
-  - name: Clean SoapyFCDPP
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/SoapyFCDPP/build
+  - name: Remove SoapyFCDPP build directory
+    file:
+      path: /home/pi/hamradio/SoapyFCDPP
+      state: absent

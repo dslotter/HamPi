@@ -24,7 +24,7 @@
         # dtparam=audio=0
         # End of D.R.A.W.S. / UDRC section
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -80,6 +80,11 @@
     shell: scons udev-install
     args:
       chdir: /home/pi/hamradio/gpsd
+
+  - name: Remove GPSd build directory
+    file:
+      path: /home/pi/hamradio/gpsd
+      state: absent
 
 #  - name: Fix a troublesome gpsd config entry
 #    become: yes
@@ -148,10 +153,10 @@
     args:
       chdir: /home/pi/hamradio/direwolf/build
 
-  - name: Clean Dev Direwolf
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/direwolf/build
+  - name: Remove Dev Direwolf build directory
+    file:
+      path: /home/pi/hamradio/direwolf
+      state: absent
 
 #
 # Install D.R.A.W.S. Manager

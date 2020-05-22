@@ -6,7 +6,7 @@
   hosts: all
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -47,6 +47,12 @@
     become: yes
     apt:
       deb: /home/pi/hamradio/pat_{{ pat_version.stdout_lines[0] }}_linux_armhf.deb
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Remove latest Pat (WinLink) installer ARM
+    file:
+      path: /home/pi/hamradio/pat_{{ pat_version.stdout_lines[0] }}_linux_armhf.deb
+      state: absent
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
   - name: Download Pi Ardop ARM
@@ -90,6 +96,12 @@
       deb: /home/pi/hamradio/pat_{{ pat_version.stdout_lines[0] }}_linux_i386.deb
     when: ansible_architecture == "i386"
 
+  - name: Remove latest Pat (WinLink) installer i386
+    file:
+      path: /home/pi/hamradio/pat_{{ pat_version.stdout_lines[0] }}_linux_i386.deb
+      state: absent
+    when: ansible_architecture == "i386"
+
 #
 # Raspbian amd64
 #
@@ -115,4 +127,10 @@
     become: yes
     apt:
       deb: /home/pi/hamradio/pat_{{ pat_version.stdout_lines[0] }}_linux_amd64.deb
+    when: ansible_architecture == "amd64"
+
+  - name: Remove latest Pat (WinLink) installer amd64
+    file:
+      path: /home/pi/hamradio/pat_{{ pat_version.stdout_lines[0] }}_linux_amd64.deb
+      state: absent
     when: ansible_architecture == "amd64"

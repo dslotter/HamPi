@@ -7,7 +7,7 @@
   gather_facts: no
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -53,6 +53,12 @@
     shell: /opt/teamviewer/tv_bin/script/teamviewer_setup install force
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
+  - name: Remove TeamViewer installer (ARM)
+    file:
+      path: teamviewer-host_armhf.deb
+      state: absent
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
 #
 # Raspbian x86
 #
@@ -86,4 +92,10 @@
 
   - name: Install TeamViewer Host (x86)
     shell: /usr/local/teamviewer/tv-setup install force
+    when: ansible_architecture == "i386"
+
+  - name: Remove TeamViewer installer (x86)
+    file:
+      path: teamviewer-host_i386.deb
+      state: absent
     when: ansible_architecture == "i386"

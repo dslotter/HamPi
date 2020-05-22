@@ -7,7 +7,7 @@
   gather_facts: no
   tasks:
 
-  - name: Creates directory lxsession/LXDE-pi
+  - name: Create directory lxsession/LXDE-pi
     file:
       path: /home/pi/.config/lxsession/LXDE-pi
       state: directory

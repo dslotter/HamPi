@@ -13,7 +13,7 @@
     twclock_version: 3.5
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -50,7 +50,7 @@
     args:
       chdir: /home/pi/hamradio/twclock-{{ twclock_version }}
 
-  - name: Clean TwClock {{ twclock_version }}
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/twclock-{{ twclock_version }}
+  - name: Remove TwClock {{ twclock_version }} build directory
+    file:
+      path: /home/pi/hamradio/twclock-{{ twclock_version }}
+      state: absent

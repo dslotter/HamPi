@@ -7,7 +7,7 @@
   gather_facts: no
   tasks:
 
-  - name: Creates directory CTY_FILES
+  - name: Create directory CTY_FILES
     file:
       path: /home/pi/hamradio/CTY_FILES
       state: directory

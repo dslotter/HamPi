@@ -22,7 +22,7 @@
 # x86 can't find this:
 #      - python-imaging
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -47,10 +47,10 @@
     args:
       chdir: /home/pi/hamradio/WsprryPi
 
-  - name: Clean WsprryPi
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/WsprryPi
+  - name: Remove WsprryPi build directory
+    file:
+      path: /home/pi/hamradio/WsprryPi
+      state: absent
 
 #
 # PiCW

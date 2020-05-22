@@ -11,7 +11,7 @@
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -36,7 +36,7 @@
       repo: https://github.com/csete/gqrx.git
       dest: /home/pi/hamradio/gqrx-source
 
-  - name: Creates directory gqrx-source/build
+  - name: Create directory gqrx-source/build
     file:
       path: /home/pi/hamradio/gqrx-source/build
       state: directory
@@ -57,7 +57,7 @@
     args:
       chdir: /home/pi/hamradio/gqrx-source/build
 
-  - name: Clean GQRX
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/gqrx-source/build
+  - name: Remove GQRX build directory
+    file:
+      path: /home/pi/hamradio/gqrx-source
+      state: absent

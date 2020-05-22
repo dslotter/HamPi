@@ -11,7 +11,7 @@
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -27,7 +27,7 @@
       repo: https://github.com/steve-m/librtlsdr
       dest: /home/pi/hamradio/librtlsdr
 
-  - name: Creates directory librtlsdr/build
+  - name: Create directory librtlsdr/build
     file:
       path: /home/pi/hamradio/librtlsdr/build
       state: directory
@@ -48,17 +48,17 @@
     args:
       chdir: /home/pi/hamradio/librtlsdr/build
 
-  - name: Clean RTL-SDR
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/librtlsdr/build
+  - name: Remove RTL-SDR build directory
+    file:
+      path: /home/pi/hamradio/librtlsdr
+      state: absent
 
   - name: Download latest SoapyRTLSDR sources
     git:
       repo: https://github.com/pothosware/SoapyRTLSDR.git
       dest: /home/pi/hamradio/SoapyRTLSDR
 
-  - name: Creates directory SoapyRTLSDR/build
+  - name: Create directory SoapyRTLSDR/build
     file:
       path: /home/pi/hamradio/SoapyRTLSDR/build
       state: directory
@@ -79,8 +79,7 @@
     args:
       chdir: /home/pi/hamradio/SoapyRTLSDR/build
 
-  - name: Clean SoapyRTLSDR
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/SoapyRTLSDR/build
-
+  - name: Remove SoapyRTLSDR build directory
+    file:
+      path: /home/pi/hamradio/SoapyRTLSDR
+      state: absent

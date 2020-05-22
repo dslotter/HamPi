@@ -17,8 +17,8 @@
       - tlf
       - klog
       - xlog
-#      - cqrlog
-#      - tucnak2
+      - cqrlog
+      - tucnak2
 
 #
 # Install PyQSO
@@ -89,6 +89,11 @@
     command: make install
     args:
       chdir: /home/pi/hamradio/pyqso
+
+  - name: Remove PyQSO build directory
+    file:
+      path: /home/pi/hamradio/pyqso
+      state: absent
 
   - name: Download wsjtx_to_n3fjp executable
     become: yes

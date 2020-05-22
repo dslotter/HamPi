@@ -11,7 +11,7 @@
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -38,17 +38,17 @@
     args:
       chdir: /home/pi/hamradio/rtaudio-5.1.0
 
-  - name: Clean RTAudio
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/rtaudio-5.1.0
+  - name: Remove RTAudio 5.1.0 build directory
+    file:
+      path: /home/pi/hamradio/rtaudio-5.1.0
+      state: absent
 
   - name: Download latest SoapyAudio sources
     git:
       repo: https://github.com/pothosware/SoapyAudio.git
       dest: /home/pi/hamradio/SoapyAudio
 
-  - name: Creates directory SoapyAudio/build
+  - name: Create directory SoapyAudio/build
     file:
       path: /home/pi/hamradio/SoapyAudio/build
       state: directory
@@ -69,8 +69,7 @@
     args:
       chdir: /home/pi/hamradio/SoapyAudio/build
 
-  - name: Clean SoapyAudio
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/SoapyAudio/build
-
+  - name: Remove SoapyAudio build directory
+    file:
+      path: /home/pi/hamradio/SoapyAudio
+      state: absent

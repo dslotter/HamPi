@@ -17,7 +17,7 @@
       name: cmake
       state: absent
   
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -69,7 +69,7 @@
     args:
       chdir: /home/pi/hamradio/cmake-{{ cmake_version.stdout_lines[0] }}
 
-  - name: Clean CMake {{ cmake_version.stdout_lines[0] }}
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/cmake-{{ cmake_version.stdout_lines[0] }}
+  - name: Remove CMake {{ cmake_version.stdout_lines[0] }} build directory
+    file:
+      path: /home/pi/hamradio/cmake-{{ cmake_version.stdout_lines[0] }}
+      state: absent

@@ -11,7 +11,7 @@
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -31,7 +31,7 @@
       repo: https://github.com/pothosware/SoapyRedPitaya
       dest: /home/pi/hamradio/SoapyRedPitaya
 
-  - name: Creates directory SoapyRedPitaya/build
+  - name: Create directory SoapyRedPitaya/build
     file:
       path: /home/pi/hamradio/SoapyRedPitaya/build
       state: directory
@@ -52,7 +52,7 @@
     args:
       chdir: /home/pi/hamradio/SoapyRedPitaya/build
 
-  - name: Clean SoapyRedPitaya
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/SoapyRedPitaya/build
+  - name: Remove SoapyRedPitaya build directory
+    file:
+      path: /home/pi/hamradio/SoapyRedPitaya
+      state: absent

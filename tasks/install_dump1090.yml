@@ -15,7 +15,7 @@
 
 #  - include_tasks: install_librtlsdr.yml
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -59,7 +59,7 @@
     args:
       chdir: /home/pi/hamradio/dump1090_rtlsdr
 
-  - name: Clean dump1090
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/dump1090_rtlsdr
+  - name: Remove dump1090 build directory
+    file:
+      path: /home/pi/hamradio/dump1090_rtlsdr
+      state: absent

@@ -11,7 +11,7 @@
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -29,46 +29,46 @@
 # Raspbian (ARM)
 #
 
-  - name: Copy SDRPlay RSP Driver {{ sdrplay_arm_version }} (ARM)
-    copy:
-      src: "{{ playbook_dir }}/../files/SDRplay_RSP_API-ARM32-{{ sdrplay_arm_version }}.run"
-      dest: /home/pi/hamradio/SDRplay_RSP_API-ARM32-{{ sdrplay_arm_version }}.run
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+#  - name: Copy SDRPlay RSP Driver {{ sdrplay_arm_version }} (ARM)
+#    copy:
+#      src: "{{ playbook_dir }}/../files/SDRplay_RSP_API-ARM32-{{ sdrplay_arm_version }}.run"
+#      dest: /home/pi/hamradio/SDRplay_RSP_API-ARM32-{{ sdrplay_arm_version }}.run
+#    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
-  - name: Make SDRPlay RSP Driver Executable (ARM)
-    file: dest=/home/pi/hamradio/SDRplay_RSP_API-ARM32-{{ sdrplay_arm_version }}.run mode=a+x
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+#  - name: Make SDRPlay RSP Driver Executable (ARM)
+#    file: dest=/home/pi/hamradio/SDRplay_RSP_API-ARM32-{{ sdrplay_arm_version }}.run mode=a+x
+#    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
-  - name: Copy SDRPlay Expect Script
-    copy:
-      src: "{{ playbook_dir }}/../files/sdrplay_api_install.exp"
-      dest: /home/pi/hamradio/sdrplay_api_install.exp
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+#  - name: Copy SDRPlay Expect Script
+#    copy:
+#      src: "{{ playbook_dir }}/../files/sdrplay_api_install.exp"
+#      dest: /home/pi/hamradio/sdrplay_api_install.exp
+#    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
-  - name: Make SDRPlay Expect Script Executable
-    file: dest=/home/pi/hamradio/sdrplay_api_install.exp mode=a+x
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+#  - name: Make SDRPlay Expect Script Executable
+#    file: dest=/home/pi/hamradio/sdrplay_api_install.exp mode=a+x
+#    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
-  - name: Install SDRPlay RSP Driver using Expect Script
-    become: yes
-    command: ./sdrplay_api_install.exp
-    args:
-      chdir: /home/pi/hamradio
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+#  - name: Install SDRPlay RSP Driver using Expect Script
+#    become: yes
+#    command: ./sdrplay_api_install.exp
+#    args:
+#      chdir: /home/pi/hamradio
+#    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
-  - name: Remove SDRPlay RSP Driver Installer
-    become: yes
-    file:
-      path: /home/pi/hamradio/SDRplay_RSP_API-ARM32-{{ sdrplay_arm_version }}.run
-      state: absent
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+ # - name: Remove SDRPlay RSP Driver Installer
+ #   become: yes
+ #   file:
+ #     path: /home/pi/hamradio/SDRplay_RSP_API-ARM32-{{ sdrplay_arm_version }}.run
+ #     state: absent
+ #   when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
-  - name: Remove SDRPlay Driver Expect Script
-    become: yes
-    file:
-      path: /home/pi/hamradio/sdrplay_api_install.exp
-      state: absent
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+#  - name: Remove SDRPlay Driver Expect Script
+#    become: yes
+#    file:
+#      path: /home/pi/hamradio/sdrplay_api_install.exp
+#      state: absent
+#    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
 #
 # Raspbian (x86)
@@ -84,12 +84,16 @@
     file: dest=/home/pi/hamradio/SDRplay_RSP_API-Linux-{{ sdrplay_x86_version }}.run mode=a+x
     when: ansible_architecture == "i386"
 
+#
+# Build SoapySDRPlay Module
+#
+
   - name: Download latest SoapySDRPlay sources
     git:
       repo: https://github.com/pothosware/SoapySDRPlay.git
       dest: /home/pi/hamradio/SoapySDRPlay
 
-  - name: Creates directory SoapySDRPlay/build
+  - name: Create directory SoapySDRPlay/build
     file:
       path: /home/pi/hamradio/SoapySDRPlay/build
       state: directory
@@ -110,7 +114,7 @@
     args:
       chdir: /home/pi/hamradio/SoapySDRPlay/build
 
-  - name: Clean SoapySDRPlay
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/SoapySDRPlay/build
+  - name: Remove SoapySDRPlay build directory
+    file:
+      path: /home/pi/hamradio/SoapySDRPlay
+      state: absent

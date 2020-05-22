@@ -11,7 +11,7 @@
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -29,6 +29,8 @@
 # Raspbian (ARM)
 #
 
+  # Sometimes this will fail due to a security check. This is beyond the capabilities of this
+  # Playbook, so manual intervention will have to occur.
   - name: Determine latest version of JTDX on web (ARM)
     shell: curl --silent --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36" "https://www.jtdx.tech/en/" | grep -Po "https://www.jtdx.tech/downloads/Linux/jtdx-.*_armhf.deb" | grep -Po "jtdx-.*_armhf.deb"
     args:
@@ -50,6 +52,12 @@
     become: yes
     apt:
       deb: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Remove JTDX {{ jtdx_name.stdout_lines[0] }} installer (ARM)
+    file:
+      path: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
+      state: absent
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
 #
@@ -78,3 +86,9 @@
     apt:
       deb: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
     when: ansible_architecture == "i386"
+
+  - name: Remove JTDX {{ jtdx_name.stdout_lines[0] }} installer (x86)
+    file:
+      path: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
+      state: absent
+      when: ansible_architecture == "i386"

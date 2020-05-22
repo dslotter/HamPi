@@ -11,7 +11,7 @@
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -35,7 +35,7 @@
       repo: https://github.com/gnuradio/volk
       dest: /home/pi/hamradio/volk
 
-  - name: Creates directory volk/build
+  - name: Create directory volk/build
     file:
       path: /home/pi/hamradio/volk/build
       state: directory
@@ -63,17 +63,17 @@
     args:
       chdir: /home/pi/hamradio/volk/build
 
-  - name: Clean volk
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/volk/build
+  - name: Remove volk build directory
+    file:
+      path: /home/pi/hamradio/volk
+      state: absent
 
   - name: Download latest SoapyVOLKConverters sources
     git:
       repo: https://github.com/pothosware/SoapyVOLKConverters
       dest: /home/pi/hamradio/SoapyVOLKConverters
 
-  - name: Creates directory SoapyVOLKConverters/build
+  - name: Create directory SoapyVOLKConverters/build
     file:
       path: /home/pi/hamradio/SoapyVOLKConverters/build
       state: directory
@@ -94,7 +94,7 @@
     args:
       chdir: /home/pi/hamradio/SoapyVOLKConverters/build
 
-  - name: Clean SoapyOsmo
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/SoapyVOLKConverters/build
+  - name: Remove SoapyVOLKConverters build directory
+    file:
+      path: /home/pi/hamradio/SoapyVOLKConverters
+      state: absent

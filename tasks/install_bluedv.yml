@@ -7,13 +7,13 @@
   gather_facts: no
   tasks:
 
-  - name: Creates directory bluedv
+  - name: Create directory bluedv
     become: yes
     file:
       path: /usr/local/bluedv
       state: directory
 
-  - name: Creates directory /usr/local/share/applications
+  - name: Create directory /usr/local/share/applications
     become: yes
     file:
       path: /usr/local/share/applications
@@ -57,7 +57,7 @@
     args:
       chdir: /home/pi/hamradio/AMBEServer
 
-  - name: Clean AMBEServer
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/AMBEServer
+  - name: Remove AMBEServer build directory
+    file:
+      path: /home/pi/hamradio/AMBEServer
+      state: absent

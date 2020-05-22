@@ -7,7 +7,7 @@
   gather_facts: no
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -43,3 +43,9 @@
     command: python setup.py install
     args:
       chdir: "/home/pi/hamradio/chirp-daily-{{ download_date.stdout_lines[0] }}"
+
+  - name: Remove Chirp {{ download_date.stdout_lines[0] }} build directory
+    become: yes
+    file:
+      path: /home/pi/hamradio/chirp-daily-{{ download_date.stdout_lines[0] }}
+      state: absent

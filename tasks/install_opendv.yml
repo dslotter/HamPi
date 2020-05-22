@@ -12,7 +12,7 @@
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -241,7 +241,7 @@
     args:
       chdir: /home/pi/hamradio/OpenDV/XReflectorDaemon
 
-  - name: Clean OpenDV - XReflectorDaemon
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/OpenDV/XReflectorDaemon
+  - name: Remove OpenDV build directory
+    file:
+      path: /home/pi/hamradio/OpenDV
+      state: absent

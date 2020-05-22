@@ -2,7 +2,7 @@
 # Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
 #
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -18,7 +18,7 @@
       repo: https://github.com/steve-m/librtlsdr
       dest: /home/pi/hamradio/librtlsdr
 
-  - name: Creates directory librtlsdr/build
+  - name: Create directory librtlsdr/build
     file:
       path: /home/pi/hamradio/librtlsdr/build
       state: directory

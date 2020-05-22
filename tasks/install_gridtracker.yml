@@ -6,12 +6,12 @@
   hosts: all
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
 
-  - name: Creates directory for documentation
+  - name: Create directory for documentation
     become: yes
     file:
       path: /usr/share/doc/gridtracker
@@ -24,7 +24,7 @@
       dest: /usr/share/doc/gridtracker/GTQS_0406.pdf
       validate_certs: no
 
-  - name: Creates directory for desktop files
+  - name: Create directory for desktop files
     become: yes
     file:
       path: /usr/local/share/applications/

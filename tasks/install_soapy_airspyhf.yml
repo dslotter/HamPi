@@ -11,7 +11,7 @@
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -31,7 +31,7 @@
       repo: https://github.com/pothosware/SoapyAirSpyHF.git
       dest: /home/pi/hamradio/SoapyAirSpyHF
 
-  - name: Creates directory SoapyAirSpyHF/build
+  - name: Create directory SoapyAirSpyHF/build
     file:
       path: /home/pi/hamradio/SoapyAirSpyHF/build
       state: directory
@@ -52,7 +52,7 @@
     args:
       chdir: /home/pi/hamradio/SoapyAirSpyHF/build
 
-  - name: Clean SoapyAirSpy HF
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/SoapyAirSpyHF/build
+  - name: Remove SoapyAirSpy HF build directory
+    file:
+      path: /home/pi/hamradio/SoapyAirSpyHF
+      state: absent

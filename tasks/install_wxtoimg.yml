@@ -6,7 +6,7 @@
   hosts: all
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -38,6 +38,11 @@
       deb: /home/pi/hamradio/wxtoimg-armhf-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
+  - name: Remove wxtoimg {{ wxtoimg_version.stdout_lines[0] }} installer (ARM)
+    file:
+      path: /home/pi/hamradio/wxtoimg-armhf-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb
+      state: absent
+
 #
 # Raspbian x86
 #
@@ -63,4 +68,10 @@
     become: yes
     apt:
       deb: /home/pi/hamradio/wxtoimg-i386-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb
+    when: ansible_architecture == "i386"
+
+  - name: Remove wxtoimg {{ wxtoimg_version.stdout_lines[0] }} installer (x86)
+    file:
+      path: /home/pi/hamradio/wxtoimg-i386-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb
+      state: absent
     when: ansible_architecture == "i386"

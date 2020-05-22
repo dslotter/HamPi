@@ -11,7 +11,7 @@
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
-    - name: Creates directory hamradio
+    - name: Create directory hamradio
       file:
         path: /home/pi/hamradio
         state: directory
@@ -59,7 +59,7 @@
       become: yes
       command: ldconfig
 
-    - name: Clean flxmlrpc {{ download_date.stdout_lines[0] }}
-      command: make clean
-      args:
-        chdir: /home/pi/hamradio/flxmlrpc-{{ download_date.stdout_lines[0] }}
+    - name: Remove flxmlrpc {{ download_date.stdout_lines[0] }} build directory
+      file:
+        path: /home/pi/hamradio/flxmlrpc-{{ download_date.stdout_lines[0] }}
+        state: absent

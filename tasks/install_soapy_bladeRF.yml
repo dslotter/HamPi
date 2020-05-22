@@ -11,7 +11,7 @@
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -31,7 +31,7 @@
       repo: https://github.com/nuand/bladeRF
       dest: /home/pi/hamradio/bladeRF
 
-  - name: Creates directory bladeRF/host/build
+  - name: Create directory bladeRF/host/build
     file:
       path: /home/pi/hamradio/bladeRF/host/build
       state: directory
@@ -52,17 +52,17 @@
     args:
       chdir: /home/pi/hamradio/bladeRF/host/build
 
-  - name: Clean bladeRF
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/bladeRF/host/build
+  - name: Remove bladeRF build directory
+    file:
+      path: /home/pi/hamradio/bladeRF
+      state: absent
 
   - name: Download latest SoapyBladeRF sources
     git:
       repo: https://github.com/pothosware/SoapyBladeRF
       dest: /home/pi/hamradio/SoapyBladeRF
 
-  - name: Creates directory SoapyBladeRF/build
+  - name: Create directory SoapyBladeRF/build
     file:
       path: /home/pi/hamradio/SoapyBladeRF/build
       state: directory
@@ -83,7 +83,7 @@
     args:
       chdir: /home/pi/hamradio/SoapyBladeRF/build
 
-  - name: Clean SoapyBladeRF
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/SoapyBladeRF/build
+  - name: Remove SoapyBladeRF build directory
+    file:
+      path: /home/pi/hamradio/SoapyBladeRF
+      state: absent

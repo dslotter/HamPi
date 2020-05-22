@@ -11,7 +11,7 @@
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -32,7 +32,7 @@
       repo: https://github.com/EttusResearch/uhd
       dest: /home/pi/hamradio/uhd
 
-  - name: Creates directory uhd/build
+  - name: Create directory uhd/build
     file:
       path: /home/pi/hamradio/uhd/host/build
       state: directory
@@ -53,17 +53,17 @@
     args:
       chdir: /home/pi/hamradio/uhd/host/build
 
-  - name: Clean UHD
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/uhd/host/build
+  - name: Remove UHD build directory
+    file:
+      path: /home/pi/hamradio/uhd
+      state: absent
 
   - name: Download latest SoapyUHD sources
     git:
       repo: https://github.com/pothosware/SoapyUHD.git
       dest: /home/pi/hamradio/SoapyUHD
 
-  - name: Creates directory SoapyUHD/build
+  - name: Create directory SoapyUHD/build
     file:
       path: /home/pi/hamradio/SoapyUHD/build
       state: directory
@@ -84,7 +84,7 @@
     args:
       chdir: /home/pi/hamradio/SoapyUHD/build
 
-  - name: Clean SoapyUHD
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/SoapyUHD/build
+  - name: Remove SoapyUHD build directory
+    file:
+      path: /home/pi/hamradio/SoapyUHD
+      state: absent

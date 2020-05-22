@@ -11,7 +11,7 @@
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -60,3 +60,8 @@
     command: make install
     args:
       chdir: /home/pi/hamradio/freedv-gui/build_linux
+
+  - name: Remove freedv-gui build directory
+    file:
+      path: /home/pi/hamradio/freedv-gui
+      state: absent

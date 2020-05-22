@@ -13,7 +13,7 @@
     twhamqth_version: 2.1
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -50,7 +50,7 @@
     args:
       chdir: /home/pi/hamradio/twhamqth-{{ twhamqth_version }}
 
-  - name: Clean TwHamQTH {{ twhamqth_version }}
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/twhamqth-{{ twhamqth_version }}
+  - name: Remove TwHamQTH {{ twhamqth_version }} build directory
+    file:
+      path: /home/pi/hamradio/twhamqth-{{ twhamqth_version }}
+      state: absent

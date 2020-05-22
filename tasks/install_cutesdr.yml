@@ -11,7 +11,7 @@
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
-  - name: Creates directory hamradio
+  - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
@@ -59,3 +59,13 @@
     command: make clean
     args:
       chdir: /home/pi/hamradio/cutesdr-code-r75-trunk
+
+- name: Remove CuteSDR archive
+  file:
+    path: /home/pi/hamradio/cutesdr-code-r75-trunk.zip
+    state: absent
+
+- name: Recursively remove CuteSDR directory
+  file:
+    path: /home/pi/hamradio/cutesdr-code-r75-trunk
+    state: absent
