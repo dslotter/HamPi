@@ -66,6 +66,7 @@
 - import_playbook: install_wsjtx.yml
 - import_playbook: install_js8call.yml
 - import_playbook: install_js8callutilities.yml
+- import_playbook: install_jtdx.yml
 - import_playbook: download_country_files.yml
 - import_playbook: install_gridtracker.yml
 - import_playbook: install_digital_apps.yml
@@ -94,7 +95,6 @@
 # Final tasks
 - import_playbook: finish_tasks.yml
 
-#Has captcha check now- import_playbook: install_jtdx.yml
 #Fail- import_playbook: install_dxspider.yml
 #Fails- import_playbook: install_soapy_uhd.yml
 #Fails- import_playbook: install_tapr_wspr.yml
