@@ -16,7 +16,7 @@
       path: /home/pi/hamradio
       state: directory
 
-  - name: Install dependent libraries (x86)
+  - name: Install dependent librariess
     become: yes
     package:
       name: "{{ item }}"
@@ -39,22 +39,29 @@
 #    file: dest=/home/pi/hamradio/SDRplay_RSP_API-ARM32-{{ sdrplay_arm_version }}.run mode=a+x
 #    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
-#  - name: Copy SDRPlay Expect Script
-#    copy:
-#      src: "{{ playbook_dir }}/../files/sdrplay_api_install.exp"
-#      dest: /home/pi/hamradio/sdrplay_api_install.exp
-#    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+  - name: Copy SDRPlay RSP Driver Installer {{ sdrplay_arm_version }} (ARM)
+    copy:
+      src: "{{ playbook_dir }}/../files/SDRplay_RSP_API-RPi-{{ sdrplay_arm_version }}.run"
+      dest: /home/pi/hamradio/SDRplay_RSP_API-RPi-{{ sdrplay_arm_version }}.run
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
-#  - name: Make SDRPlay Expect Script Executable
-#    file: dest=/home/pi/hamradio/sdrplay_api_install.exp mode=a+x
-#    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+  - name: Copy SDRPlay Expect Script
+    copy:
+      src: "{{ playbook_dir }}/../files/sdrplay_api2_install.exp"
+      dest: /home/pi/hamradio/sdrplay_api2_install.exp
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
-#  - name: Install SDRPlay RSP Driver using Expect Script
-#    become: yes
-#    command: ./sdrplay_api_install.exp
-#    args:
-#      chdir: /home/pi/hamradio
-#    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+  - name: Set Expect Script to executable
+    become: yes
+    file: dest=/home/pi/hamradio/sdrplay_api2_install.exp mode=a+x
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Install SDRPlay RSP Driver using Expect Script
+    become: yes
+    command: ./sdrplay_api2_install.exp
+    args:
+      chdir: /home/pi/hamradio
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
  # - name: Remove SDRPlay RSP Driver Installer
  #   become: yes
@@ -63,26 +70,29 @@
  #     state: absent
  #   when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
-#  - name: Remove SDRPlay Driver Expect Script
-#    become: yes
-#    file:
-#      path: /home/pi/hamradio/sdrplay_api_install.exp
-#      state: absent
-#    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+  - name: Remove SDRPlay RSP Driver Installer
+    become: yes
+    file:
+      path: /home/pi/hamradio/SDRplay_RSP_API-RPi-{{ sdrplay_arm_version }}.run
+      state: absent
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Remove SDRPlay Driver Expect Script
+    become: yes
+    file:
+      path: /home/pi/hamradio/sdrplay_api_install.exp
+      state: absent
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
 #
 # Raspbian (x86)
 #
 
-  - name: Copy SDRPlay Driver {{ sdrplay_x86_version }} (x86)
-    copy:
-      src: "{{ playbook_dir }}/../files/SDRplay_RSP_API-Linux-{{ sdrplay_x86_version }}.run"
-      dest: /home/pi/hamradio/SDRplay_RSP_API-Linux-{{ sdrplay_x86_version }}.run
-    when: ansible_architecture == "i386"
-
-  - name: Make SDRPlay Driver Executable (x86)
-    file: dest=/home/pi/hamradio/SDRplay_RSP_API-Linux-{{ sdrplay_x86_version }}.run mode=a+x
-    when: ansible_architecture == "i386"
+#  - name: Copy SDRPlay Driver {{ sdrplay_x86_version }} (x86)
+#    copy:
+#      src: "{{ playbook_dir }}/../files/SDRplay_RSP_API-Linux-{{ sdrplay_x86_version }}.run"
+#      dest: /home/pi/hamradio/SDRplay_RSP_API-Linux-{{ sdrplay_x86_version }}.run
+#    when: ansible_architecture == "i386"
 
 #
 # Build SoapySDRPlay Module
