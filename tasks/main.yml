@@ -40,6 +40,7 @@
 - import_playbook: install_soapy_plutosdr.yml
 - import_playbook: install_soapy_redpitaya.yml
 - import_playbook: install_soapy_rtlsdr.yml
+- import_playbook: install_soapy_sdrplay.yml
 - import_playbook: install_soapy_volkconverters.yml
 
 - import_playbook: install_flxmlrpc.yml
