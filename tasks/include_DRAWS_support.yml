@@ -164,8 +164,6 @@
   - name: Update npm
     become: yes
     shell: npm install -g npm
-    args:
-      chdir: /home/pi/hamradio/gpsd
 
   - name: Git clone latest DRAWS Manager sources
     git:
