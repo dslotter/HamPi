@@ -21,6 +21,7 @@
 - import_playbook: install_chromium_bookmarks.yml
 - import_playbook: install_cmake.yml
 - import_playbook: install_wxwidgets.yml
+# ^^^ This part takes about 1 hour to build on a RPi 4 ^^^
 
 - import_playbook: install_hamlib.yml
 - import_playbook: include_DRAWS_support.yml
@@ -97,15 +98,11 @@
 - import_playbook: finish_tasks.yml
 
 #Fail- import_playbook: install_dxspider.yml
-#Fails- import_playbook: install_soapy_uhd.yml
-#Fails- import_playbook: install_tapr_wspr.yml
+#Fail- import_playbook: install_soapy_uhd.yml
+#Fail- import_playbook: install_tapr_wspr.yml
 #Hold- import_playbook: install_teamviewer_host.yml
 #Fail- import_playbook: install_voacapl.yml
 
-# Doesn't work under Raspbian x86 and
-# Doesn't work under Raspbian ARM because can't find include file in latest SDK.
-# TODO: Need to investigate further.
-#Fails- import_playbook: install_soapy_sdrplay.yml
 
 # OpenDV git repository has some issues preventing clean builds:
 #Fail- import_playbook: install_opendv.yml
