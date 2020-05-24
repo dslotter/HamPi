@@ -51,6 +51,11 @@
       dest: /home/pi/hamradio/sdrplay_api2_install.exp
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
+  - name: Set SDRPlay RSP Driver Installer {{ sdrplay_arm_version }} to executable
+    become: yes
+    file: dest=/home/pi/hamradio/SDRplay_RSP_API-RPi-{{ sdrplay_arm_version }}.run mode=a+x
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
   - name: Set Expect Script to executable
     become: yes
     file: dest=/home/pi/hamradio/sdrplay_api2_install.exp mode=a+x
