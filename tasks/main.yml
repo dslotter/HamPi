@@ -23,6 +23,9 @@
 - import_playbook: install_wxwidgets.yml
 # ^^^ This part takes about 1 hour to build on a RPi 4 ^^^
 
+#
+# Support both conventional and software-defined radios
+#
 - import_playbook: install_hamlib.yml
 - import_playbook: include_DRAWS_support.yml
 - import_playbook: install_airspy.yml
@@ -44,6 +47,9 @@
 - import_playbook: install_soapy_sdrplay.yml
 - import_playbook: install_soapy_volkconverters.yml
 
+#
+# FLDigi Suite
+#
 - import_playbook: install_flxmlrpc.yml
 - import_playbook: install_flrig.yml
 - import_playbook: install_fldigi.yml
@@ -57,6 +63,10 @@
 - import_playbook: install_flwkey.yml
 - import_playbook: install_flwrap.yml
 - import_playbook: install_pi34statsmonitor.yml
+
+#
+# Ham Radio Applications
+#
 - import_playbook: install_antenna_modeling_apps.yml
 - import_playbook: install_aprs_apps.yml
 - import_playbook: install_d-rats_maurizioandreotti.yml
