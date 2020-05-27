@@ -83,6 +83,7 @@
 - import_playbook: install_gridtracker.yml
 - import_playbook: install_digital_apps.yml
 - import_playbook: install_miscellaneous_apps.yml
+- import_playbook: install_ax25.yml
 - import_playbook: install_linpac.yml
 - import_playbook: install_bluedv.yml
 - import_playbook: install_chirp.yml
