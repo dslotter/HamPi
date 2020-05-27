@@ -9,8 +9,10 @@ echo $start_time
 # Compute the seconds since epoch for start date
 t1=`date --date="$start_time" +%s`
 
+curdate=`date +%Y-%m-%d`
+
 echo "ansible-playbook -i hosts tasks/main.yml"
-ansible-playbook -i hosts tasks/main.yml
+ansible-playbook -i hosts tasks/main.yml | tee --append ansible-output_${curdate}.txt
 
 # Compute the seconds since epoch for end date
 end_time=`date`
