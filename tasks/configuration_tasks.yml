@@ -68,6 +68,35 @@
     command: systemctl start vncserver-x11-serviced
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
+  - name: Create HamPi desktop wallpaper in /usr/share/rpd-wallpaper
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/rpd-wallpaper/HamPi Desktop Wallpaper.png"
+      dest: "/usr/share/rpd-wallpaper/HamPi Desktop Wallpaper.png"
+
+  - name: Create HamPi desktop config 0 in /etc/xdg/pcmanfm/LXDE-pi
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/xdg/pcmanfm/LXDE-pi/desktop-items-0.conf"
+      dest: "/etc/xdg/pcmanfm/LXDE-pi/desktop-items-0.conf"
+
+  - name: Create HamPi desktop config 1 in /etc/xdg/pcmanfm/LXDE-pi
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/xdg/pcmanfm/LXDE-pi/desktop-items-1.conf"
+      dest: "/etc/xdg/pcmanfm/LXDE-pi/desktop-items-1.conf"
+
+  - name: Create HamPi desktop config in /home/pi/.config/pcmanfm/LXDE-pi
+    copy:
+      src: "{{ playbook_dir }}/../files/home/pi/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
+      dest: "/home/pi/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
+
+  - name: Create HamPi greeter config in /etc/
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/lightdm/pi-greeter.conf"
+      dest: "/etc/lightdm/pi-greeter.conf"
+
   - name: Creates /usr/local/share/icons/gnome/16x16/categories directory
     become: yes
     file:
