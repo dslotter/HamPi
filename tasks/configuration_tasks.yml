@@ -97,6 +97,16 @@
       src: "{{ playbook_dir }}/../files/etc/lightdm/pi-greeter.conf"
       dest: "/etc/lightdm/pi-greeter.conf"
 
+  - name: Create HamPi README in /home/pi/Desktop
+    copy:
+      src: "{{ playbook_dir }}/../files/home/pi/Desktop/HAMPI README.doc"
+      dest: "/home/pi/Desktop/HAMPI README.doc"
+
+  - name: Create HamPi LICENSE in /home/pi/Desktop
+    copy:
+      src: "{{ playbook_dir }}/../files/home/pi/Desktop/HAMPI LICENSE.TXT"
+      dest: "/home/pi/Desktop/HAMPI LICENSE.TXT"
+
   - name: Creates /usr/local/share/icons/gnome/16x16/categories directory
     become: yes
     file:
