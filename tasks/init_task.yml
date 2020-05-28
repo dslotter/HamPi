@@ -2,7 +2,7 @@
 # Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
 #
 
-- name: Configuration Tasks
+- name: Init Tasks
   hosts: all
   gather_facts: no
   tasks:
