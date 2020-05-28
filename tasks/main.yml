@@ -100,6 +100,7 @@
 - import_playbook: install_twhamqth.yml
 - import_playbook: install_wxtoimg.yml
 - import_playbook: install_freedv.yml
+- import_playbook: install_dump1090.yml
 
 # Install SDR GUI apps after all pre-requisite SDR drivers are installed
 - import_playbook: install_gqrx.yml
@@ -118,10 +119,6 @@
 
 # OpenDV git repository has some issues preventing clean builds:
 #Fail- import_playbook: install_opendv.yml
-
-### X86 Build Issue? Todo: Try again on Raspbian ARM
-###- import_playbook: install_librtlsdr.yml
-#Fail- import_playbook: install_dump1090.yml
 
 #Fail- import_playbook: install_cutesdr.yml
 

@@ -4,62 +4,101 @@
 
 - name: Install dump1090 Software
   hosts: all
-  environment:
-    # Build-Time Tuning:
-    CXXFLAGS: -O2 -march=native -mtune=native
-    CFLAGS: -O2 -march=native -mtune=native
-    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
-#    INCLUDE_PATH: /usr/local/include
-#    LIBRARY_PATH: /usr/local/lib
   tasks:
-
-#  - include_tasks: install_librtlsdr.yml
 
   - name: Create directory hamradio
     file:
       path: /home/pi/hamradio
       state: directory
 
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libusb-1.0-0-dev
+      - librtlsdr0
+
 #
 # Install dump1090 for SDRPlay
 #
 
-  - name: Download and unarchive dump1090 1.3.1 for SDRPlay
-    unarchive:
-      src: https://www.sdrplay.com/software/dump1090_1.3.1.rpi.tar.gz
-      dest: /home/pi/hamradio/
-      remote_src: yes
+#  - name: Download and unarchive dump1090 1.3.1 for SDRPlay
+#    unarchive:
+#      src: https://www.sdrplay.com/software/dump1090_1.3.1.rpi.tar.gz
+#      dest: /home/pi/hamradio/
+#      remote_src: yes
 
-  - name: Make directory name more meaningful
-    command: mv /home/pi/hamradio/dump1090_1.3.1 /home/pi/hamradio/dump1090_sdrplay_1.3.1
+#  - name: Make directory name more meaningful
+#    command: mv /home/pi/hamradio/dump1090_1.3.1 /home/pi/hamradio/dump1090_sdrplay_1.3.1
 
 #
-# Build and install dump1090 for RTL-SDR
+# Install dump1090-mutability for RTL-SDR
 #
 
-  - name: Install dependent libraries
-    become: yes
-    package:
-      name: librtlsdr-dev
-      state: present
+#
+# ARM
+#
 
-  - name: Download dump1090
-    git:
-      repo: https://github.com/MalcolmRobb/dump1090.git
-      dest: /home/pi/hamradio/dump1090_rtlsdr
-
-  - name: Build dump1090
-    command: make
+  - name: Determine latest version of dump1090-mutability on GitHub (ARM)
+    shell: curl --silent "https://github.com/abcd567a/dump1090/releases/" | grep -Po "dump1090-mutability_[0-9]+.[0-9]+_dev_armhf.deb" | head -n 1 | grep -Po "[0-9]+.[0-9]+" | tail -n 1
     args:
-      chdir: /home/pi/hamradio/dump1090_rtlsdr
+      warn: no
+    register: dump1090_version
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
-  - name: Install dump1090
+  - local_action: command echo item
+    with_items: dump1090_version.stdout_lines[0]
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Download dump1090-mutability {{ dump1090_version.stdout_lines[0] }} (ARM)
+    get_url:
+      url: https://github.com/abcd567a/dump1090/releases/download/v1/dump1090-mutability_{{ dump1090_version.stdout_lines[0] }}_dev_armhf.deb
+      dest: /home/pi/hamradio/dump1090-mutability_{{ dump1090_version.stdout_lines[0] }}_dev_armhf.deb
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Install dump1090-mutability {{ dump1090_version.stdout_lines[0] }} (ARM)
     become: yes
-    command: make install
-    args:
-      chdir: /home/pi/hamradio/dump1090_rtlsdr
+    apt:
+      deb: /home/pi/hamradio/dump1090-mutability_{{ dump1090_version.stdout_lines[0] }}_dev_armhf.deb
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
-  - name: Remove dump1090 build directory
+  - name: Remove dump1090-mutability installer {{ dump1090_version.stdout_lines[0] }} (ARM)
     file:
-      path: /home/pi/hamradio/dump1090_rtlsdr
+      path: /home/pi/hamradio/dump1090-mutability_{{ dump1090_version.stdout_lines[0] }}_dev_armhf.deb
       state: absent
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+#
+# AMD64
+#
+
+  - name: Determine latest version of dump1090-mutability on GitHub (AMD64)
+    shell: curl --silent "https://github.com/abcd567a/dump1090/releases/" | grep -Po "dump1090-mutability_[0-9]+.[0-9]+.dev_amd64.deb" | head -n 1 | grep -Po "[0-9]+.[0-9]+" | tail -n 1
+    args:
+      warn: no
+    register: dump1090_version
+    when: ansible_architecture == "amd64"
+
+  - local_action: command echo item
+    with_items: dump1090_version.stdout_lines[0]
+    when: ansible_architecture == "amd64"
+
+  - name: Download dump1090-mutability {{ dump1090_version.stdout_lines[0] }} (AMD64)
+    get_url:
+      url: https://github.com/abcd567a/dump1090/releases/download/v1/dump1090-mutability_{{ dump1090_version.stdout_lines[0] }}.dev_amd64.deb
+      dest: /home/pi/hamradio/dump1090-mutability_{{ dump1090_version.stdout_lines[0] }}.dev_amd64.deb
+    when: ansible_architecture == "amd64"
+
+  - name: Install dump1090-mutability {{ dump1090_version.stdout_lines[0] }} (AMD64)
+    become: yes
+    apt:
+      deb: /home/pi/hamradio/dump1090-mutability_{{ dump1090_version.stdout_lines[0] }}.dev_amd64.deb
+    when: ansible_architecture == "amd64"
+
+  - name: Remove dump1090-mutability installer {{ dump1090_version.stdout_lines[0] }} (AMD64)
+    file:
+      path: /home/pi/hamradio/dump1090-mutability_{{ dump1090_version.stdout_lines[0] }}.dev_amd64.deb
+      state: absent
+    when: ansible_architecture == "amd64"
