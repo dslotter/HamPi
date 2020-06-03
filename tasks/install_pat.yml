@@ -11,15 +11,15 @@
       path: /home/pi/hamradio
       state: directory
 
-  - name: Download Patmenu
+  - name: Download Patmenu2
     git:
-      repo: 'https://github.com/km4ack/patmenu.git'
-      dest: /home/pi/patmenu
+      repo: 'https://github.com/km4ack/patmenu2.git'
+      dest: /home/pi/patmenu2
 
-  - name: Make Patmenu setup executable
+  - name: Make Patmenu2 setup executable
     become: yes
     file:
-      path: /home/pi/patmenu/setup
+      path: /home/pi/patmenu2/setup
       mode: a+x
 
 #
