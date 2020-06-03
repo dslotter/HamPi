@@ -101,6 +101,8 @@
 - import_playbook: install_wxtoimg.yml
 - import_playbook: install_freedv.yml
 - import_playbook: install_dump1090.yml
+- import_playbook: install_voacapl.yml
+
 
 # Install SDR GUI apps after all pre-requisite SDR drivers are installed
 - import_playbook: install_gqrx.yml
@@ -114,7 +116,6 @@
 #Fail- import_playbook: install_soapy_uhd.yml
 #Fail- import_playbook: install_tapr_wspr.yml
 #Hold- import_playbook: install_teamviewer_host.yml
-#Fail- import_playbook: install_voacapl.yml
 
 
 # OpenDV git repository has some issues preventing clean builds:
