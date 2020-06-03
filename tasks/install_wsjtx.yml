@@ -23,8 +23,9 @@
       - libqt5serialport5
 
   - name: Determine latest version of WSJT-X on web
-    shell: curl --silent "https://physics.princeton.edu/pulsar/K1JT/wsjtx.html" | grep --after-context=1 -P "Availability \(GA\) release:&nbsp; \<i\>WSJT-X" | tail -n 1 | grep -Po "[0-9]+\.[0-9]+\.[0-9]+"
+    shell: version=`curl --silent "https://physics.princeton.edu/pulsar/K1JT/wsjtx.html" | grep -P 'Availability \(GA\) release:&nbsp; \<i\>WSJT-X' | tail -n 1 | grep -Po "[0-9]+\.[0-9]+\.?[0-9]?"` && if [ "`echo $version | wc -c`" == "4" ]; then version="$version.0"; fi; echo $version
     args:
+      executable: /bin/bash
       warn: no
     register: wsjtx_version
 
@@ -37,7 +38,7 @@
       path: /usr/share/doc/wsjt-x
       state: directory
 
-  - name: Download WSJT-X Documentation
+  - name: Download WSJT-X {{ wsjtx_version.stdout_lines[0] }} Documentation
     become: yes
     get_url:
       url: https://physics.princeton.edu/pulsar/K1JT/wsjtx-doc/wsjtx-main-{{ wsjtx_version.stdout_lines[0] }}_en%20%28USLetter%29.pdf
@@ -53,7 +54,7 @@
       url: https://physics.princeton.edu/pulsar/K1JT/wsjtx_{{ wsjtx_version.stdout_lines[0] }}_armhf.deb
       dest: /home/pi/hamradio/wsjtx_{{ wsjtx_version.stdout_lines[0] }}_armhf.deb
       validate_certs: no
-      checksum: md5:{{ wsjtx_212_md5sum_armf }}
+      checksum: md5:{{ wsjtx_220_md5sum_armf }}
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
   - name: Install WSJT-X {{ wsjtx_version.stdout_lines[0] }} (ARM)
@@ -86,7 +87,7 @@
       url: https://physics.princeton.edu/pulsar/K1JT/wsjtx_{{ wsjtx_version.stdout_lines[0] }}_i386.deb
       dest: /home/pi/hamradio/wsjtx_{{ wsjtx_version.stdout_lines[0] }}_i386.deb
       validate_certs: no
-      checksum: md5:{{ wsjtx_212_md5sum_i386 }}
+      checksum: md5:{{ wsjtx_220_md5sum_i386 }}
     when: ansible_architecture == "i386"
 
   - name: Install WSJT-X {{ wsjtx_version.stdout_lines[0] }} (x86)
