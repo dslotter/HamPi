@@ -86,6 +86,11 @@
       src: "{{ playbook_dir }}/../files/etc/xdg/pcmanfm/LXDE-pi/desktop-items-1.conf"
       dest: "/etc/xdg/pcmanfm/LXDE-pi/desktop-items-1.conf"
 
+  - name: Creates /home/pi/.config/pcmanfm/LXDE-pi directory
+    file:
+      path: /home/pi/.config/pcmanfm/LXDE-pi
+      state: directory
+
   - name: Create HamPi desktop config in /home/pi/.config/pcmanfm/LXDE-pi
     copy:
       src: "{{ playbook_dir }}/../files/home/pi/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
@@ -96,6 +101,11 @@
     copy:
       src: "{{ playbook_dir }}/../files/etc/lightdm/pi-greeter.conf"
       dest: "/etc/lightdm/pi-greeter.conf"
+
+  - name: Creates /home/pi/Desktop directory
+    file:
+      path: /home/pi/Desktop
+      state: directory
 
   - name: Create HamPi README in /home/pi/Desktop
     copy:
