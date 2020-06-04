@@ -64,12 +64,6 @@
       name: gnss-sdr
       state: present
 
-  - name: Install linpac Package (terminal for packet radio with mail client)
-    become: yes
-    package:
-      name: linpac
-      state: present
-
   - name: Install acfax Package (Receive faxes using your radio and sound card)
     become: yes
     package:
