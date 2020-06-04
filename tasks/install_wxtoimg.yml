@@ -20,28 +20,29 @@
     args:
       warn: no
     register: wxtoimg_version
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - local_action: command echo item
     with_items: wxtoimg_version.stdout_lines[0]
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Download wxtoimg {{ wxtoimg_version.stdout_lines[0] }} (ARM)
     get_url:
       url: "https://wxtoimgrestored.xyz/beta/wxtoimg-armhf-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb"
       dest: /home/pi/hamradio/wxtoimg-armhf-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Install wxtoimg {{ wxtoimg_version.stdout_lines[0] }} (ARM)
     become: yes
     apt:
       deb: /home/pi/hamradio/wxtoimg-armhf-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Remove wxtoimg {{ wxtoimg_version.stdout_lines[0] }} installer (ARM)
     file:
       path: /home/pi/hamradio/wxtoimg-armhf-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb
       state: absent
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
 #
 # Raspbian x86

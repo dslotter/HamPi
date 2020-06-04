@@ -11,6 +11,25 @@
       path: /home/pi/hamradio
       state: directory
 
+  - name: Install dependent libraries (Common)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libqt5multimedia5
+      - libqt5multimedia5-plugins
+      - libqt5serialport5
+
+  - name: Install dependent libraries (ARM32)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libgfortran3
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
 #
 # Raspbian ARM
 #
@@ -20,29 +39,29 @@
     args:
       warn: no
     register: download_date
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - local_action: command echo item
     with_items: download_date.stdout_lines[0]
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Download JS8Call (ARM) {{ download_date.stdout_lines[0] }}
     get_url:
       url: http://files.js8call.com/{{ download_date.stdout_lines[0] }}/js8call_{{ download_date.stdout_lines[0] }}_armhf.deb
       dest: /home/pi/hamradio/js8call_{{ download_date.stdout_lines[0] }}_armhf.deb
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Install JS8Call (ARM) {{ download_date.stdout_lines[0] }}
     become: yes
     apt:
       deb: /home/pi/hamradio/js8call_{{ download_date.stdout_lines[0] }}_armhf.deb
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Remove JS8Call installer (ARM) {{ download_date.stdout_lines[0] }}
     file:
       path: /home/pi/hamradio/js8call_{{ download_date.stdout_lines[0] }}_armhf.deb
       state: absent
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
 #
 # Raspbian x86
@@ -55,8 +74,6 @@
       state: present
     with_items:
       - libc6:i386
-      - libqt5multimedia5
-      - libqt5multimedia5-plugins
     when: ansible_architecture == "i386"
 
   - name: Determine latest version of JS8Call (x86) on web

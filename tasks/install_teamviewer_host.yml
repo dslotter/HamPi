@@ -34,30 +34,30 @@
       - qml-module-qtquick-dialogs
       - qml-module-qtquick-window2
       - qml-module-qtquick-layouts
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Download TeamViewer Host (ARM)
     get_url:
       url: https://download.teamviewer.com/download/linux/teamviewer-host_armhf.deb
       dest: /home/pi/hamradio/teamviewer-host_armhf.deb
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Install TeamViewer Host (ARM)
     become: yes
     apt:
       deb: /home/pi/hamradio/teamviewer-host_armhf.deb
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Setup TeamViewer Host (ARM)
     become: yes
     shell: /opt/teamviewer/tv_bin/script/teamviewer_setup install force
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Remove TeamViewer installer (ARM)
     file:
       path: teamviewer-host_armhf.deb
       state: absent
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
 #
 # Raspbian x86

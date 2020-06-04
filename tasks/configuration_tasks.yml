@@ -55,7 +55,7 @@
     command: echo "y" | rpi-update
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
-  - name: Enable Pi VNC Server
+  - name: Enable Pi VNC Server (32 bit ARM)
     become: yes
     file:
       dest: /etc/systemd/system/multi-user.target.wants/vncserver-x11-serviced.service
@@ -63,10 +63,19 @@
       state: link
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
-  - name: Start Pi VNC Server
+  - name: Start Pi VNC Server (32 bit ARM)
     become: yes
     command: systemctl start vncserver-x11-serviced
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Install Pi VNC Server (64 bit ARM)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - tightvncserver
+    when: ansible_architecture == "aarch64"
 
   - name: Create HamPi desktop wallpaper in /usr/share/rpd-wallpaper
     become: yes

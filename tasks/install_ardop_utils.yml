@@ -52,12 +52,12 @@
     get_url:
       url: https://www.cantab.net/users/john.wiseman/Downloads/Beta/piARDOP_GUI
       dest: /usr/local/bin/piARDOP_GUI
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Set Pi ARDOP GUI (ARM) to executable
     become: yes
     file: dest=/usr/local/bin/piARDOP_GUI mode=a+x
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
 #
 # Raspbian x86

@@ -46,29 +46,29 @@
     args:
       warn: no
     register: dump1090_version
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - local_action: command echo item
     with_items: dump1090_version.stdout_lines[0]
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Download dump1090-mutability {{ dump1090_version.stdout_lines[0] }} (ARM)
     get_url:
       url: https://github.com/abcd567a/dump1090/releases/download/v1/dump1090-mutability_{{ dump1090_version.stdout_lines[0] }}_dev_armhf.deb
       dest: /home/pi/hamradio/dump1090-mutability_{{ dump1090_version.stdout_lines[0] }}_dev_armhf.deb
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Install dump1090-mutability {{ dump1090_version.stdout_lines[0] }} (ARM)
     become: yes
     apt:
       deb: /home/pi/hamradio/dump1090-mutability_{{ dump1090_version.stdout_lines[0] }}_dev_armhf.deb
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Remove dump1090-mutability installer {{ dump1090_version.stdout_lines[0] }} (ARM)
     file:
       path: /home/pi/hamradio/dump1090-mutability_{{ dump1090_version.stdout_lines[0] }}_dev_armhf.deb
       state: absent
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
 #
 # AMD64

@@ -35,48 +35,48 @@
 #    args:
 #      warn: no
 #    register: jtdx_name
-#    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+#        when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
 #  - local_action: command echo item
 #    with_items: jtdx_name.stdout_lines[0]
-#    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+#        when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
  # - name: Download JTDX {{ jtdx_name.stdout_lines[0] }} (ARM)
  #   get_url:
  #     url: "https://www.jtdx.tech/downloads/Linux/{{ jtdx_name.stdout_lines[0] }}"
  #     dest: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
- #   when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+ #       when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
 #  - name: Install JTDX {{ jtdx_name.stdout_lines[0] }} (ARM)
 #    become: yes
 #    apt:
 #      deb: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
-#    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+#        when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
 #  - name: Remove JTDX {{ jtdx_name.stdout_lines[0] }} installer (ARM)
 #    file:
 #      path: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
 #      state: absent
-#    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+#        when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Copy JTDX from local file (because automated downloads don't work reliably)
     become: yes
     copy:
       src: "{{ playbook_dir }}/../files/jtdx-2.1.0-rc150_u_armhf.deb"
       dest: "/home/pi/hamradio/jtdx-2.1.0-rc150_u_armhf.deb"
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Install JTDX from local file (because automated downloads don't work reliably) (ARM)
     become: yes
     apt:
       deb: /home/pi/hamradio/jtdx-2.1.0-rc150_u_armhf.deb
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Remove JTDX installer from local file (because automated downloads don't work reliably) (ARM)
     file:
       path: /home/pi/hamradio/jtdx-2.1.0-rc150_u_armhf.deb
       state: absent
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
 #
 # Raspbian (x86)

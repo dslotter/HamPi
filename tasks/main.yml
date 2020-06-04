@@ -44,8 +44,12 @@
 - import_playbook: install_soapy_plutosdr.yml
 - import_playbook: install_soapy_redpitaya.yml
 - import_playbook: install_soapy_rtlsdr.yml
+# Fails to build under aarch64:
 - import_playbook: install_soapy_sdrplay.yml
+# Fails to build under aarch64:
 - import_playbook: install_soapy_volkconverters.yml
+
+# ^^^ This part takes about 1 hour, 15 minutes to build on a RPi 4 ^^^
 
 #
 # FLDigi Suite
@@ -64,6 +68,8 @@
 - import_playbook: install_flwrap.yml
 - import_playbook: install_pi34statsmonitor.yml
 
+# ^^^ This part takes about 20 minutes to build on a RPi 4 ^^^
+
 #
 # Ham Radio Applications
 #
@@ -75,9 +81,12 @@
 - import_playbook: install_logging_apps.yml
 - import_playbook: install_morsecode_apps.yml
 - import_playbook: install_satellite_tracking.yml
+# Fails to build under aarch64:
 - import_playbook: install_wsjtx.yml
+# Fails to build under aarch64:
 - import_playbook: install_js8call.yml
 - import_playbook: install_js8callutilities.yml
+# Fails to build under aarch64:
 - import_playbook: install_jtdx.yml
 - import_playbook: download_country_files.yml
 - import_playbook: install_gridtracker.yml
@@ -101,6 +110,7 @@
 - import_playbook: install_wxtoimg.yml
 - import_playbook: install_freedv.yml
 - import_playbook: install_dump1090.yml
+# Fails to build under aarch64:
 - import_playbook: install_voacapl.yml
 
 

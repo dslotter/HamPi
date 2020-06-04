@@ -17,10 +17,18 @@
       name: "{{ item }}"
       state: present
     with_items:
-      - libgfortran3
       - libqt5multimedia5
       - libqt5multimedia5-plugins
       - libqt5serialport5
+
+  - name: Install dependent libraries (ARM32)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libgfortran3
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
   - name: Determine latest version of WSJT-X on web
     shell: version=`curl --silent "https://physics.princeton.edu/pulsar/K1JT/wsjtx.html" | grep -P 'Availability \(GA\) release:&nbsp; \<i\>WSJT-X' | tail -n 1 | grep -Po "[0-9]+\.[0-9]+\.?[0-9]?"` && if [ "`echo $version | wc -c`" == "4" ]; then version="$version.0"; fi; echo $version
@@ -55,19 +63,19 @@
       dest: /home/pi/hamradio/wsjtx_{{ wsjtx_version.stdout_lines[0] }}_armhf.deb
       validate_certs: no
       checksum: md5:{{ wsjtx_220_md5sum_armf }}
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Install WSJT-X {{ wsjtx_version.stdout_lines[0] }} (ARM)
     become: yes
     apt:
       deb: /home/pi/hamradio/wsjtx_{{ wsjtx_version.stdout_lines[0] }}_armhf.deb
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Remove WSJT-X {{ wsjtx_version.stdout_lines[0] }} installer (ARM)
     file:
       path: /home/pi/hamradio/wsjtx_{{ wsjtx_version.stdout_lines[0] }}_armhf.deb
       state: absent
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
 #
 # Raspbian x86

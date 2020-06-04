@@ -44,7 +44,7 @@
     command: cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchains/arm_cortex_a72_hardfp_native.cmake ..
     args:
       chdir: /home/pi/hamradio/volk/build
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Build volk CMakeFiles (x86)
     command: cmake ..

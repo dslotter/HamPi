@@ -18,7 +18,15 @@
       - klog
       - xlog
       - cqrlog
+
+  - name: Install Logging Packages (ARM 32)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
       - tucnak2
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
 #
 # Install PyQSO
