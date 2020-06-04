@@ -62,11 +62,13 @@
       src: /usr/lib/systemd/system/vncserver-x11-serviced.service
       state: link
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    ignore_errors: yes
 
   - name: Start Pi VNC Server (32 bit ARM)
     become: yes
     command: systemctl start vncserver-x11-serviced
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    ignore_errors: yes
 
   - name: Install Pi VNC Server (64 bit ARM)
     become: yes
@@ -77,11 +79,23 @@
       - tightvncserver
     when: ansible_architecture == "aarch64"
 
+  - name: Create /usr/share/rpd-wallpaper directory
+    become: yes
+    file:
+      path: /usr/share/rpd-wallpaper
+      state: directory
+
   - name: Create HamPi desktop wallpaper in /usr/share/rpd-wallpaper
     become: yes
     copy:
       src: "{{ playbook_dir }}/../files/usr/share/rpd-wallpaper/HamPi Desktop Wallpaper.png"
       dest: "/usr/share/rpd-wallpaper/HamPi Desktop Wallpaper.png"
+
+  - name: Create /etc/xdg/pcmanfm/LXDE-pi directory
+    become: yes
+    file:
+      path: /etc/xdg/pcmanfm/LXDE-pi
+      state: directory
 
   - name: Create HamPi desktop config 0 in /etc/xdg/pcmanfm/LXDE-pi
     become: yes
@@ -95,7 +109,7 @@
       src: "{{ playbook_dir }}/../files/etc/xdg/pcmanfm/LXDE-pi/desktop-items-1.conf"
       dest: "/etc/xdg/pcmanfm/LXDE-pi/desktop-items-1.conf"
 
-  - name: Creates /home/pi/.config/pcmanfm/LXDE-pi directory
+  - name: Create /home/pi/.config/pcmanfm/LXDE-pi directory
     file:
       path: /home/pi/.config/pcmanfm/LXDE-pi
       state: directory
@@ -105,13 +119,19 @@
       src: "{{ playbook_dir }}/../files/home/pi/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
       dest: "/home/pi/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
 
+  - name: Create /etc/lightdm
+    become: yes
+    file:
+      path: /etc/lightdm
+      state: directory
+
   - name: Create HamPi greeter config in /etc/
     become: yes
     copy:
       src: "{{ playbook_dir }}/../files/etc/lightdm/pi-greeter.conf"
       dest: "/etc/lightdm/pi-greeter.conf"
 
-  - name: Creates /home/pi/Desktop directory
+  - name: Create /home/pi/Desktop directory
     file:
       path: /home/pi/Desktop
       state: directory
@@ -126,31 +146,31 @@
       src: "{{ playbook_dir }}/../files/home/pi/Desktop/HAMPI LICENSE.TXT"
       dest: "/home/pi/Desktop/HAMPI LICENSE.TXT"
 
-  - name: Creates /usr/local/share/icons/gnome/16x16/categories directory
+  - name: Create /usr/local/share/icons/gnome/16x16/categories directory
     become: yes
     file:
       path: /usr/local/share/icons/gnome/16x16/categories
       state: directory
 
-  - name: Creates /usr/local/share/icons/gnome/32x32/categories directory
+  - name: Create /usr/local/share/icons/gnome/32x32/categories directory
     become: yes
     file:
       path: /usr/local/share/icons/gnome/32x32/categories
       state: directory
 
-  - name: Creates /usr/local/share/icons/gnome/256x256/categories directory
+  - name: Create /usr/local/share/icons/gnome/256x256/categories directory
     become: yes
     file:
       path: /usr/local/share/icons/gnome/256x256/categories
       state: directory
 
-  - name: Creates icons directory for 512x512
+  - name: Create icons directory for 512x512
     become: yes
     file:
       path: /usr/local/share/icons/gnome/512x512/categories
       state: directory
 
-  - name: Creates /usr/share/icons/gnome/512x512 directory
+  - name: Create /usr/share/icons/gnome/512x512 directory
     become: yes
     file:
       path: /usr/share/icons/gnome/512x512
@@ -185,6 +205,12 @@
     copy:
       src: "{{ playbook_dir }}/../files/icons/512x512/categories/ham-radio-icon-25.png"
       dest: "/usr/share/icons/gnome/512x512/ham-radio-icon-25.png"
+
+  - name: Create /usr/share/icons/hicolor/128x128 directory
+    become: yes
+    file:
+      path: /usr/share/icons/hicolor/128x128
+      state: directory
 
   - name: Create HamRadio icon 512x512 in /usr/share/icons/hicolor/128x128
     become: yes
