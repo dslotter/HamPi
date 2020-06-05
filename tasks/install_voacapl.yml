@@ -67,6 +67,11 @@
     args:
       chdir: /home/pi/hamradio/voacapl
 
+  - name: Remove voacapl build directory
+    file:
+      path: /home/pi/hamradio/voacapl
+      state: absent
+
 #
 # VOACAPL Utility - pythonprop
 #
@@ -126,3 +131,8 @@
     command: make clean
     args:
       chdir: /home/pi/hamradio/pythonprop-{{ pythonprop_version.stdout_lines[0] }}
+
+  - name: Remove pythonprop build directory
+    file:
+      path: /home/pi/hamradio/pythonprop-{{ pythonprop_version.stdout_lines[0] }}
+      state: absent
