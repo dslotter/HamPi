@@ -33,8 +33,13 @@
 
   - name: Git clone latest VOACAPL sources
     git:
-      repo: "https://github.com/jawatson/voacapl"
+      repo: https://github.com/jawatson/voacapl
       dest: /home/pi/hamradio/voacapl
+
+  - name: Autoreconf VOACAPL
+    command: autoreconf -f -i
+    args:
+      chdir: /home/pi/hamradio/voacapl
 
   - name: Configure VOACAPL
     command: ./configure
