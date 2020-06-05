@@ -25,6 +25,8 @@
       - gr-osmosdr
       - libfftw3-dev
       - libusb-1.0-0-dev
+      - python3
+      - python3-pip
 
   - name: Install dependent python3 modules
     become: yes
