@@ -14,9 +14,14 @@ curdate=`date +%Y-%m-%d`
 echo "ansible-playbook -i hosts tasks/main.yml"
 ansible-playbook -i hosts tasks/main.yml | tee --append ansible-output_${curdate}.txt
 
+if [ -x /usr/local/bin/notify-send ]; then
+  export NOTIFY_SEND_URL="http://192.168.1.220:12345"
+  /usr/local/bin/notify-send -i /usr/share/icons/Adwaita/scalable/status/checkbox-checked-symbolic.svg "HamPi" "Ansible has finished."
+fi
+
 # Compute the seconds since epoch for end date
 end_time=`date`
 t2=`date --date="$end_time" +%s`
 
 let diff_time=$t2-$t1
-printf "Total time for running Ansible Playbook: %02d:%02d:%02d\n" $((diff_time/3600)) $((diff_time/60)) $((diff_time%60))
+printf "Total time for running Ansible Playbook: %02d:%02d:%02d\n" $((diff_time/3600)) $((diff_time%3600/60)) $((diff_time%60))
