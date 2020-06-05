@@ -5,7 +5,7 @@
 bluedv_version: 09352
 gridtracker_md5sum_armf: ae526dc9855cc536f5ee3fc8f871ebf7
 # Hamlib version is current as of 2020-05-06
-hamlib_version: 3.3
+hamlib_version: 4.0
 # SDRPlay RSP driver version is current as of 2020-05-22
 sdrplay_arm_version: 2.13.1
 sdrplay_x86_version: 2.13.1
