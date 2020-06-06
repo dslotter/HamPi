@@ -12,8 +12,15 @@ sdrplay_x86_version: 2.13.1
 # Open Beta versions of SDRPlay RSP Driver:
 #sdrplay_arm_version: 3.07.2
 #sdrplay_x86_version: 3.07.1
+# Joe Taylor et al apparently hand-edit the HTML page for the WSJT-X release
+# and the version number format is not consistent, so coding the automatic
+# version determination is a "cat and mouse" game. It's just easier to
+# hard-code the version number going forward. - djs 2020-06-06
+wsjtx_version: 2.2.1
 wsjtx_212_md5sum_armf: 63a77f1875e274521f8c5e645e176657
 wsjtx_212_md5sum_amd64: cda3bc89a5386fe54e54d26013d38635
 wsjtx_212_md5sum_i386: e8dc2abe7160e7c3c74efdcb42c1b11f
 wsjtx_220_md5sum_armf: b9a212e97e073ecd3c2c7a3e4efe8dc7
 wsjtx_220_md5sum_i386: f34ede949fd1c3b07445d042f656fd9b
+wsjtx_221_md5sum_armf: eaee96207f1d48bce91e6d29c96be4b3
+wsjtx_221_md5sum_i386: e72c09c49d3ff72ca1abf2b44c3ffbf4
