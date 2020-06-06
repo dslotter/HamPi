@@ -116,6 +116,7 @@
 
 
 # Install SDR GUI apps after all pre-requisite SDR drivers are installed
+- import_playbook: install_cutesdr.yml
 - import_playbook: install_gqrx.yml
 - import_playbook: install_lysdr.yml
 - import_playbook: install_cubicsdr.yml
@@ -131,8 +132,6 @@
 
 # OpenDV git repository has some issues preventing clean builds:
 #Fail- import_playbook: install_opendv.yml
-
-#Fail- import_playbook: install_cutesdr.yml
 
 # Enable when they finally support Raspberry Pi
 #Hold- import_playbook: install_sparksdr.yml
