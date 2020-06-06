@@ -79,18 +79,6 @@
       - tightvncserver
     when: ansible_architecture == "aarch64"
 
-  - name: Create /usr/share/rpd-wallpaper directory
-    become: yes
-    file:
-      path: /usr/share/rpd-wallpaper
-      state: directory
-
-  - name: Create HamPi desktop wallpaper in /usr/share/rpd-wallpaper
-    become: yes
-    copy:
-      src: "{{ playbook_dir }}/../files/usr/share/rpd-wallpaper/HamPi Desktop Wallpaper.png"
-      dest: "/usr/share/rpd-wallpaper/HamPi Desktop Wallpaper.png"
-
   - name: Create /etc/xdg/pcmanfm/LXDE-pi directory
     become: yes
     file:
