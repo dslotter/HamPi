@@ -17,6 +17,7 @@
 
 - import_playbook: init_task.yml
 - import_playbook: configuration_tasks.yml
+- import_playbook: install_wallpaper.yml
 - import_playbook: upgrade_raspbian_packages.yml
 - import_playbook: install_chromium_bookmarks.yml
 - import_playbook: install_cmake.yml
