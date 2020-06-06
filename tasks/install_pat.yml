@@ -37,25 +37,25 @@
     with_items: pat_version.stdout_lines[0]
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
-  - name: Download Pat {{ pat_version.stdout_lines[0] }} (WinLink) ARM
+  - name: Download Pat {{ pat_version.stdout_lines[0] }} (WinLink) (ARM)
     get_url:
       url: https://github.com/la5nta/pat/releases/download/v{{ pat_version.stdout_lines[0] }}/pat_{{ pat_version.stdout_lines[0] }}_linux_armhf.deb
       dest: /home/pi/hamradio/pat_{{ pat_version.stdout_lines[0] }}_linux_armhf.deb
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
-  - name: Install Pat {{ pat_version.stdout_lines[0] }} (WinLink) ARM
+  - name: Install Pat {{ pat_version.stdout_lines[0] }} (WinLink) (ARM)
     become: yes
     apt:
       deb: /home/pi/hamradio/pat_{{ pat_version.stdout_lines[0] }}_linux_armhf.deb
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
-  - name: Remove latest Pat (WinLink) installer ARM
+  - name: Remove latest Pat (WinLink) installer (ARM)
     file:
       path: /home/pi/hamradio/pat_{{ pat_version.stdout_lines[0] }}_linux_armhf.deb
       state: absent
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
-  - name: Download Pi Ardop ARM
+  - name: Download Pi Ardop (ARM)
     become: yes
     get_url:
       url: http://www.cantab.net/users/john.wiseman/Downloads/Beta/piardopc
@@ -84,19 +84,19 @@
     with_items: pat_version.stdout_lines[0]
     when: ansible_architecture == "i386"
 
-  - name: Download Pat {{ pat_version.stdout_lines[0] }} (WinLink) x86
+  - name: Download Pat {{ pat_version.stdout_lines[0] }} (WinLink) (x86)
     get_url:
       url: https://github.com/la5nta/pat/releases/download/v{{ pat_version.stdout_lines[0] }}/pat_{{ pat_version.stdout_lines[0] }}_linux_i386.deb
       dest: /home/pi/hamradio/pat_{{ pat_version.stdout_lines[0] }}_linux_i386.deb
     when: ansible_architecture == "i386"
 
-  - name: Install Pat {{ pat_version.stdout_lines[0] }} (WinLink) x86
+  - name: Install Pat {{ pat_version.stdout_lines[0] }} (WinLink) (x86)
     become: yes
     apt:
       deb: /home/pi/hamradio/pat_{{ pat_version.stdout_lines[0] }}_linux_i386.deb
     when: ansible_architecture == "i386"
 
-  - name: Remove latest Pat (WinLink) installer i386
+  - name: Remove latest Pat (WinLink) installer (x86)
     file:
       path: /home/pi/hamradio/pat_{{ pat_version.stdout_lines[0] }}_linux_i386.deb
       state: absent
@@ -117,19 +117,19 @@
     with_items: pat_version.stdout_lines[0]
     when: ansible_architecture == "amd64"
 
-  - name: Download latest Pat (WinLink) amd64
+  - name: Download latest Pat (WinLink) (amd64)
     get_url:
       url: https://github.com/la5nta/pat/releases/download/v{{ pat_version.stdout_lines[0] }}/pat_{{ pat_version.stdout_lines[0] }}_linux_amd64.deb
       dest: /home/pi/hamradio/pat_{{ pat_version.stdout_lines[0] }}_linux_amd64.deb
     when: ansible_architecture == "amd64"
 
-  - name: Install latest Pat (WinLink) amd64
+  - name: Install latest Pat (WinLink) (amd64)
     become: yes
     apt:
       deb: /home/pi/hamradio/pat_{{ pat_version.stdout_lines[0] }}_linux_amd64.deb
     when: ansible_architecture == "amd64"
 
-  - name: Remove latest Pat (WinLink) installer amd64
+  - name: Remove latest Pat (WinLink) installer (amd64)
     file:
       path: /home/pi/hamradio/pat_{{ pat_version.stdout_lines[0] }}_linux_amd64.deb
       state: absent
