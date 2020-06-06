@@ -1,0 +1,39 @@
+--- unixforms/demodsetupdlg.ui  2020-06-06 22:23:06.566059082 +0100
++++ ../demodsetupdlg.ui 2020-06-06 22:22:39.806675309 +0100
+@@ -169,6 +169,13 @@
+        </property>
+       </widget>
+      </item>
++     <item>
++      <widget class="QRadioButton" name="FSKradioButton">
++       <property name="text">
++        <string>DSC</string>
++       </property>
++      </widget>
++     </item>
+     </layout>
+    </widget>
+   </widget>
+@@ -656,6 +663,22 @@
+     </hint>
+    </hints>
+   </connection>
++  <connection>
++   <sender>FSKradioButton</sender>
++   <signal>clicked()</signal>
++   <receiver>CDemodSetupDlg</receiver>
++   <slot>ModeChanged()</slot>
++   <hints>
++    <hint type="sourcelabel">
++     <x>47</x>
++     <y>276</y>
++    </hint>
++    <hint type="destinationlabel">
++     <x>54</x>
++     <y>311</y>
++    </hint>
++   </hints>
++  </connection>
+  </connections>
+  <slots>
+   <slot>ModeChanged()</slot>

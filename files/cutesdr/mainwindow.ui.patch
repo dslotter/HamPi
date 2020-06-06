@@ -1,0 +1,27 @@
+--- unixforms/mainwindow.ui     2020-06-06 22:23:06.566059082 +0100
++++ ../mainwindow.ui    2020-06-06 22:22:34.466798247 +0100
+@@ -533,6 +533,12 @@
+     </property>
+     <addaction name="actionNoise_Processing"/>
+    </widget>
++   <widget class="QMenu" name="menuTransmit">
++    <property name="title">
++     <string>Transmit</string>
++    </property>
++    <addaction name="actionFile_Send"/>
++   </widget>
+    <addaction name="menuFile"/>
+    <addaction name="menuSetup"/>
+    <addaction name="menuDemod"/>
+@@ -602,6 +608,11 @@
+     <string>Record Setup</string>
+    </property>
+   </action>
++  <action name="actionFile_Send">
++   <property name="text">
++    <string>File Send..</string>
++   </property>
++  </action>
+  </widget>
+  <layoutdefault spacing="6" margin="11"/>
+  <customwidgets>
