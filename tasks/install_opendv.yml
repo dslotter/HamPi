@@ -219,10 +219,6 @@
 #    args:
 #      chdir: /home/pi/hamradio/OpenDV/XReflectorDaemon
 #
-#  - name: Remove OpenDV build directory
-#    file:
-#      path: /home/pi/hamradio/OpenDV
-#      state: absent
 
 ##
 ## RepeaterExtras
@@ -238,3 +234,8 @@
 #    command: make install
 #    args:
 #      chdir: /home/pi/hamradio/OpenDV/RepeaterExtras
+
+  - name: Remove OpenDV build directory
+    file:
+      path: /home/pi/hamradio/OpenDV
+      state: absent
