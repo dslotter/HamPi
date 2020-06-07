@@ -24,6 +24,7 @@
     with_items:
       - zlib1g
       - zlib1g-dev
+      - libncurses-dev
 
   - name: Download latest ax.25 sources by VE7FET
     git:
