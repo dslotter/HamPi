@@ -25,7 +25,8 @@
       - gr-osmosdr
       - libfftw3-dev
       - libusb-1.0-0-dev
-      - python-mako
+      - python3-mako
+      - python3-ruamel.yaml
 
   - name: Download latest UHD sources
     git:
