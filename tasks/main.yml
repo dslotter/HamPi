@@ -117,6 +117,7 @@
 # some of them have been worked around.
 - import_playbook: install_opendv.yml
 - import_playbook: install_tapr_wspr.yml
+- import_playbook: install_dxspider.yml
 
 # Install SDR GUI apps after all pre-requisite SDR drivers are installed
 - import_playbook: install_cutesdr.yml
@@ -127,9 +128,7 @@
 # Final tasks
 - import_playbook: finish_tasks.yml
 
-#Fail- import_playbook: install_dxspider.yml
 #Fail- import_playbook: install_soapy_uhd.yml
-#Fail- import_playbook: install_tapr_wspr.yml
 #Hold- import_playbook: install_teamviewer_host.yml
 
 # Enable when they finally support Raspberry Pi
