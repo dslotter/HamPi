@@ -19,8 +19,7 @@
       - mawk
       - ntp
       - python-setuptools
-# x86 can't find this:
-#      - python-imaging
+      - python-pil
 
   - name: Create directory hamradio
     file:
@@ -31,19 +30,43 @@
 # WsprryPi
 #
 
+# Submitted bug reports upstream; using basic (original) WsprryPi for now.
+# - djs 2020-06-07
+#
+#  - name: Clone WsprryPi source
+#    git:
+#      repo: https://github.com/JamesP6000/WsprryPi.git
+#      dest: /home/pi/hamradio/WsprryPi
+#
+#  - name: Build WsprryPi
+#    command: make
+#    args:
+#      chdir: /home/pi/hamradio/WsprryPi
+#
+#  - name: Install WsprryPi
+#    become: yes
+#    command: make install
+#    args:
+#      chdir: /home/pi/hamradio/WsprryPi
+#
+#  - name: Remove WsprryPi build directory
+#    file:
+#      path: /home/pi/hamradio/WsprryPi
+#      state: absent
+
   - name: Clone WsprryPi source
     git:
-      repo: https://github.com/JamesP6000/WsprryPi.git
+      repo: https://github.com/DanAnkers/WsprryPi.git
       dest: /home/pi/hamradio/WsprryPi
 
   - name: Build WsprryPi
-    command: make
+    command: gcc wspr.c -o wspr-pi
     args:
       chdir: /home/pi/hamradio/WsprryPi
 
   - name: Install WsprryPi
     become: yes
-    command: make install
+    command: install wspr-pi /usr/local/bin
     args:
       chdir: /home/pi/hamradio/WsprryPi
 
@@ -52,30 +75,32 @@
       path: /home/pi/hamradio/WsprryPi
       state: absent
 
+
 #
 # PiCW
 #
 
-  - name: Clone PiCW source
-    git:
-      repo: https://github.com/JamesP6000/PiCW.git
-      dest: /home/pi/hamradio/PiCW
+#  - name: Clone PiCW source
+#    git:
+#      repo: https://github.com/JamesP6000/PiCW.git
+#      dest: /home/pi/hamradio/PiCW
+#
+#  - name: Build PiCW
+#    command: make
+#    args:
+#      chdir: /home/pi/hamradio/PiCW
+#
+#  - name: Install PiCW
+#    become: yes
+#    command: make install
+#    args:
+#      chdir: /home/pi/hamradio/PiCW
+#
+#  - name: Remove PiCW build directory
+#    file:
+#      path: /home/pi/hamradio/PiCW
+#      state: absent
 
-  - name: Build PiCW
-    command: make
-    args:
-      chdir: /home/pi/hamradio/PiCW
-
-  - name: Install PiCW
-    become: yes
-    command: make install
-    args:
-      chdir: /home/pi/hamradio/PiCW
-
-  - name: Clean PiCW
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/PiCW
 
 #
 # Freq_Pi
@@ -90,11 +115,11 @@
 # PySSTV
 #
 
-  - name: easy_install pip
+  - name: Install dependent packages
     become: yes
-    command: easy_install pip
-    args:
-      chdir: /home/pi/hamradio
+    package:
+      name: python-pip
+      state: present
 
   - name: pip install setuptools
     become: yes
