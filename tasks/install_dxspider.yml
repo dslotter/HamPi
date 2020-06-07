@@ -89,27 +89,17 @@
     become: yes
     shell: find /spider -type f -exec chmod 775 {} \;
 
-  - name: Install ax.25 tools
-    become: yes
-    package:
-      name: "{{ item }}"
-      state: present
-    with_items:
-      - ax25-tools
-      - ax25-xtools
-      - ax25-apps
-
   - name: Set SUID permissions on ax25_call - As per section 1.3 of DXCluster Installation Manual
     become: yes
     file:
-      path: /usr/sbin/ax25_call
+      path: /usr/local/sbin/ax25_call
       owner: root
       mode: 4775
 
   - name: Set SUID permissions on netrom_call - As per section 1.3 of DXCluster Installation Manual
     become: yes
     file:
-      path: /usr/sbin/netrom_call
+      path: /usr/local/sbin/netrom_call
       owner: root
       mode: 4775
 
@@ -124,6 +114,7 @@
       owner: sysop
 
   - name: Autoconfigure CPAN
+    become: yes
     shell: (echo y;echo o conf prerequisites_policy follow;echo o conf commit)|cpan
 
   - name: Install Perl MD5 module dependency for creating USDB
