@@ -113,7 +113,9 @@
 - import_playbook: install_dump1090.yml
 # Fails to build under aarch64:
 - import_playbook: install_voacapl.yml
-
+# OpenDV git repository has some issues, but
+# some of them have been worked around.
+- import_playbook: install_opendv.yml
 
 # Install SDR GUI apps after all pre-requisite SDR drivers are installed
 - import_playbook: install_cutesdr.yml
@@ -128,10 +130,6 @@
 #Fail- import_playbook: install_soapy_uhd.yml
 #Fail- import_playbook: install_tapr_wspr.yml
 #Hold- import_playbook: install_teamviewer_host.yml
-
-
-# OpenDV git repository has some issues preventing clean builds:
-#Fail- import_playbook: install_opendv.yml
 
 # Enable when they finally support Raspberry Pi
 #Hold- import_playbook: install_sparksdr.yml

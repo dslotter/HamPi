@@ -41,6 +41,13 @@
 #
 # AMBETools
 #
+
+  - name: Fix architecture for OpenDV - AMBETools
+    lineinfile:
+      path: /home/pi/hamradio/OpenDV/AMBETools/settings.mk
+      regexp: '^export ARCH := x86-64'
+      line: export ARCH := native
+
   - name: Build OpenDV - AMBETools
     command: make
     args:
@@ -48,14 +55,10 @@
 
   - name: Install OpenDV - AMBETools
     become: yes
-    command: BINDIR=/usr/local/bin make install
+    command: make install
     args:
       chdir: /home/pi/hamradio/OpenDV/AMBETools
 
-  - name: Clean OpenDV - AMBETools
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/OpenDV/AMBETools
 
 #
 # AnalogueRepeater
@@ -76,14 +79,17 @@
     args:
       chdir: /home/pi/hamradio/OpenDV/AnalogueRepeater
 
-  - name: Clean OpenDV - AnalogueRepeater
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/OpenDV/AnalogueRepeater
 
 #
 # Digital Voice
 #
+
+  - name: Fix architecture for OpenDV - Digital Voice
+    lineinfile:
+      path: "/home/pi/hamradio/OpenDV/Digital Voice/settings.mk"
+      regexp: '^export ARCH := x86-64'
+      line: export ARCH := native
+
   - name: Build OpenDV - Digital Voice
     command: make
     args:
@@ -91,18 +97,15 @@
 
   - name: Install OpenDV - Digital Voice
     become: yes
-    command: BINDIR=/usr/local/bin make install
+    command: make install
     args:
       chdir: "/home/pi/hamradio/OpenDV/Digital Voice"
 
-  - name: Clean OpenDV - Digital Voice
-    command: make clean
-    args:
-      chdir: "/home/pi/hamradio/OpenDV/Digital Voice"
 
 #
 # DStarRepeater
 #
+
   - name: Configure OpenDV - DStarRepeater
     command: ./configure
     args:
@@ -119,14 +122,11 @@
     args:
       chdir: /home/pi/hamradio/OpenDV/DStarRepeater
 
-  - name: Clean OpenDV - DStarRepeater
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/OpenDV/DStarRepeater
 
 #
 # DummyRepeater
 #
+
   - name: Configure OpenDV - DummyRepeater
     command: ./configure --with-ambeserver
     args:
@@ -143,14 +143,11 @@
     args:
       chdir: /home/pi/hamradio/OpenDV/DummyRepeater
 
-  - name: Clean OpenDV - DummyRepeater
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/OpenDV/DummyRepeater
 
 #
 # ircDDBGateway
 #
+
   - name: Configure OpenDV - ircDDBGateway
     command: ./configure
     args:
@@ -167,33 +164,11 @@
     args:
       chdir: /home/pi/hamradio/OpenDV/ircDDBGateway
 
-  - name: Clean OpenDV - ircDDBGateway
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/OpenDV/ircDDBGateway
-
-#
-# RepeaterExtras
-#
-  - name: Build OpenDV - RepeaterExtras
-    command: make
-    args:
-      chdir: /home/pi/hamradio/OpenDV/RepeaterExtras
-
-  - name: Install OpenDV - RepeaterExtras
-    become: yes
-    command: make install
-    args:
-      chdir: /home/pi/hamradio/OpenDV/RepeaterExtras
-
-  - name: Clean OpenDV - RepeaterExtras
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/OpenDV/RepeaterExtras
 
 #
 # XReflector
 #
+
   - name: Configure OpenDV - XReflector
     command: ./configure
     args:
@@ -216,32 +191,50 @@
     args:
       chdir: /home/pi/hamradio/OpenDV/XReflector
 
-  - name: Clean OpenDV - XReflector
-    command: make clean
-    args:
-      chdir: /home/pi/hamradio/OpenDV/XReflector
+
+#
+# There are some basic compilation errors which are outside my focus of
+# creating the image to work around. These affect XReflectorDaemon and
+# RepeaterExtras - djs 2020-06-07
+#
 
 #
 # XReflectorDaemon
 #
-# Work around a Git issue -- missing IRCDDB.h file
-  - name: Build OpenDV - XReflectorDaemon
-    command: cp /home/pi/hamradio/OpenDV/XReflector/ircDDB/IRCDDB.h Common
-    args:
-      chdir: /home/pi/hamradio/OpenDV/XReflectorDaemon
 
-  - name: Build OpenDV - XReflectorDaemon
-    command: make
-    args:
-      chdir: /home/pi/hamradio/OpenDV/XReflectorDaemon
+## Work around a Git issue -- missing IRCDDB.h file
+#  - name: Build OpenDV - XReflectorDaemon
+#    command: cp /home/pi/hamradio/OpenDV/XReflector/ircDDB/IRCDDB.h Common
+#    args:
+#      chdir: /home/pi/hamradio/OpenDV/XReflectorDaemon
+#
+#  - name: Build OpenDV - XReflectorDaemon
+#    command: make
+#    args:
+#      chdir: /home/pi/hamradio/OpenDV/XReflectorDaemon
+#
+#  - name: Install OpenDV - XReflectorDaemon
+#    become: yes
+#    command: make install
+#    args:
+#      chdir: /home/pi/hamradio/OpenDV/XReflectorDaemon
+#
+#  - name: Remove OpenDV build directory
+#    file:
+#      path: /home/pi/hamradio/OpenDV
+#      state: absent
 
-  - name: Install OpenDV - XReflectorDaemon
-    become: yes
-    command: make install
-    args:
-      chdir: /home/pi/hamradio/OpenDV/XReflectorDaemon
-
-  - name: Remove OpenDV build directory
-    file:
-      path: /home/pi/hamradio/OpenDV
-      state: absent
+##
+## RepeaterExtras
+##
+#
+#  - name: Build OpenDV - RepeaterExtras
+#    command: make
+#    args:
+#      chdir: /home/pi/hamradio/OpenDV/RepeaterExtras
+#
+#  - name: Install OpenDV - RepeaterExtras
+#    become: yes
+#    command: make install
+#    args:
+#      chdir: /home/pi/hamradio/OpenDV/RepeaterExtras
