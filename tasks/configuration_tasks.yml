@@ -223,6 +223,8 @@
         export CFLAGS='-O2 -march=native -mtune=native'
         LIBRARY_PATH='/usr/local/lib'
         INCLUDE_PATH='/usr/local/include'
+        # For using XTRX and SoapySDR with SDRAngel:
+        export LD_LIBRARY_PATH=/usr/local/lib:/opt/install/xtrx-images/lib:$LD_LIBARY_PATH
 
         # TO PERMIT LAUNCHING X-WINDOWS APPS FROM TERMINAL
         export DISPLAY=:0

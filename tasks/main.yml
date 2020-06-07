@@ -124,6 +124,8 @@
 - import_playbook: install_gqrx.yml
 - import_playbook: install_lysdr.yml
 - import_playbook: install_cubicsdr.yml
+- import_playbook: install_sdrangel.yml
+
 
 # Final tasks
 - import_playbook: finish_tasks.yml

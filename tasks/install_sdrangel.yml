@@ -1,0 +1,763 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install SDRAngel
+  hosts: all
+  gather_facts: no
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Create directory /opt/build
+    become: yes
+    file:
+      path: /opt/build
+      state: directory
+
+  - name: Change Ownership of /opt/build to pi
+    become: yes
+    file: dest=/opt/build owner=pi
+
+  - name: Create directory /opt/install
+    become: yes
+    file:
+      path: /opt/install
+      state: directory
+
+  - name: Change Ownership of /opt/install to pi
+    become: yes
+    file: dest=/opt/install owner=pi
+
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - git
+      - g++
+      - pkg-config
+      - autoconf
+      - automake
+      - libtool
+      - libfftw3-dev
+      - libusb-1.0-0-dev
+      - libusb-dev
+      - qt5-default
+      - qtbase5-dev
+      - qtchooser
+      - libqt5multimedia5-plugins
+      - qtmultimedia5-dev
+      - libqt5websockets5-dev
+      - qttools5-dev
+      - qttools5-dev-tools
+      - libqt5opengl5-dev
+      - qtbase5-dev
+      - libboost-all-dev
+      - libasound2-dev
+      - pulseaudio
+      - libopencv-dev
+      - libxml2-dev
+      - bison
+      - flex
+      - ffmpeg
+      - libavcodec-dev
+      - libavformat-dev
+      - libopus-dev
+
+# Because we're installing so many packages...
+  - name: Autoremove unneeded packages
+    become: yes
+    apt:
+      autoremove: yes
+
+# Because we're installing so many packages...
+  - name: Remove unneeded packages from the cache
+    become: yes
+    apt:
+      autoclean: yes
+
+  - name: Git clone latest CM265cc sources
+    git:
+      repo: https://github.com/f4exb/cm256cc.git
+      dest: /opt/build/cm256cc
+
+  - name: Git Reset CM265cc CMakeFiles
+    command: git reset --hard c0e92b92aca3d1d36c990b642b937c64d363c559
+    args:
+      chdir: /opt/build/cm256cc
+
+  - name: Create directory cm256cc/build
+    file:
+      path: /opt/build/cm256cc/build
+      state: directory
+
+  - name: Build CM265cc CMakeFiles
+    command: cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=/opt/install/cm256cc ..
+    args:
+      chdir: /opt/build/cm256cc/build
+
+  - name: Build CM265cc
+    command: make
+    args:
+      chdir: /opt/build/cm256cc/build
+
+  - name: Install CM265cc
+    become: yes
+    command: make install
+    args:
+      chdir: /opt/build/cm256cc/build
+
+  - name: Remove CM265cc build directory
+    file:
+      path: /opt/build/cm256cc
+      state: absent
+
+
+#
+# MBElib
+#
+
+  - name: Git clone latest MBElib sources
+    git:
+      repo: https://github.com/szechyjs/mbelib.git
+      dest: /opt/build/mbelib
+
+  - name: Git Reset MBElib CMakeFiles
+    command: git reset --hard 9a04ed5c78176a9965f3d43f7aa1b1f5330e771f
+    args:
+      chdir: /opt/build/mbelib
+
+  - name: Create directory mbelib/build
+    file:
+      path: /opt/build/mbelib/build
+      state: directory
+
+  - name: Build MBElib CMakeFiles
+    command: cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=/opt/install/mbelib ..
+    args:
+      chdir: /opt/build/mbelib/build
+
+  - name: Build MBElib
+    command: make
+    args:
+      chdir: /opt/build/mbelib/build
+
+  - name: Install MBElib
+    become: yes
+    command: make install
+    args:
+      chdir: /opt/build/mbelib/build
+
+  - name: Remove MBElib build directory
+    file:
+      path: /opt/build/mbelib
+      state: absent
+
+
+#
+# SerialDV
+#
+
+  - name: Git clone latest SerialDV sources
+    git:
+      repo: https://github.com/f4exb/serialDV.git
+      dest: /opt/build/serialDV
+
+  - name: Git Reset SerialDV CMakeFiles
+    command: git reset --hard "v1.1.4"
+    args:
+      chdir: /opt/build/serialDV
+
+  - name: Create directory serialDV/build
+    file:
+      path: /opt/build/serialDV/build
+      state: directory
+
+  - name: Build SerialDV CMakeFiles
+    command: cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=/opt/install/serialDV ..
+    args:
+      chdir: /opt/build/serialDV/build
+
+  - name: Build SerialDV
+    command: make
+    args:
+      chdir: /opt/build/serialDV/build
+
+  - name: Install SerialDV
+    become: yes
+    command: make install
+    args:
+      chdir: /opt/build/serialDV/build
+
+  - name: Remove SerialDV build directory
+    file:
+      path: /opt/build/serialDV
+      state: absent
+
+
+#
+# DSDcc
+#
+
+  - name: Git clone latest DSDcc sources
+    git:
+      repo: https://github.com/f4exb/dsdcc.git
+      dest: /opt/build/dsdcc
+
+  - name: Git Reset DSDcc CMakeFiles
+    command: git reset --hard "v1.8.6"
+    args:
+      chdir: /opt/build/dsdcc
+
+  - name: Create directory dsdcc/build
+    file:
+      path: /opt/build/dsdcc/build
+      state: directory
+
+  - name: Build DSDcc CMakeFiles
+    command: cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=/opt/install/dsdcc -DUSE_MBELIB=ON -DLIBMBE_INCLUDE_DIR=/opt/install/mbelib/include -DLIBMBE_LIBRARY=/opt/install/mbelib/lib/libmbe.so -DLIBSERIALDV_INCLUDE_DIR=/opt/install/serialDV/include/serialdv -DLIBSERIALDV_LIBRARY=/opt/install/serialDV/lib/libserialdv.so ..
+    args:
+      chdir: /opt/build/dsdcc/build
+
+  - name: Build DSDcc
+    command: make
+    args:
+      chdir: /opt/build/dsdcc/build
+
+  - name: Install DSDcc
+    become: yes
+    command: make install
+    args:
+      chdir: /opt/build/dsdcc/build
+
+  - name: Remove DSDcc build directory
+    file:
+      path: /opt/build/dsdcc
+      state: absent
+
+
+#
+# Codec2/FreeDV
+#
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libspeexdsp-dev
+      - libsamplerate0-dev
+
+  - name: Git clone latest Codec2 sources
+    git:
+      repo: https://github.com/drowe67/codec2.git
+      dest: /opt/build/codec2
+
+  - name: Git Reset Codec2 CMakeFiles
+    command: git reset --hard 76a20416d715ee06f8b36a9953506876689a3bd2
+    args:
+      chdir: /opt/build/codec2
+
+  - name: Create directory codec2/build
+    file:
+      path: /opt/build/codec2/build
+      state: directory
+
+  - name: Build Codec2 CMakeFiles
+    command: cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=/opt/install/codec2 ..
+    args:
+      chdir: /opt/build/codec2/build
+
+  - name: Build Codec2
+    command: make
+    args:
+      chdir: /opt/build/codec2/build
+
+  - name: Install Codec2
+    become: yes
+    command: make install
+    args:
+      chdir: /opt/build/codec2/build
+
+  - name: Remove Codec2 build directory
+    file:
+      path: /opt/build/codec2
+      state: absent
+
+
+#
+# Airspy
+#
+
+  - name: Git clone latest Airspy sources
+    git:
+      repo: https://github.com/airspy/host.git
+      dest: /opt/build/libairspy
+
+  - name: Git Reset Airspy CMakeFiles
+    command: git reset --hard bfb667080936ca5c2d23b3282f5893931ec38d3f
+    args:
+      chdir: /opt/build/libairspy
+
+  - name: Create directory libairspy/build
+    file:
+      path: /opt/build/libairspy/build
+      state: directory
+
+  - name: Build Airspy CMakeFiles
+    command: cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=/opt/install/libairspy ..
+    args:
+      chdir: /opt/build/libairspy/build
+
+  - name: Build Airspy
+    command: make
+    args:
+      chdir: /opt/build/libairspy/build
+
+  - name: Install Airspy
+    become: yes
+    command: make install
+    args:
+      chdir: /opt/build/libairspy/build
+
+  - name: Remove Airspy build directory
+    file:
+      path: /opt/build/libairspy
+      state: absent
+
+
+#
+# AirspyHF
+#
+
+  - name: Git clone latest AirspyHF sources
+    git:
+      repo: https://github.com/airspy/airspyhf
+      dest: /opt/build/airspyhf
+
+  - name: Git Reset AirspyHF CMakeFiles
+    command: git reset --hard "1.1.5"
+    args:
+      chdir: /opt/build/airspyhf
+
+  - name: Create directory airspyhf/build
+    file:
+      path: /opt/build/airspyhf/build
+      state: directory
+
+  - name: Build AirspyHF CMakeFiles
+    command: cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=/opt/install/libairspyhf ..
+    args:
+      chdir: /opt/build/airspyhf/build
+
+  - name: Build AirspyHF
+    command: make
+    args:
+      chdir: /opt/build/airspyhf/build
+
+  - name: Install AirspyHF
+    become: yes
+    command: make install
+    args:
+      chdir: /opt/build/airspyhf/build
+
+  - name: Remove AirspyHF build directory
+    file:
+      path: /opt/build/airspyhf
+      state: absent
+
+
+#
+# SDRplay RSP1
+#
+
+  - name: Git clone latest SDRplay RSP1 sources
+    git:
+      repo: https://github.com/f4exb/libmirisdr-4.git
+      dest: /opt/build/libmirisdr-4
+
+  - name: Create directory libmirisdr-4/build
+    file:
+      path: /opt/build/libmirisdr-4/build
+      state: directory
+
+  - name: Build SDRplay RSP1 CMakeFiles
+    command: cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=/opt/install/libmirisdr ..
+    args:
+      chdir: /opt/build/libmirisdr-4/build
+
+  - name: Build SDRplay RSP1
+    command: make
+    args:
+      chdir: /opt/build/libmirisdr-4/build
+
+  - name: Install SDRplay RSP1
+    become: yes
+    command: make install
+    args:
+      chdir: /opt/build/libmirisdr-4/build
+
+  - name: Remove SDRplay RSP1 build directory
+    file:
+      path: /opt/build/libmirisdr-4
+      state: absent
+
+
+#
+# RTL-SDR
+#
+
+  - name: Git clone latest RTL-SDR sources
+    git:
+      repo: https://github.com/osmocom/rtl-sdr.git
+      dest: /opt/build/librtlsdr
+
+  - name: Git Reset RTL-SDR CMakeFiles
+    command: git reset --hard be1d1206bfb6e6c41f7d91b20b77e20f929fa6a7
+    args:
+      chdir: /opt/build/librtlsdr
+
+  - name: Create directory librtlsdr/build
+    file:
+      path: /opt/build/librtlsdr/build
+      state: directory
+
+  - name: Build RTL-SDR CMakeFiles
+    command: cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=/opt/install/libmirisdr-4 ..
+    args:
+      chdir: /opt/build/librtlsdr/build
+
+  - name: Build RTL-SDR
+    command: make
+    args:
+      chdir: /opt/build/librtlsdr/build
+
+  - name: Install RTL-SDR
+    become: yes
+    command: make install
+    args:
+      chdir: /opt/build/librtlsdr/build
+
+  - name: Remove RTL-SDR build directory
+    file:
+      path: /opt/build/librtlsdr
+      state: absent
+
+
+#
+# Pluto SDR
+#
+
+# Please note that you will need version 0.29 (or higher) of the firmware.
+
+  - name: Git clone latest Pluto SDR sources
+    git:
+      repo: https://github.com/analogdevicesinc/libiio.git
+      dest: /opt/build/libiio
+
+  - name: Git Reset Pluto SDR CMakeFiles
+    command: git reset --hard 826563e41b5ce9890b75506f672017de8d76d52d
+    args:
+      chdir: /opt/build/libiio
+
+  - name: Create directory libiio/build
+    file:
+      path: /opt/build/libiio/build
+      state: directory
+
+  - name: Build Pluto SDR CMakeFiles
+    command: cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=/opt/install/libiio -DINSTALL_UDEV_RULE=OFF ..
+    args:
+      chdir: /opt/build/libiio/build
+
+  - name: Build Pluto SDR
+    command: make
+    args:
+      chdir: /opt/build/libiio/build
+
+  - name: Install Pluto SDR
+    become: yes
+    command: make install
+    args:
+      chdir: /opt/build/libiio/build
+
+  - name: Remove Pluto SDR build directory
+    file:
+      path: /opt/build/libiio
+      state: absent
+
+
+#
+# BladeRF all versions
+#
+
+  - name: Git clone latest BladeRF sources
+    git:
+      repo: https://github.com/Nuand/bladeRF.git
+      dest: /opt/build/bladeRF
+
+  - name: Git Reset BladeRF CMakeFiles
+    command: git reset --hard "2019.07"
+    args:
+      chdir: /opt/build/bladeRF/host
+
+  - name: Create directory bladeRF/host/build
+    file:
+      path: /opt/build/bladeRF/host/build
+      state: directory
+
+  - name: Build BladeRF CMakeFiles
+    command: cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=/opt/install/libbladeRF -DINSTALL_UDEV_RULES=OFF ..
+    args:
+      chdir: /opt/build/bladeRF/host/build
+
+  - name: Build BladeRF
+    command: make
+    args:
+      chdir: /opt/build/bladeRF/host/build
+
+  - name: Install BladeRF
+    become: yes
+    command: make install
+    args:
+      chdir: /opt/build/bladeRF/host/build
+
+  - name: Remove BladeRF build directory
+    file:
+      path: /opt/build/bladeRF
+      state: absent
+
+
+#
+# HackRF
+#
+
+  - name: Git clone latest HackRF sources
+    git:
+      repo: https://github.com/mossmann/hackrf.git
+      dest: /opt/build/hackrf
+
+  - name: Git Reset HackRF CMakeFiles
+    command: git reset --hard "v2018.01.1"
+    args:
+      chdir: /opt/build/hackrf/host
+
+  - name: Create directory hackrf/host/build
+    file:
+      path: /opt/build/hackrf/host/build
+      state: directory
+
+  - name: Build HackRF CMakeFiles
+    command: cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=/opt/install/libhackrf -DINSTALL_UDEV_RULES=OFF ..
+    args:
+      chdir: /opt/build/hackrf/host/build
+
+  - name: Build HackRF
+    command: make
+    args:
+      chdir: /opt/build/hackrf/host/build
+
+  - name: Install HackRF
+    become: yes
+    command: make install
+    args:
+      chdir: /opt/build/hackrf/host/build
+
+  - name: Remove HackRF build directory
+    file:
+      path: /opt/build/hackrf
+      state: absent
+
+
+#
+# LimeSDR
+#
+
+  - name: Git clone latest LimeSDR sources
+    git:
+      repo: https://github.com/myriadrf/LimeSuite.git
+      dest: /opt/build/LimeSuite
+
+  - name: Git Reset LimeSDR CMakeFiles
+    command: git reset --hard "v20.01.0"
+    args:
+      chdir: /opt/build/LimeSuite
+
+  - name: Create directory LimeSuite/build
+    file:
+      path: /opt/build/LimeSuite/build
+      state: directory
+
+  - name: Build LimeSDR CMakeFiles
+    command: cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=/opt/install/LimeSuite ..
+    args:
+      chdir: /opt/build/LimeSuite/build
+
+  - name: Build LimeSDR
+    command: make
+    args:
+      chdir: /opt/build/LimeSuite/build
+
+  - name: Install LimeSDR
+    become: yes
+    command: make install
+    args:
+      chdir: /opt/build/LimeSuite/build
+
+  - name: Remove LimeSDR build directory
+    file:
+      path: /opt/build/LimeSuite
+      state: absent
+
+
+#
+# Perseus
+#
+
+  - name: Git clone latest Perseus sources
+    git:
+      repo: https://github.com/f4exb/libperseus-sdr.git
+      dest: /opt/build/libperseus-sdr
+
+  - name: git checkout fixes Perseus CMakeFiles
+    command: git checkout fixes
+    args:
+      chdir: /opt/build/libperseus-sdr
+
+  - name: Git Reset Perseus CMakeFiles
+    command: git reset --hard afefa23e3140ac79d845acb68cf0beeb86d09028
+    args:
+      chdir: /opt/build/libperseus-sdr
+
+  - name: Create directory LimeSuite/build
+    file:
+      path: /opt/build/libperseus-sdr/build
+      state: directory
+
+  - name: Build Perseus CMakeFiles
+    command: cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=/opt/install/libperseus ..
+    args:
+      chdir: /opt/build/libperseus-sdr/build
+
+  - name: Build Perseus
+    command: make
+    args:
+      chdir: /opt/build/libperseus-sdr/build
+
+  - name: Install Perseus
+    become: yes
+    command: make install
+    args:
+      chdir: /opt/build/libperseus-sdr/build
+
+  - name: Remove Perseus build directory
+    become: yes
+    file:
+      path: /opt/build/libperseus-sdr
+      state: absent
+
+#
+# XTRX
+#
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - build-essential
+      - libusb-1.0-0-dev
+      - dkms
+      - python3
+      - python3-pip
+      - python3-cheetah
+
+  - name: Git clone latest XTRX sources
+    git:
+      repo: https://github.com/f4exb/images.git
+      dest: /opt/build/xtrx-images
+
+  - name: Git submodule init XTRX
+    command: git submodule init
+    args:
+      chdir: /opt/build/xtrx-images
+
+  - name: Git submodule update XTRX
+    command: git submodule update
+    args:
+      chdir: /opt/build/xtrx-images
+
+  - name: Create directory xtrx-images/sources/build
+    file:
+      path: /opt/build/xtrx-images/sources/build
+      state: directory
+
+  - name: Build XTRX CMakeFiles
+    command: cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=/opt/install/xtrx-images -DENABLE_SOAPY=NO ..
+    args:
+      chdir: /opt/build/xtrx-images/sources/build
+
+  - name: Build XTRX
+    command: make
+    args:
+      chdir: /opt/build/xtrx-images/sources/build
+
+  - name: Install XTRX
+    become: yes
+    command: make install
+    args:
+      chdir: /opt/build/xtrx-images/sources/build
+
+  - name: Remove XTRX build directory
+    file:
+      path: /opt/build/xtrx-images
+      state: absent
+
+
+#
+# SDRAngel
+#
+
+  - name: Git clone latest SDRAngel sources
+    git:
+      repo: https://github.com/f4exb/sdrangel.git
+      dest: /opt/build/sdrangel
+
+  - name: Create directory sdrangel/build
+    file:
+      path: /opt/build/sdrangel/build
+      state: directory
+
+  - name: Build SDRAngel CMakeFiles
+    command: cmake -Wno-dev -DDEBUG_OUTPUT=ON -DRX_SAMPLE_24BIT=ON -DMIRISDR_DIR=/opt/install/libmirisdr -DAIRSPY_DIR=/opt/install/libairspy -DAIRSPYHF_DIR=/opt/install/libairspyhf -DBLADERF_DIR=/opt/install/libbladeRF -DHACKRF_DIR=/opt/install/libhackrf -DRTLSDR_DIR=/opt/install/librtlsdr -DLIMESUITE_DIR=/opt/install/LimeSuite -DIIO_DIR=/opt/install/libiio -DPERSEUS_DIR=/opt/install/libperseus -DXTRX_DIR=/opt/install/xtrx-images -DSOAPYSDR_DIR=/usr/local/lib/SoapySDR -DCM256CC_DIR=/opt/install/cm256cc -DDSDCC_DIR=/opt/install/dsdcc -DSERIALDV_DIR=/opt/install/serialDV -DMBE_DIR=/opt/install/mbelib -DCODEC2_DIR=/opt/install/codec2 -DCMAKE_INSTALL_PREFIX=/opt/install/sdrangel ..
+    args:
+      chdir: /opt/build/sdrangel/build
+
+  - name: Build SDRAngel
+    command: make
+    args:
+      chdir: /opt/build/sdrangel/build
+
+  - name: Install SDRAngel
+    become: yes
+    command: make install
+    args:
+      chdir: /opt/build/sdrangel/build
+
+  - name: Remove SDRAngel build directory
+    file:
+      path: /opt/build/sdrangel
+      state: absent
