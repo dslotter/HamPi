@@ -6,6 +6,10 @@
   hosts: all
   tasks:
 
+  - name: Change hostname to hampi
+    become: yes
+    command: hostname hampi
+
   # This allows apt-add-repository command to be added
   - name: Install software-properties-common Packages
     become: yes
