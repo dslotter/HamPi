@@ -10,6 +10,12 @@
     become: yes
     command: hostname hampi
 
+  - name: Enable resizing of (micro)SD card
+    become: yes
+    command: sed -i 's/ quiet splash plymouth.ignore-serial-consoles$/ quiet init=\/usr\/lib\/raspi-config\/init_resize.sh splash plymouth.ignore-serial-consoles/' /boot/cmdline.txt
+    args:
+      warn: no
+
   # This allows apt-add-repository command to be added
   - name: Install software-properties-common Packages
     become: yes
