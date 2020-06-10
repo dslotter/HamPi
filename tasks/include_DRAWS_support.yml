@@ -187,3 +187,8 @@
     shell: /usr/bin/npm install
     args:
       chdir: /home/pi/hamradio/draws-manager/webapp
+
+  - name: Add Northwest Digital Documentation to Desktop
+    copy:
+      src: "{{ playbook_dir }}/../files/home/pi/Desktop/Activating your DRAWS™ HAT.pdf"
+      dest: "/home/pi/Desktop/Activating your DRAWS™ HAT.pdf"
