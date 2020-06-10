@@ -125,6 +125,7 @@
 - import_playbook: install_lysdr.yml
 - import_playbook: install_cubicsdr.yml
 - import_playbook: install_sdrangel.yml
+# ^^^ SDRAngel takes about 55 minutes to build on a RPi 4 ^^^
 
 
 # Final tasks
