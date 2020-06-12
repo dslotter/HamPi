@@ -37,6 +37,19 @@
     with_items:
       - git
       - scons
+      - gpsd
+      - python-gi
+      - python-gi-cairo
+      - python-gi-dev
+      - python-cairo
+      - python-serial
+      - libqt5core5a
+      - libqt5network5
+      - libcap-dev
+      - libncurses-dev
+      - pps-tools
+      - libusb-1.0-0-dev
+      - gnuplot
       - asciidoctor
 #      - libgps-dev # This isn't allowing compiles to complete yet
       - libudev-dev
@@ -71,7 +84,7 @@
       dest: /home/pi/hamradio/gpsd
 
   - name: Build GPSd sources
-    shell: scons
+    shell: scons prefix=/usr
     args:
       chdir: /home/pi/hamradio/gpsd
 
@@ -86,26 +99,26 @@
       path: /home/pi/hamradio/gpsd
       state: absent
 
-#  - name: Fix a troublesome gpsd config entry
-#    become: yes
-#    lineinfile:
-#      path: /etc/default/gpsd
-#      regexp: '^USBAUTO=\"true\"'
-#      line: USBAUTO="false"
+  - name: Fix a troublesome gpsd config entry
+    become: yes
+    lineinfile:
+      path: /etc/default/gpsd
+      regexp: '^USBAUTO=\"true\"'
+      line: USBAUTO="false"
 
-#  - name: Add D.R.A.W.S. port to gpsd config
-#    become: yes
-#    lineinfile:
-#      path: /etc/default/gpsd
-#      regexp: '^DEVICES=\"\"'
-#      line: DEVICES="/dev/ttySC0 /dev/pps0"
+  - name: Add D.R.A.W.S. port to gpsd config
+    become: yes
+    lineinfile:
+      path: /etc/default/gpsd
+      regexp: '^DEVICES=\"\"'
+      line: DEVICES="/dev/ttySC0 /dev/pps0"
 
-#  - name: Add D.R.A.W.S. gps option to gpsd config
-#    become: yes
-#    lineinfile:
-#      path: /etc/default/gpsd
-#      regexp: '^GPSD_OPTIONS=\"\"'
-#      line: GPSD_OPTIONS="-n"
+  - name: Add D.R.A.W.S. gps option to gpsd config
+    become: yes
+    lineinfile:
+      path: /etc/default/gpsd
+      regexp: '^GPSD_OPTIONS=\"\"'
+      line: GPSD_OPTIONS="-n"
 
 #
 # Install D.R.A.W.S. compatible version of Direwolf
@@ -125,6 +138,13 @@
       path: /home/pi/hamradio/direwolf/src/dwgpsd.c
       regexp: '^#if GPSD_API_MAJOR_VERSION \< 5 \|\| GPSD_API_MAJOR_VERSION \> 8'
       line: '#if GPSD_API_MAJOR_VERSION < 5 || GPSD_API_MAJOR_VERSION > 10'
+
+  - name: Change gpsdata.status to gpsdata.fix.status for GPS_API_MAJOR_VERSION 10
+    lineinfile:
+      path: /home/pi/hamradio/direwolf/src/dwgpsd.c
+      regexp: 'gpsdata.status \>= STATUS_FIX && gpsdata.fix.mode \>= MODE_2D'
+      line: '     if (gpsdata.fix.status >= STATUS_FIX && gpsdata.fix.mode >= MODE_2D) {
+'
 
   - name: Create directory direwolf/build
     file:
