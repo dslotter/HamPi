@@ -126,10 +126,11 @@
 - import_playbook: install_cubicsdr.yml
 - import_playbook: install_sdrangel.yml
 # ^^^ SDRAngel takes about 55 minutes to build on a RPi 4 ^^^
-- import_playbook: terminate_ansible_early.yml
 
 # Final tasks
 - import_playbook: finish_tasks.yml
+
+#- import_playbook: terminate_ansible_early.yml
 
 #Hold- import_playbook: install_teamviewer_host.yml
 
