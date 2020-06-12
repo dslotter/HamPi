@@ -49,8 +49,9 @@
 - import_playbook: install_soapy_sdrplay.yml
 # Fails to build under aarch64:
 - import_playbook: install_soapy_volkconverters.yml
-
 # ^^^ This part takes about 1 hour, 15 minutes to build on a RPi 4 ^^^
+- import_playbook: install_soapy_uhd.yml
+# ^^^ UHD / SoapyUHD takes about 45 minutes to build on a RPi 4 ^^^
 
 #
 # FLDigi Suite
@@ -68,7 +69,6 @@
 - import_playbook: install_flwkey.yml
 - import_playbook: install_flwrap.yml
 - import_playbook: install_pi34statsmonitor.yml
-
 # ^^^ This part takes about 20 minutes to build on a RPi 4 ^^^
 
 #
@@ -126,12 +126,11 @@
 - import_playbook: install_cubicsdr.yml
 - import_playbook: install_sdrangel.yml
 # ^^^ SDRAngel takes about 55 minutes to build on a RPi 4 ^^^
-
+- import_playbook: terminate_ansible_early.yml
 
 # Final tasks
 - import_playbook: finish_tasks.yml
 
-#Fail- import_playbook: install_soapy_uhd.yml
 #Hold- import_playbook: install_teamviewer_host.yml
 
 # Enable when they finally support Raspberry Pi
