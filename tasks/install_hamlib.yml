@@ -74,5 +74,10 @@
 
     - name: Remove Hamlib {{ hamlib_version }} build directory
       file:
+        path: /home/pi/hamradio/hamlib
+        state: absent
+
+    - name: Remove Hamlib {{ hamlib_version }} directory
+      file:
         path: /home/pi/hamradio/hamlib-{{ hamlib_version }}
         state: absent
