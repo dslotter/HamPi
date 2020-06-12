@@ -39,11 +39,11 @@
     args:
       warn: no
     register: download_date
-    when: ansible_architecture == "armv7l" or ansible_architecture == "armvhf"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - local_action: command echo item
     with_items: download_date.stdout_lines[0]
-    when: ansible_architecture == "armv7l" or ansible_architecture == "armvhf"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Download and Unarchive GridTracker (ARM)
     become: yes
@@ -51,7 +51,7 @@
       src: "{{ download_date.stdout_lines[0] }}"
       dest: /usr/local
       remote_src: yes
-    when: ansible_architecture == "armv7l" or ansible_architecture == "armvhf"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Copy GridTracker Desktop file (ARM)
     become: yes
@@ -59,7 +59,7 @@
       src: /usr/local/GridTracker/Pi4-GridTracker.desktop
       dest: /usr/local/share/applications/Pi4-GridTracker.desktop
       remote_src: yes
-    when: ansible_architecture == "armv7l" or ansible_architecture == "armvhf"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Fix the lazy path that GridTracker uses to what we're using
     become: yes
@@ -67,7 +67,7 @@
       path: /usr/local/share/applications/Pi4-GridTracker.desktop
       regexp: '\/home\/pi\/Downloads'
       replace: '/usr/local'
-    when: ansible_architecture == "armv7l" or ansible_architecture == "armvhf"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
 #
 # Raspbian x86
