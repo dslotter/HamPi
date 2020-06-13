@@ -4,7 +4,7 @@
 
 ---
 
-- name: HamPi v0.8 Playbook by W3DJS
+- name: HamPi v0.9 Playbook by W3DJS
   # hosts: all
   # hosts: vm
   hosts: hardware
