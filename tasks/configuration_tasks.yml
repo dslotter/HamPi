@@ -144,6 +144,12 @@
       src: "{{ playbook_dir }}/../files/home/pi/Desktop/HAMPI LICENSE.TXT"
       dest: "/home/pi/Desktop/HAMPI LICENSE.TXT"
 
+  - name: Install HamRadio menus
+    become: yes
+    package:
+      name: hamradiomenus
+      state: present
+
   - name: Create /usr/local/share/icons/gnome/16x16/categories directory
     become: yes
     file:
