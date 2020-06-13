@@ -1,0 +1,11 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Terminate Ansible by faking error
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Terminate Ansible by faking error
+    shell: exit 1
