@@ -23,7 +23,6 @@
     file: dest=/home/pi/.config/lxsession/LXDE-pi/qslware.sh mode=a+x
 
   - name: Install lxsession autostart
-    become: yes
     copy:
       src: "{{ playbook_dir }}/../files/autostart"
       dest: "/home/pi/.config/lxsession/LXDE-pi/autostart"
