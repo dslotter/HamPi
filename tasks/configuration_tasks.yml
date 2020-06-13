@@ -150,6 +150,13 @@
       name: hamradiomenus
       state: present
 
+  - name: Use our own HamRadio icon for the menu
+    become: yes
+    lineinfile:
+      path: /usr/share/desktop-directories/HamRadio.directory
+      regexp: '^Icon=CQ.png'
+      line: Icon=ham-radio-icon-25
+
   - name: Create /usr/local/share/icons/gnome/16x16/categories directory
     become: yes
     file:
