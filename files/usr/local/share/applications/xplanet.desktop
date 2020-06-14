@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=xplanet
+Comment=Rrender an image of a planet into an X window
+TryExec=xplanet
+Exec=xplanet -window
+Terminal=false
+Type=Application
+Categories=Graphics
+Keywords=graphics;earth

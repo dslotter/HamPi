@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=inspectrum
+Comment=Tool for visualising captured radio signals
+TryExec=inspectrum
+Exec=inspectrum
+Terminal=false
+Type=Application
+Categories=HamRadio
+Keywords=HamRadio

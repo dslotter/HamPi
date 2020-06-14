@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=xcwcp
+Comment=Amateur Radio Morse tutor program
+TryExec=xcwcp
+Exec=xcwcp
+Terminal=false
+Type=Application
+Categories=HamRadio
+Keywords=cw;hamradio

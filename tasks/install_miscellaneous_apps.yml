@@ -82,6 +82,18 @@
       name: inspectrum
       state: present
 
+  - name: Create /usr/local/share/applications directory
+    become: yes
+    file:
+      path: /usr/local/share/applications
+      state: directory
+
+  - name: Create inspectrum.desktop in /usr/local/share/applications
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/inspectrum.desktop"
+      dest: "/usr/local/share/applications/inspectrum.desktop"
+
   - name: Install wwl Package (Calculates distance and azimuth between two Maidenhead locators)
     become: yes
     package:
@@ -99,3 +111,10 @@
     package:
       name: xdx
       state: present
+
+  # Because there's really no other place for this to go (falls under misc)
+  - name: Create xplanet.desktop in /usr/local/share/applications
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/xplanet.desktop"
+      dest: "/usr/local/share/applications/xplanet.desktop"

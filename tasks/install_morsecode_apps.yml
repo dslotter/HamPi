@@ -31,6 +31,24 @@
       - morse
       - multimon-ng
 
+  - name: Create /usr/local/share/applications directory
+    become: yes
+    file:
+      path: /usr/local/share/applications
+      state: directory
+
+  - name: Create xcwcp.desktop in /usr/local/share/applications
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/xcwcp.desktop"
+      dest: "/usr/local/share/applications/xcwcp.desktop"
+
+  - name: Create xdemorse.desktop in /usr/local/share/applications
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/xdemorse.desktop"
+      dest: "/usr/local/share/applications/xdemorse.desktop"
+
   - name: Install Morse Practice by Martin Minow (K6MAM) S/K
     become: yes
     get_url:
