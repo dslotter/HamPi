@@ -16,6 +16,15 @@
     args:
       warn: no
 
+  - name: Remove unwanted software packages
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: absent
+    with_items:
+      - wolfram-engine
+      - wolframscript
+
   # This allows apt-add-repository command to be added
   - name: Install software-properties-common Packages
     become: yes
