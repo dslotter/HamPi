@@ -10,11 +10,17 @@
     become: yes
     command: hostname hampi
 
+  - name: Check that the /boot/cmdline.txt exists
+    stat:
+      path: /boot/cmdline.txt
+    register: cmdline_stat_result
+
   - name: Enable resizing of (micro)SD card
     become: yes
     command: sed -i 's/ quiet splash plymouth.ignore-serial-consoles$/ quiet init=\/usr\/lib\/raspi-config\/init_resize.sh splash plymouth.ignore-serial-consoles/' /boot/cmdline.txt
     args:
       warn: no
+    when: cmdline_stat_result.stat.exists
 
   - name: Remove unwanted software packages
     become: yes
