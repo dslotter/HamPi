@@ -21,17 +21,19 @@
       - librtlsdr0
 
 #
-# Install dump1090 for SDRPlay
+# Install dump1090 for SDRPlay (ARM)
 #
 
-#  - name: Download and unarchive dump1090 1.3.1 for SDRPlay
-#    unarchive:
-#      src: https://www.sdrplay.com/software/dump1090_1.3.1.rpi.tar.gz
-#      dest: /home/pi/hamradio/
-#      remote_src: yes
+  - name: Download and unarchive dump1090 1.3.1 for SDRPlay
+    unarchive:
+      src: https://www.sdrplay.com/software/dump1090_1.3.1.rpi.tar.gz
+      dest: /home/pi/hamradio/
+      remote_src: yes
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
-#  - name: Make directory name more meaningful
-#    command: mv /home/pi/hamradio/dump1090_1.3.1 /home/pi/hamradio/dump1090_sdrplay_1.3.1
+  - name: Make directory name more meaningful
+    command: mv /home/pi/hamradio/dump1090_1.3.1 /home/pi/hamradio/dump1090_sdrplay_1.3.1
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
 #
 # Install dump1090-mutability for RTL-SDR
@@ -102,3 +104,7 @@
       path: /home/pi/hamradio/dump1090-mutability_{{ dump1090_version.stdout_lines[0] }}.dev_amd64.deb
       state: absent
     when: ansible_architecture == "amd64"
+
+#
+# i386 -- There is no dump1090-mutability for i386
+#
