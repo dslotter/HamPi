@@ -26,6 +26,8 @@
     with_items:
       - build-essential
       - gfortran
+      - python3-cartopy
+      - python3-scipy
 
 #
 # VOACAPL
