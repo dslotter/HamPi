@@ -11,3 +11,10 @@
     package:
       name: cutesdr
       state: present
+
+  - name: Modify categories for cutesdr.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/cutesdr.desktop
+      regexp: '^Categories=Utility;HamRadio;Tuner'
+      line: Categories=HamRadio SDR

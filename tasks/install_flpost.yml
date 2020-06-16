@@ -58,6 +58,13 @@
       args:
         chdir: /home/pi/hamradio/flpost-{{ download_date.stdout_lines[0] }}
 
+    - name: Modify categories for flpost.desktop
+      become: yes
+      lineinfile:
+        path: /usr/local/share/applications/flpost.desktop
+        regexp: '^Categories=Other;HamRadio;'
+        line: Categories=HamRadio Fldigi
+
     - name: Remove flpost {{ download_date.stdout_lines[0] }} build directory
       file:
         path: /home/pi/hamradio/flpost-{{ download_date.stdout_lines[0] }}

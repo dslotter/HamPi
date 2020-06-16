@@ -32,6 +32,13 @@
     become: yes
     shell: cp -a /home/pi/patmenu2/patmenu2.desktop /usr/local/share/applications/patmenu2.desktop
 
+  - name: Modify categories for patmenu2.desktop
+    become: yes
+    lineinfile:
+      path: /usr/local/share/applications/patmenu2.desktop
+      regexp: '^Categories=Network;HamRadio;'
+      line: Categories=HamRadio
+
 #
 # Raspbian ARM
 #

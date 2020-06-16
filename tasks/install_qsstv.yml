@@ -64,6 +64,13 @@
     args:
       chdir: "/home/pi/hamradio/qsstv_{{ download_date.stdout_lines[0] }}"
 
+  - name: Modify categories for qsstv.desktop
+    become: yes
+    lineinfile:
+      path: /usr/local/share/applications/qsstv.desktop
+      regexp: '^Categories=Education;'
+      line: Categories=HamRadio
+
   - name: Remove QSSTV {{ download_date.stdout_lines[0] }} build directory
     file:
       path: /home/pi/hamradio/qsstv_{{ download_date.stdout_lines[0] }}

@@ -104,3 +104,15 @@
       path: /home/pi/hamradio/js8call_{{ download_date.stdout_lines[0] }}_i386.deb
       state: absent
     when: ansible_architecture == "i386"
+
+
+#
+# Common
+#
+
+  - name: Modify categories for js8call.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/js8call.desktop
+      regexp: '^Categories=AudioVideo;Audio;HamRadio;'
+      line: Categories=HamRadio Weak Signal

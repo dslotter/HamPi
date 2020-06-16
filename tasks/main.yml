@@ -17,6 +17,7 @@
 
 - import_playbook: init_task.yml
 - import_playbook: configuration_tasks.yml
+- import_playbook: install_menus.yml
 - import_playbook: install_wallpaper.yml
 - import_playbook: upgrade_raspbian_packages.yml
 - import_playbook: install_chromium_bookmarks.yml
@@ -50,6 +51,7 @@
 # Fails to build under aarch64:
 - import_playbook: install_soapy_volkconverters.yml
 # ^^^ This part takes about 1 hour, 15 minutes to build on a RPi 4 ^^^
+
 - import_playbook: install_soapy_uhd.yml
 # ^^^ UHD / SoapyUHD takes about 45 minutes to build on a RPi 4 ^^^
 
@@ -113,12 +115,12 @@
 - import_playbook: install_dump1090.yml
 # Fails to build under aarch64:
 - import_playbook: install_voacapl.yml
-# OpenDV git repository has some issues, but
-# some of them have been worked around.
-- import_playbook: install_opendv.yml
 - import_playbook: install_openwebrx.yml
 - import_playbook: install_tapr_wspr.yml
 - import_playbook: install_dxspider.yml
+# OpenDV git repository has some issues, but
+# some of them have been worked around.
+- import_playbook: install_opendv.yml
 
 # Install SDR GUI apps after all pre-requisite SDR drivers are installed
 - import_playbook: install_cutesdr.yml

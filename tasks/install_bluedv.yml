@@ -41,6 +41,13 @@
       src: "{{ playbook_dir }}/../files/BlueDV.desktop"
       dest: "/usr/local/share/applications/BlueDV.desktop"
 
+  - name: Modify categories for BlueDV.desktop
+    become: yes
+    lineinfile:
+      path: /usr/local/share/applications/BlueDV.desktop
+      regexp: '^Categories=Network;WebBrowser;'
+      line: Categories=HamRadio
+
   - name: Download latest AMBEServer sources
     git:
       repo: https://github.com/marrold/AMBEServer.git

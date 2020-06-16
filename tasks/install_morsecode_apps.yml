@@ -31,6 +31,13 @@
       - morse
       - multimon-ng
 
+  - name: Modify categories for qrq.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/qrq.desktop
+      regexp: '^Categories=Audio;HamRadio;'
+      line: Categories=HamRadio Training
+
   - name: Create /usr/local/share/applications directory
     become: yes
     file:
@@ -48,6 +55,27 @@
     copy:
       src: "{{ playbook_dir }}/../files/usr/local/share/applications/xdemorse.desktop"
       dest: "/usr/local/share/applications/xdemorse.desktop"
+
+  - name: Modify categories for ebook2cwgui.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/ebook2cwgui.desktop
+      regexp: '^Categories=Audio;HamRadio;'
+      line: Categories=HamRadio Morse Code
+
+  - name: Modify categories for xcwcp.desktop
+    become: yes
+    lineinfile:
+      path: /usr/local/share/applications/xcwcp.desktop
+      regexp: '^Categories=HamRadio'
+      line: Categories=HamRadio Morse Code
+
+  - name: Modify categories for xdemorse.desktop
+    become: yes
+    lineinfile:
+      path: /usr/local/share/applications/xdemorse.desktop
+      regexp: '^Categories=HamRadio'
+      line: Categories=HamRadio Morse Code
 
   - name: Install Morse Practice by Martin Minow (K6MAM) S/K
     become: yes

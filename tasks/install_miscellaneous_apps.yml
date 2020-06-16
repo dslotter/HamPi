@@ -42,12 +42,26 @@
       name: glfer
       state: present
 
+  - name: Modify categories for glfer.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/glfer.desktop
+      regexp: '^Categories=Utility;HamRadio'
+      line: Categories=HamRadio Morse Code
+
   # Grig 0.8.1 in repo is latest available as of 2020-02-12
   - name: Install grig Package (Graphical Rig Control based on Hamlib)
     become: yes
     package:
       name: grig
       state: present
+
+  - name: Modify categories for grig.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/grig.desktop
+      regexp: '^Categories=Audio;HamRadio;'
+      line: Categories=HamRadio
 
   - name: Install gnuais Package (AIS receiver which uses the discriminator output of VHF receivers)
     become: yes
@@ -75,6 +89,13 @@
     package:
       name: hamfax
       state: present
+
+  - name: Modify categories for hamfax.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/hamfax.desktop
+      regexp: '^Categories=AudioVideo;Audio;HamRadio;Qt'
+      line: Categories=HamRadio
 
   - name: Install inspectrum Package (Tool for visualising captured radio signals)
     become: yes
@@ -111,6 +132,13 @@
     package:
       name: xdx
       state: present
+
+  - name: Modify categories for Xdx.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/Xdx.desktop
+      regexp: '^Categories=Network;HamRadio;'
+      line: Categories=HamRadio
 
   # Because there's really no other place for this to go (falls under misc)
   - name: Create xplanet.desktop in /usr/local/share/applications

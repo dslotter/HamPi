@@ -44,6 +44,13 @@
     args:
       chdir: "/home/pi/hamradio/chirp-daily-{{ download_date.stdout_lines[0] }}"
 
+  - name: Modify categories for chirp.desktop
+    become: yes
+    lineinfile:
+      path: /usr/local/share/applications/chirp.desktop
+      regexp: '^Categories=Hamradio;Programming;Handheld;Radio;Amateur;Programmer'
+      line: Categories=HamRadio
+
   - name: Remove Chirp {{ download_date.stdout_lines[0] }} build directory
     become: yes
     file:

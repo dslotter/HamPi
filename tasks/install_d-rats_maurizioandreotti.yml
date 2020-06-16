@@ -36,3 +36,24 @@
 
   - name: Run D-Rats update script (which builds and installs D-Rats from Git)
     command: /usr/local/bin/update_d-rats
+
+  - name: Modify categories for d-rats.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/d-rats.desktop
+      regexp: '^Categories=Application;HamRadio'
+      line: Categories=HamRadio D-Rats
+
+#  - name: Modify categories for d-rats_mapdownloader.desktop
+#    become: yes
+#    lineinfile:
+#      path: /usr/share/applications/d-rats_mapdownloader.desktop
+#      regexp: '^Categories=Application;HamRadio'
+#      line: Categories=HamRadio D-Rats
+
+  - name: Modify categories for d-rats_repeater.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/d-rats_repeater.desktop
+      regexp: '^Categories=Application;HamRadio'
+      line: Categories=HamRadio D-Rats

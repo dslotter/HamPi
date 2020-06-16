@@ -61,6 +61,13 @@
     args:
       chdir: /home/pi/hamradio/freedv-gui/build_linux
 
+  - name: Modify categories for freedv.desktop
+    become: yes
+    lineinfile:
+      path: /usr/local/share/applications/freedv.desktop
+      regexp: '^Categories=GTK;GNOME;AudioVideo;Audio;HamRadio;'
+      line: Categories=HamRadio
+
   - name: Remove freedv-gui build directory
     file:
       path: /home/pi/hamradio/freedv-gui

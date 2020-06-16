@@ -20,3 +20,25 @@
       - xnec2c
       - xnecview
       - yagiuda
+
+  # GTK Smith Chart Calculator
+  - name: Modify categories for gsmc.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/gsmc.desktop
+      regexp: '^Categories=Education;HamRadio;'
+      line: Categories=HamRadio Calculators
+
+  - name: Modify categories for nec2c.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/nec2c.desktop
+      regexp: '^Categories=Network;HamRadio;X-HamRadio-Antennas'
+      line: Categories=HamRadio Antenna Analyzer
+
+  - name: Modify categories for xnec2c.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/xnec2c.desktop
+      regexp: '^Categories=Science;Math;NumericalAnalysis;'
+      line: Categories=HamRadio Antenna Analyzer

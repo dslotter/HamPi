@@ -19,6 +19,20 @@
       - xlog
       - cqrlog
 
+  - name: Modify categories for cqrlog.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/cqrlog.desktop
+      regexp: '^Categories=Utility;Database;HamRadio'
+      line: Categories=HamRadio Logging
+
+  - name: Modify categories for xlog.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/xlog.desktop
+      regexp: '^Categories=Utility;Database;HamRadio;GTK'
+      line: Categories=HamRadio Logging
+
   - name: Install Logging Packages (ARM 32)
     become: yes
     package:
@@ -26,6 +40,14 @@
       state: present
     with_items:
       - tucnak2
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Modify categories for tucnak2.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/tucnak2.desktop
+      regexp: '^Categories=Utility;HamRadio'
+      line: Categories=HamRadio Logging
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
 #
@@ -120,5 +142,4 @@
     file: dest=/usr/local/bin/wsjtx_to_n3fjp.py mode=a+x
 
 # Todo:
-# PyQSO - Logging software (written in Python)
 # twlog - basic logging program for ham radio

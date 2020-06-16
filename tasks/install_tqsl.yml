@@ -58,6 +58,13 @@
     args:
       chdir: /home/pi/hamradio/tqsl-{{ tqsl_version.stdout_lines[0] }}
 
+  - name: Modify categories for tqsl.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/tqsl.desktop
+      regexp: '^Categories=Application;HamRadio;Utility;'
+      line: Categories=HamRadio Logging
+
   - name: Remove TQSL {{ tqsl_version.stdout_lines[0] }} build directory
     file:
       path: /home/pi/hamradio/tqsl-{{ tqsl_version.stdout_lines[0] }}

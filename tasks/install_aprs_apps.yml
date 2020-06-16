@@ -31,6 +31,13 @@
       name: xastir
       state: present
 
+  - name: Modify categories for xastir.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/xastir.desktop
+      regexp: '^Categories=Network;HamRadio'
+      line: Categories=HamRadio APRS
+
 #
 # Install YAAC - Yet Another APRS Client
 #

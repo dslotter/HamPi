@@ -56,6 +56,13 @@
       args:
         chdir: /home/pi/hamradio/flaa-{{ download_date.stdout_lines[0] }}
 
+    - name: Modify categories for flaa.desktop
+      become: yes
+      lineinfile:
+        path: /usr/local/share/applications/flaa.desktop
+        regexp: '^Categories=Other;HamRadio;'
+        line: Categories=HamRadio Fldigi
+
     - name: Clean flaa {{ download_date.stdout_lines[0] }}
       command: make clean
       args:

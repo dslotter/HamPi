@@ -16,6 +16,13 @@
       - qtel
       - qtel-icons
 
+  - name: Modify categories for qtel.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/qtel.desktop
+      regexp: '^Categories=Application;HamRadio;Qt;Network;'
+      line: Categories=HamRadio
+
   - name: Install svxlink-server Package (Voice-over-IP server for ham radio operators)
     become: yes
     package:

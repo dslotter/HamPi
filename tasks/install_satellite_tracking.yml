@@ -13,6 +13,13 @@
       name: gpredict
       state: present
 
+  - name: Modify categories for gpredict.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/gpredict.desktop
+      regexp: '^Categories=HamRadio;Science;Astronomy;Education;Network;'
+      line: Categories=HamRadio
+
   - name: Install Satellite Tracking Packages (ARM)
     become: yes
     package:

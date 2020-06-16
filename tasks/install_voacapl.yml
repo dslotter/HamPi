@@ -64,6 +64,13 @@
     args:
       chdir: /home/pi/hamradio/voacapl
 
+  - name: Modify categories for voacapgui.desktop
+    become: yes
+    lineinfile:
+      path: /usr/local/share/applications/voacapgui.desktop
+      regexp: '^Categories=Science;HamRadio'
+      line: Categories=HamRadio Calculators
+
   - name: Clean VOACAPL
     command: make clean
     args:

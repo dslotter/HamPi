@@ -1,0 +1,89 @@
+<!DOCTYPE Menu PUBLIC "-//freedesktop//DTD Menu 1.0//EN"
+ "http://www.freedesktop.org/standards/menu-spec/1.0/menu.dtd">
+<Menu>
+  <Name>Applications</Name>
+  <Menu>
+    <Name>Hamradio</Name>
+    <Directory>HamRadio.directory</Directory>
+    <Include>
+        <Category>HamRadio</Category>
+    </Include>
+    <Menu>
+      <Name>Antenna Analyzer</Name>
+      <Directory>HamRadioAntennaAnalyzer.directory</Directory>
+      <Include>
+        <Category>HamRadio Antenna Analyzer</Category>
+      </Include>
+    </Menu>
+    <Menu>
+      <Name>Name=Automatic Packet Reporting System (APRS)</Name>
+      <Directory>HamRadioAPRS.directory</Directory>
+      <Include>
+        <Category>HamRadio APRS</Category>
+      </Include>
+    </Menu>
+    <Menu>
+      <Name>Name=Calculators</Name>
+      <Directory>HamRadioCalculators.directory</Directory>
+      <Include>
+        <Category>HamRadio Calculators</Category>
+      </Include>
+    </Menu>
+    <Menu>
+      <Name>Name=D-Rats</Name>
+      <Directory>HamRadioD-RATS.directory</Directory>
+      <Include>
+        <Category>HamRadio D-Rats</Category>
+      </Include>
+    </Menu>
+    <Menu>
+      <Name>Fldigi Suite</Name>
+      <Directory>HamRadioFldigi.directory</Directory>
+      <Include>
+        <Category>HamRadio Fldigi</Category>
+      </Include>
+    </Menu>
+    <Menu>
+      <Name>Logging</Name>
+      <Directory>HamRadioLogging.directory</Directory>
+      <Include>
+        <Category>HamRadio Logging</Category>
+      </Include>
+    </Menu>
+    <Menu>
+      <Name>Morse Code</Name>
+      <Directory>HamRadioMorseCode.directory</Directory>
+      <Include>
+        <Category>HamRadio Morse Code</Category>
+      </Include>
+    </Menu>
+    <Menu>
+      <Name>PSK</Name>
+      <Directory>HamRadioPSK.directory</Directory>
+      <Include>
+        <Category>HamRadio PSK</Category>
+      </Include>
+    </Menu>
+    <Menu>
+      <Name>Software Defined Radio (SDR)</Name>
+      <Directory>HamRadioSDR.directory</Directory>
+      <Include>
+        <Category>HamRadio SDR</Category>
+      </Include>
+    </Menu>
+    <Menu>
+      <Name>Training</Name>
+      <Directory>HamRadioTraining.directory</Directory>
+      <Include>
+        <Category>HamRadio Training</Category>
+      </Include>
+    </Menu>
+    <Menu>
+      <Name>Weak Signal</Name>
+      <Directory>HamRadioWeakSignal.directory</Directory>
+      <Include>
+        <Category>HamRadio Weak Signal</Category>
+      </Include>
+    </Menu>
+  </Menu> <!-- End hamradio -->
+</Menu>

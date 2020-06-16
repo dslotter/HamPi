@@ -15,3 +15,18 @@
     with_items:
       - fccexam
       - hamexam
+
+  - name: Modify categories for fccexam.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/fccexam.desktop
+      regexp: '^Categories=Education;HamRadio;'
+      line: Categories=HamRadio Training
+
+  - name: Modify categories for hamexam.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/hamexam.desktop
+      regexp: '^Categories=Education;HamRadio;'
+      line: Categories=HamRadio Training
+

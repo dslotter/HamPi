@@ -56,6 +56,13 @@
       args:
         chdir: /home/pi/hamradio/fllog-{{ download_date.stdout_lines[0] }}
 
+    - name: Modify categories for fllog.desktop
+      become: yes
+      lineinfile:
+        path: /usr/local/share/applications/fllog.desktop
+        regexp: '^Categories=Network;HamRadio;'
+        line: Categories=HamRadio Fldigi
+
     - name: Remove fllog {{ download_date.stdout_lines[0] }} build directory
       file:
         path: /home/pi/hamradio/fllog-{{ download_date.stdout_lines[0] }}

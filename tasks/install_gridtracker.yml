@@ -69,6 +69,14 @@
       replace: '/usr/local'
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
+  - name: Modify categories for Pi4-GridTracker.desktop
+    become: yes
+    lineinfile:
+      path: /usr/local/share/applications/Pi4-GridTracker.desktop
+      regexp: '^Categories=None;'
+      line: Categories=HamRadio Weak Signal
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
 #
 # Raspbian x86
 #
@@ -106,4 +114,12 @@
       path: /usr/local/share/applications/GridTracker.desktop
       regexp: '~\/Downloads'
       replace: '/usr/local'
+    when: ansible_architecture == "i386"
+
+  - name: Modify categories for GridTracker.desktop
+    become: yes
+    lineinfile:
+      path: /usr/local/share/applications/GridTracker.desktop
+      regexp: '^Categories=None;'
+      line: Categories=HamRadio Weak Signal
     when: ansible_architecture == "i386"

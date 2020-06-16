@@ -56,6 +56,13 @@
       args:
         chdir: /home/pi/hamradio/flcluster-{{ download_date.stdout_lines[0] }}
 
+    - name: Modify categories for flcluster.desktop
+      become: yes
+      lineinfile:
+        path: /usr/local/share/applications/flcluster.desktop
+        regexp: '^Categories=Network;HamRadio;'
+        line: Categories=HamRadio Fldigi
+
     - name: Remove flcluster {{ download_date.stdout_lines[0] }} build directory
       file:
         path: /home/pi/hamradio/flcluster-{{ download_date.stdout_lines[0] }}

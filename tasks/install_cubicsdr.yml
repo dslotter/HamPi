@@ -101,7 +101,7 @@
     args:
       chdir: /home/pi/hamradio/liquid-dsp
 
-  - name: Make liquid-dsp
+  - name: Install liquid-dsp
     become: yes
     command: make install
     args:
@@ -145,6 +145,13 @@
     command: make install
     args:
       chdir: /home/pi/hamradio/CubicSDR/build
+
+  - name: Modify categories for CubicSDR.desktop
+    become: yes
+    lineinfile:
+      path: /usr/local/share/applications/CubicSDR.desktop
+      regexp: '^Categories=Science;HamRadio;DataVisualization;'
+      line: Categories=HamRadio SDR
 
   - name: Remove CubicSDR build directory
     file:

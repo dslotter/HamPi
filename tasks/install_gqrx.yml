@@ -57,7 +57,30 @@
     args:
       chdir: /home/pi/hamradio/gqrx-source/build
 
+  - name: Modify categories for gqrx.desktop
+    become: yes
+    lineinfile:
+      path: /home/pi/hamradio/gqrx-source/gqrx.desktop
+      regexp: '^Categories=Network;HamRadio;'
+      line: Categories=HamRadio SDR
+
+  - name: Install GQRX desktop
+    become: yes
+    command: cp gqrx.desktop /usr/local/share/applications/gqrx.desktop
+    args:
+      chdir: /home/pi/hamradio/gqrx-source
+
   - name: Remove GQRX build directory
     file:
       path: /home/pi/hamradio/gqrx-source
       state: absent
+
+  # gnuradio-grc.desktop is from the gnuradio dpkg but it
+  # isn't installed directly. Instead it is installed as a
+  # dependency of gnuradio-dev which is installed above.
+  - name: Modify categories for gnuradio-grc.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/gnuradio-grc.desktop
+      regexp: '^Categories=Development;HamRadio;Science;'
+      line: Categories=HamRadio

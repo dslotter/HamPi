@@ -56,6 +56,13 @@
       args:
         chdir: /home/pi/hamradio/flnet-{{ download_date.stdout_lines[0] }}
 
+    - name: Modify categories for flnet.desktop
+      become: yes
+      lineinfile:
+        path: /usr/local/share/applications/flnet.desktop
+        regexp: '^Categories=Network;HamRadio;'
+        line: Categories=HamRadio Fldigi
+
     - name: Remove flnet {{ download_date.stdout_lines[0] }} build directory
       file:
         path: /home/pi/hamradio/flnet-{{ download_date.stdout_lines[0] }}

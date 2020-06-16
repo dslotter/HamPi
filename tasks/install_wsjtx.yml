@@ -99,3 +99,22 @@
       path: /home/pi/hamradio/wsjtx_{{ wsjtx_version }}_i386.deb
       state: absent
     when: ansible_architecture == "i386"
+
+
+#
+# Common
+#
+
+  - name: Modify categories for message_aggregator.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/message_aggregator.desktop
+      regexp: '^Categories=AudioVideo;Audio;HamRadio;'
+      line: Categories=HamRadio Weak Signal
+
+  - name: Modify categories for wsjtx.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/wsjtx.desktop
+      regexp: '^Categories=AudioVideo;Audio;HamRadio;'
+      line: Categories=HamRadio Weak Signal

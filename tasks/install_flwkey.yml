@@ -56,6 +56,13 @@
       args:
         chdir: /home/pi/hamradio/flwkey-{{ download_date.stdout_lines[0] }}
 
+    - name: Modify categories for flwkey.desktop
+      become: yes
+      lineinfile:
+        path: /usr/local/share/applications/flwkey.desktop
+        regexp: '^Categories=Network;HamRadio;'
+        line: Categories=HamRadio Fldigi
+
     - name: Remove flwkey {{ download_date.stdout_lines[0] }} build directory
       file:
         path: /home/pi/hamradio/flwkey-{{ download_date.stdout_lines[0] }}

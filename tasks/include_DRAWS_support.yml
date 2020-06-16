@@ -173,6 +173,13 @@
     args:
       chdir: /home/pi/hamradio/direwolf/build
 
+  - name: Modify categories for direwolf.desktop
+    become: yes
+    lineinfile:
+      path: /usr/local/share/applications/direwolf.desktop
+      regexp: '^Categories=HamRadio'
+      line: Categories=HamRadio APRS
+
   - name: Remove Dev Direwolf build directory
     file:
       path: /home/pi/hamradio/direwolf
