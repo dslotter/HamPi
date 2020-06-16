@@ -25,6 +25,7 @@
 #      - python3
 #      - python3-pip
 
+
 # Raspbian (ARM)
 #
 
@@ -78,6 +79,7 @@
       state: absent
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
+
 #
 # Raspbian (x86)
 #
@@ -114,18 +116,18 @@
   - name: Copy JTDX from local file (because automated downloads don't work reliably) (x86)
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/jtdx-2.1.0-rc150_u_i386.deb"
-      dest: "/home/pi/hamradio/jtdx-2.1.0-rc150_u_i386.deb"
+      src: "{{ playbook_dir }}/../files/jtdx-2.1.0-rc150_i386.deb"
+      dest: "/home/pi/hamradio/jtdx-2.1.0-rc150_i386.deb"
     when: ansible_architecture == "i386"
 
   - name: Install JTDX from local file (because automated downloads don't work reliably) (x86)
     become: yes
     apt:
-      deb: /home/pi/hamradio/jtdx-2.1.0-rc150_u_i386.deb
+      deb: /home/pi/hamradio/jtdx-2.1.0-rc150_i386.deb
     when: ansible_architecture == "i386"
 
   - name: Remove JTDX installer from local file (because automated downloads don't work reliably) (x86)
     file:
-      path: /home/pi/hamradio/jtdx-2.1.0-rc150_u_i386.deb
+      path: /home/pi/hamradio/jtdx-2.1.0-rc150_i386.deb
       state: absent
     when: ansible_architecture == "i386"
