@@ -159,6 +159,11 @@
       src: "{{ playbook_dir }}/../files/home/pi/Desktop/HAMPI LICENSE.TXT"
       dest: "/home/pi/Desktop/HAMPI LICENSE.TXT"
 
+  - name: Create GIVE BACK in /home/pi/Desktop
+    copy:
+      src: "{{ playbook_dir }}/../files/home/pi/Desktop/GIVE BACK.PDF"
+      dest: "/home/pi/Desktop/GIVE BACK.PDF"
+
   - name: Insert .bash_local configuration
     blockinfile:
       dest: /home/pi/.bash_local
