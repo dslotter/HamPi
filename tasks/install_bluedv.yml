@@ -38,7 +38,7 @@
   - name: Copy BlueDV desktop file
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/BlueDV.desktop"
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/BlueDV.desktop"
       dest: "/usr/local/share/applications/BlueDV.desktop"
 
   - name: Modify categories for BlueDV.desktop
