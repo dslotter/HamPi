@@ -27,7 +27,7 @@
   - name: Install D-Rats update script
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/update_d-rats"
+      src: "{{ playbook_dir }}/../files/usr/local/bin/update_d-rats"
       dest: "/usr/local/bin/update_d-rats"
 
   - name: Set D-Rats update script to executable
