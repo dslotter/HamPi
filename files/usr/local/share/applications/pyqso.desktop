@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Type=Application
+Name=PyQSO
+Exec=pyqso
+Terminal=false
+Comment=PyQSO Logging
+Categories=HamRadio Logging
+Keywords=HamRadio;log;PyQSO

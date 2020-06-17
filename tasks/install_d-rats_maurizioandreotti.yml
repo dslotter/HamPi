@@ -57,3 +57,9 @@
       path: /usr/share/applications/d-rats_repeater.desktop
       regexp: '^Categories=Application;HamRadio'
       line: Categories=HamRadio D-Rats
+
+  - name: Copy D-Rats update script desktop file
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/update-drats.desktop"
+      dest: "/usr/local/share/applications/update-drats.desktop"

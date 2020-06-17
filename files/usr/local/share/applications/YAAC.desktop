@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Type=Application
+Name=YAAC
+Path=/usr/local/YAAC
+Exec=java -jar YAAC.jar
+Terminal=false
+Comment=YAAC (Yet Another APRS Client)
+Categories=HamRadio APRS
+Keywords=HamRadio;APRS;YAAC

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Type=Application
+Name=KLog
+Exec=klog
+Terminal=false
+Comment=KLog - The Ham Radio Logging application
+Categories=HamRadio Logging
+Keywords=HamRadio;log;KLog

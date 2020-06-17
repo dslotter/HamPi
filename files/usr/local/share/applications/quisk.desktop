@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Type=Application
+Name=Quisk
+Exec=quisk
+Terminal=false
+Comment=Quisk SDR
+Categories=HamRadio SDR
+Keywords=HamRadio;SDR;Quisk

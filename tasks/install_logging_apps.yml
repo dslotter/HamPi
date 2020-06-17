@@ -33,6 +33,12 @@
       regexp: '^Categories=Utility;Database;HamRadio;GTK'
       line: Categories=HamRadio Logging
 
+  - name: Copy klog desktop file
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/klog.desktop"
+      dest: "/usr/local/share/applications/klog.desktop"
+
   - name: Install Logging Packages (ARM 32)
     become: yes
     package:
@@ -120,10 +126,11 @@
     args:
       chdir: /home/pi/hamradio/pyqso
 
-  - name: Remove PyQSO build directory
-    file:
-      path: /home/pi/hamradio/pyqso
-      state: absent
+  - name: Copy pyqso desktop file
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/pyqso.desktop"
+      dest: "/usr/local/share/applications/pyqso.desktop"
 
   - name: Download wsjtx_to_n3fjp executable
     become: yes

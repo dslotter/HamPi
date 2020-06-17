@@ -32,3 +32,9 @@
   - name: Install quisk
     become: yes
     command: python3 -m pip install --upgrade quisk
+
+  - name: Copy quisk desktop file
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/quisk.desktop"
+      dest: "/usr/local/share/applications/quisk.desktop"

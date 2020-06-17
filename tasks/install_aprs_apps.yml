@@ -69,3 +69,9 @@
       dest: /usr/local/YAAC/plugins
       remote_src: yes
       validate_certs: no
+
+  - name: Copy YAAC desktop file
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/YAAC.desktop"
+      dest: "/usr/local/share/applications/YAAC.desktop"

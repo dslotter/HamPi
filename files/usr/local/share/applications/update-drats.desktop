@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Type=Application
+Name=Update D-Rats
+Exec=/usr/local/bin/update_d-rats
+Icon=d-rats2
+Terminal=true
+Comment=Update D-Rats from Git
+Categories=HamRadio D-Rats
