@@ -146,3 +146,17 @@
     copy:
       src: "{{ playbook_dir }}/../files/usr/local/share/applications/xplanet.desktop"
       dest: "/usr/local/share/applications/xplanet.desktop"
+
+  - name: Install qrz_callsign_reader dependencies
+    become: yes
+    package:
+      name: python3-xmltodict
+      state: present
+
+  - name: Download qrz_callsign_reader executable by W3DJS
+    get_url:
+      url: https://raw.githubusercontent.com/dslotter/qrz_callsign_reader/master/qrz_callsign_reader.py
+      dest: /home/pi/bin/qrz_callsign_reader.py
+
+  - name: Set qrz_callsign_reader.py to executable
+    file: dest=/home/pi/bin/qrz_callsign_reader.py mode=a+x
