@@ -132,21 +132,31 @@
       src: "{{ playbook_dir }}/../files/usr/local/share/applications/pyqso.desktop"
       dest: "/usr/local/share/applications/pyqso.desktop"
 
-  - name: Download wsjtx_to_n3fjp executable
-    become: yes
+  - name: Create /home/pi/bin
+    file:
+      path: /home/pi/bin
+      state: directory
+
+  - name: Download wsjtx_to_n3fjp executable by W3DJS
     get_url:
       url: https://raw.githubusercontent.com/dslotter/wsjtx_to_n3fjp/master/wsjtx_to_n3fjp.py
-      dest: /usr/local/bin/wsjtx_to_n3fjp.py
+      dest: /home/pi/bin/wsjtx_to_n3fjp.py
 
   - name: Download wsjtx_to_n3fjp default config
-    become: yes
     get_url:
       url: https://raw.githubusercontent.com/dslotter/wsjtx_to_n3fjp/master/config
-      dest: /usr/local/bin/config
+      dest: /home/pi/bin/config
 
   - name: Set wsjtx_to_n3fjp.py to executable
-    become: yes
-    file: dest=/usr/local/bin/wsjtx_to_n3fjp.py mode=a+x
+    file: dest=/home/pi/bin/wsjtx_to_n3fjp.py mode=a+x
+
+  - name: Download upload_adif_log executable by W3DJS
+    get_url:
+      url: https://raw.githubusercontent.com/dslotter/upload_adif_log/master/upload_adif_log
+      dest: /home/pi/bin/upload_adif_log
+
+  - name: Set upload_adif_log to executable
+    file: dest=/home/pi/bin/upload_adif_log mode=a+x
 
 # Todo:
 # twlog - basic logging program for ham radio
