@@ -150,6 +150,16 @@
   - name: Set wsjtx_to_n3fjp.py to executable
     file: dest=/home/pi/bin/wsjtx_to_n3fjp.py mode=a+x
 
+  - name: Install upload_adif_log dependencies
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - curl
+      - espeak
+      - ruby-notify
+
   - name: Download upload_adif_log executable by W3DJS
     get_url:
       url: https://raw.githubusercontent.com/dslotter/upload_adif_log/master/upload_adif_log
