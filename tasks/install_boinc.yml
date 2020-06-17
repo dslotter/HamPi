@@ -23,7 +23,7 @@
 
   - name: Install BOINC script
     copy:
-      src: "{{ playbook_dir }}/../files/boinc.sh"
+      src: "{{ playbook_dir }}/../files/home/pi/.config/lxsession/LXDE-pi/boinc.sh"
       dest: "/home/pi/.config/lxsession/LXDE-pi/boinc.sh"
 
   - name: Set BOINC script to executable
