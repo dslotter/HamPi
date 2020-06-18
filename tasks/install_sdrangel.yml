@@ -736,6 +736,12 @@
       repo: https://github.com/f4exb/sdrangel.git
       dest: /opt/build/sdrangel
 
+  # Adding this since a recent commit from @f4exb breaks the build.
+  - name: Git Reset sdrangel CMakeFiles
+    command: git reset --hard "8ad440f893cc110d7df493ed8c49c4c70e5db94a"
+    args:
+      chdir: /opt/build/sdrangel
+
   - name: Create directory sdrangel/build
     file:
       path: /opt/build/sdrangel/build
@@ -756,6 +762,13 @@
     command: make install
     args:
       chdir: /opt/build/sdrangel/build
+
+  - name: Modify categories for sdrangel.desktop
+    become: yes
+    lineinfile:
+      path: /opt/install/sdrangel/share/applications/sdrangel.desktop
+      regexp: '^Categories=Network;HamRadio;'
+      line: Categories=HamRadio SDR
 
   - name: Remove SDRAngel build directory
     file:
