@@ -112,7 +112,7 @@ Version 2 of Raspberry Pi Ham Radio Image by W3DJS
   
   twpsk - a psk program
 
-S**oftware Defined Radio**
+**Software Defined Radio**
 
   CubicSDR - Software Defined Radio receiver
   
