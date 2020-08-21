@@ -764,6 +764,10 @@
       regexp: '^Categories=Network;HamRadio;'
       line: Categories=HamRadio SDR
 
+  - name: Copy sdrangel.desktop to where system will recognize it
+    become: yes
+    command: cp /opt/install/sdrangel/share/applications/sdrangel.desktop /usr/local/share/applications/sdrangel.desktop
+
   - name: Remove SDRAngel build directory
     file:
       path: /opt/build/sdrangel
