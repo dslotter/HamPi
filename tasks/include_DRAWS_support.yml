@@ -133,19 +133,6 @@
     args:
       chdir: /home/pi/hamradio/direwolf
 
-  - name: Fix check for D.R.A.W.S. support
-    lineinfile:
-      path: /home/pi/hamradio/direwolf/src/dwgpsd.c
-      regexp: '^#if GPSD_API_MAJOR_VERSION \< 5 \|\| GPSD_API_MAJOR_VERSION \> 8'
-      line: '#if GPSD_API_MAJOR_VERSION < 5 || GPSD_API_MAJOR_VERSION > 10'
-
-  - name: Change gpsdata.status to gpsdata.fix.status for GPS_API_MAJOR_VERSION 10
-    lineinfile:
-      path: /home/pi/hamradio/direwolf/src/dwgpsd.c
-      regexp: 'gpsdata.status \>= STATUS_FIX && gpsdata.fix.mode \>= MODE_2D'
-      line: '     if (gpsdata.fix.status >= STATUS_FIX && gpsdata.fix.mode >= MODE_2D) {
-'
-
   - name: Create directory direwolf/build
     file:
       path: /home/pi/hamradio/direwolf/build
