@@ -216,7 +216,7 @@
       dest: /opt/build/dsdcc
 
   - name: Git Reset DSDcc CMakeFiles
-    command: git reset --hard "v1.8.6"
+    command: git reset --hard "v1.8.7"
     args:
       chdir: /opt/build/dsdcc
 
@@ -435,7 +435,7 @@
       state: directory
 
   - name: Build RTL-SDR CMakeFiles
-    command: cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=/opt/install/libmirisdr-4 ..
+    command: cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=/opt/install/librtlsdr ..
     args:
       chdir: /opt/build/librtlsdr/build
 
@@ -735,12 +735,6 @@
     git:
       repo: https://github.com/f4exb/sdrangel.git
       dest: /opt/build/sdrangel
-
-  # Adding this since a recent commit from @f4exb breaks the build.
-  - name: Git Reset sdrangel CMakeFiles
-    command: git reset --hard "8ad440f893cc110d7df493ed8c49c4c70e5db94a"
-    args:
-      chdir: /opt/build/sdrangel
 
   - name: Create directory sdrangel/build
     file:
