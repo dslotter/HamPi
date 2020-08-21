@@ -76,6 +76,7 @@
 #
 # Ham Radio Applications
 #
+- import_playbook: install_adifmerg.yml
 - import_playbook: install_antenna_modeling_apps.yml
 - import_playbook: install_aprs_apps.yml
 - import_playbook: install_d-rats_maurizioandreotti.yml
