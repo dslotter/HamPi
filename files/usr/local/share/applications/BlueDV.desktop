@@ -2,7 +2,7 @@
 GenericName=BlueDV HotSpot Software
 Name=BlueDV
 Comment=BlueDV HotSpot Software
-Exec=sh -c "cd /usr/local/bluedv/; sudo mono BlueDV.exe"
+Exec=sh -c "cd /usr/local/bluedv/; mono BlueDV.exe"
 Terminal=false
 Type=Application
 Categories=Network;WebBrowser;
