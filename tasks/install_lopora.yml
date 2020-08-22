@@ -1,0 +1,59 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Lopora by PA2OHH
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Install dependent libraries for Lopora
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - python3
+      - python3-numpy
+      - python3-pillow
+      - python3-pil.imagetk
+      - python3-pyaudio
+      - pulseaudio
+      - pavucontrol
+
+  - name: Create directory /home/pi/lopora
+    file:
+      path: /home/pi/lopora
+      state: directory
+
+
+#
+# Download and install LOPORA
+#
+
+  - name: Download and Unarchive Lopora QRSS beacon reception program
+    unarchive:
+      src: https://www.qsl.net/pa2ohh/11lopsource.zip
+      dest: /home/pi/lopora
+      remote_src: yes
+
+  - name: Set quickstart script to executable
+    file: dest=/home/pi/lopora/scriptfiles/quickstartlopora.sh mode=a+x
+
+  - name: Create quickstartlopora-hampi.sh
+    copy:
+      dest: /home/pi/lopora/scriptfiles/quickstartlopora-hampi.sh
+      mode: 0755
+      content: |
+        #!/bin/sh
+
+        # Start Lopora
+        cd /home/pi/lopora
+        lxterminal -l -e 'python3 LOPORA-v5d.py ; /bin/sh' &
+        lxterminal -l -e 'python3 LOPEXTftp-v1a.py ; /bin/sh' &
+
+  - name: Copy Lopora desktop file
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/lopora.desktop"
+      dest: "/usr/local/share/applications/lopora.desktop"

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Lopora
+GenericName=QRSS Beacon Reception
+Comment=Lopora is a QRSS Beacon Reception program
+Exec=/home/pi/lopora/scriptfiles/quickstartlopora-hampi.sh
+Path=/home/pi/lopora
+Terminal=false
+StartupNotify=true
+Categories=Utility;HamRadio
+Keywords=Hamradio;Radio;Amateur

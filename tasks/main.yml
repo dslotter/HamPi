@@ -84,6 +84,7 @@
 - import_playbook: install_echolink_apps.yml
 - import_playbook: install_ham_training_apps.yml
 - import_playbook: install_logging_apps.yml
+- import_playbook: install_lopora.yml
 - import_playbook: install_morsecode_apps.yml
 - import_playbook: install_satellite_tracking.yml
 # Fails to build under aarch64:
