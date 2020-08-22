@@ -30,6 +30,7 @@
 #
 - import_playbook: install_hamlib.yml
 - import_playbook: include_DRAWS_support.yml
+- import_playbook: install_ambeserver.yml
 - import_playbook: install_airspy.yml
 - import_playbook: install_airspyhf.yml
 - import_playbook: install_soapy_sdr.yml

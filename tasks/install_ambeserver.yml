@@ -1,0 +1,70 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install NW Digital's version of AMBEServer
+  hosts: all
+  gather_facts: no
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory /usr/local/sbin
+    become: yes
+    file:
+      path: /usr/local/sbin
+      state: directory
+
+  - name: Create the user 'opendv' and add to group of 'dialout'
+    become: yes
+    user:
+      name: opendv
+      groups: dialout
+      append: yes
+      comment: AMBEServer
+      create_home: no
+      shell: /usr/sbin/nologin
+
+
+#
+# Build and install NW Radio AMBEServer
+#
+
+  - name: Git clone latest NW Radio AMBEServer sources
+    git:
+      repo: https://github.com/nwdigitalradio/ambeserver-install.git
+      dest: /home/pi/hamradio/ambeserver-install
+
+  - name: Set install script to executable
+    file: dest=/home/pi/hamradio/ambeserver-install/install.sh mode=a+x
+
+  - name: Install AMBEServer package
+    become: yes
+    command: ./install.sh
+    args:
+      chdir: /home/pi/hamradio/ambeserver-install
+
+  - name: Stop ambeserver@ThumbDV service to replace with optimized version
+    become: yes
+    command: systemctl stop ambeserver@ThumbDV
+
+  - name: Build optimized version of AMBEServer
+    command: gcc -O2 -march=native -mtune=native -o AMBEserver AMBEserver.c
+    args:
+      chdir: /home/pi/hamradio/ambeserver-install/usr/local/src/AMBEserver
+
+  - name: Install optimized AMBEServer executable
+    become: yes
+    command: cp /home/pi/hamradio/ambeserver-install/usr/local/src/AMBEserver/AMBEserver /usr/local/sbin
+
+  - name: Remove AMBEServer build directory
+    file:
+      path: /home/pi/hamradio/ambeserver-install
+      state: absent
+
+  - name: Restart ambeserver@ThumbDV service using optimized binary
+    become: yes
+    command: systemctl restart ambeserver@ThumbDV
