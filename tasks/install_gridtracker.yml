@@ -11,18 +11,19 @@
       path: /home/pi/hamradio
       state: directory
 
-  - name: Create directory for documentation
-    become: yes
-    file:
-      path: /usr/share/doc/gridtracker
-      state: directory
-
-  - name: Download GridTracker Documentation
-    become: yes
-    get_url:
-      url: https://www.dropbox.com/s/nmgqszm4t85mrg2/GTQS_0406.pdf?dl=1
-      dest: /usr/share/doc/gridtracker/GTQS_0406.pdf
-      validate_certs: no
+# 2020-09-19 - GridTracker has gone to an online documentation model
+#  - name: Create directory for documentation
+#    become: yes
+#    file:
+#      path: /usr/share/doc/gridtracker
+#      state: directory
+#
+#  - name: Download GridTracker Documentation
+#    become: yes
+#    get_url:
+#      url: https://www.dropbox.com/s/nmgqszm4t85mrg2/GTQS_0406.pdf?dl=1
+#      dest: /usr/share/doc/gridtracker/GTQS_0406.pdf
+#      validate_certs: no
 
   - name: Create directory for desktop files
     become: yes
@@ -56,23 +57,23 @@
   - name: Copy GridTracker Desktop file (ARM)
     become: yes
     copy:
-      src: /usr/local/GridTracker/Pi4-GridTracker.desktop
-      dest: /usr/local/share/applications/Pi4-GridTracker.desktop
+      src: /usr/local/GridTracker/GridTracker.desktop
+      dest: /usr/local/share/applications/GridTracker.desktop
       remote_src: yes
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Fix the lazy path that GridTracker uses to what we're using
     become: yes
     replace:
-      path: /usr/local/share/applications/Pi4-GridTracker.desktop
+      path: /usr/local/share/applications/GridTracker.desktop
       regexp: '\/home\/pi\/Downloads'
       replace: '/usr/local'
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
-  - name: Modify categories for Pi4-GridTracker.desktop
+  - name: Modify categories for GridTracker.desktop
     become: yes
     lineinfile:
-      path: /usr/local/share/applications/Pi4-GridTracker.desktop
+      path: /usr/local/share/applications/GridTracker.desktop
       regexp: '^Categories=None;'
       line: Categories=HamRadio Weak Signal
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
