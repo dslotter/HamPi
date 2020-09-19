@@ -4,7 +4,7 @@
 
 ---
 
-- name: HamPi v1.1d1 Playbook by W3DJS
+- name: HamPi v1.1 (Sep 2020) Playbook by W3DJS
   # hosts: all
   # hosts: vm
   hosts: hardware
@@ -104,6 +104,7 @@
 - import_playbook: install_chirp.yml
 - import_playbook: install_pat.yml
 - import_playbook: install_ardop_utils.yml
+- import_playbook: install_HamClock_by_WB0OEW.yml
 - import_playbook: install_qsstv.yml
 - import_playbook: install_quisk.yml
 - import_playbook: install_pmon.yml
