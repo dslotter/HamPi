@@ -133,6 +133,12 @@
     args:
       chdir: /home/pi/hamradio/direwolf
 
+  - name: Fix check for D.R.A.W.S. support
+    lineinfile:
+      path: /home/pi/hamradio/direwolf/src/dwgpsd.c
+      regexp: '^#if GPSD_API_MAJOR_VERSION \< 5 \|\| GPSD_API_MAJOR_VERSION \> 10'
+      line: '#if GPSD_API_MAJOR_VERSION < 5 || GPSD_API_MAJOR_VERSION > 11'
+
   - name: Create directory direwolf/build
     file:
       path: /home/pi/hamradio/direwolf/build
