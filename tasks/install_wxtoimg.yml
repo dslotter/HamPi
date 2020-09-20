@@ -16,7 +16,7 @@
 #
 
   - name: Determine latest version of wxtoimg on web (ARM)
-    shell: curl --silent "https://wxtoimgrestored.xyz/beta/" | grep -Po "wxtoimg-armhf-[0-9]+.[0-9]+.[0-9]+-beta.deb" | grep -Po "[0-9]+.[0-9]+.[0-9]+"
+    shell: curl --silent "https://wxtoimgrestored.xyz/downloads/" | grep -Po "wxtoimg-armhf-[0-9]+.[0-9]+.[0-9]+-beta.deb" | grep -Po "[0-9]+.[0-9]+.[0-9]+"
     args:
       warn: no
     register: wxtoimg_version
@@ -28,19 +28,21 @@
 
   - name: Download wxtoimg {{ wxtoimg_version.stdout_lines[0] }} (ARM)
     get_url:
-      url: "https://wxtoimgrestored.xyz/beta/wxtoimg-armhf-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb"
-      dest: /home/pi/hamradio/wxtoimg-armhf-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb
+      url: "https://wxtoimgrestored.xyz/beta/wxtoimg-linux-armhf-{{ wxtoimg_version.stdout_lines[0] }}-beta.tar.gz"
+      dest: /home/pi/hamradio/wxtoimg-linux-armhf-{{ wxtoimg_version.stdout_lines[0] }}-beta.tar.gz
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Install wxtoimg {{ wxtoimg_version.stdout_lines[0] }} (ARM)
     become: yes
-    apt:
-      deb: /home/pi/hamradio/wxtoimg-armhf-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb
+    shell: tar -xzvf wxtoimg-linux-armhf-{{ wxtoimg_version.stdout_lines[0] }}-beta.tar.gz --directory /
+    args:
+      chdir: /home/pi/hamradio/
+      warn: no
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
-  - name: Remove wxtoimg {{ wxtoimg_version.stdout_lines[0] }} installer (ARM)
+  - name: Remove wxtoimg {{ wxtoimg_version.stdout_lines[0] }} gzip (ARM)
     file:
-      path: /home/pi/hamradio/wxtoimg-armhf-{{ wxtoimg_version.stdout_lines[0] }}-beta.deb
+      path: /home/pi/hamradio/wxtoimg-linux-armhf-{{ wxtoimg_version.stdout_lines[0] }}-beta.tar.gz
       state: absent
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
@@ -49,7 +51,7 @@
 #
 
   - name: Determine latest version of wxtoimg on web (x86)
-    shell: curl --silent "https://wxtoimgrestored.xyz/beta/" | grep -Po "wxtoimg-i386-[0-9]+.[0-9]+.[0-9]+-beta.deb" | grep -Po "\-[0-9].*\-" | grep -Po "[0-9]+.[0-9]+.[0-9]"
+    shell: curl --silent "https://wxtoimgrestored.xyz/downloads/" | grep -Po "wxtoimg-i386-[0-9]+.[0-9]+.[0-9]+-beta.deb" | grep -Po "\-[0-9].*\-" | grep -Po "[0-9]+.[0-9]+.[0-9]"
     args:
       warn: no
     register: wxtoimg_version
