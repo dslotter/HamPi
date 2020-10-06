@@ -1,6 +1,9 @@
 # HamPi, formerly known as W3DJS Raspberry Pi for Ham Radio
 HamPi, formerly known as W3DJS Raspberry Pi for Ham Radio
 
+# Documentation
+There is a comprehensive Wiki for HamPi, located here: [https://github.com/dslotter/HamPi/wiki](../../wiki)
+
 # Past Version
 Version 2 of Raspberry Pi Ham Radio Image by W3DJS
 
