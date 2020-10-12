@@ -24,16 +24,16 @@
   - name: Download DXSpider sources
     git:
       repo: git://scm.dxcluster.org/scm/spider
-      dest: /home/pi/hamradio/spider.new
+      dest: /home/{{ ham_user }}/hamradio/spider.new
 
   - name: Copy DXSpider sources to root directory
     become: yes
-    shell: cp -a /home/pi/hamradio/spider.new /spider
+    shell: cp -a /home/{{ ham_user }}/hamradio/spider.new /spider
 
   - name: Clean old DXSpider path
     file:
       state: absent
-      path: /home/pi/hamradio/spider.new/
+      path: /home/{{ ham_user }}/hamradio/spider.new/
 
   - name: Git Reset --hard on new DXSpider path
     become: yes
@@ -44,7 +44,7 @@
 
   - name: Remove spider.new directory
     file:
-      path: /home/pi/hamradio/spider.new/
+      path: /home/{{ ham_user }}/hamradio/spider.new/
       state: absent
 
   - name: Create local directory - As per section 1.4 and 6.0 of DXCluster Installation Manual

@@ -13,11 +13,11 @@
 
   - name: Create directory chromium
     file:
-      path: /home/pi/.config/chromium/Default
+      path: /home/{{ ham_user }}/.config/chromium/Default
       state: directory
 
   - name: Copy initial Chromium Bookmarks
     become: yes
     copy:
       src: "{{ playbook_dir }}/../files/Bookmarks"
-      dest: "/home/pi/.config/chromium/Default/Bookmarks"
+      dest: "/home/{{ ham_user }}/.config/chromium/Default/Bookmarks"

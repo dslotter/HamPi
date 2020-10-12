@@ -51,15 +51,17 @@
       regexp: '^\/\/Unattended-Upgrade::Mail \"\";'
       line: Unattended-Upgrade::Mail "pi";
 
-  - name: Add the user 'pi' to group of 'dialout'
+  - name: Add the user account to group of 'dialout'
+    become: yes
     user:
-      name: pi
+      name: "{{ ham_user }}"
       groups: dialout
       append: yes
 
-  - name: Add the user 'pi' to group of 'plugdev'
+  - name: Add the user account to group of 'plugdev'
+    become: yes
     user:
-      name: pi
+      name: "{{ ham_user }}"
       groups: plugdev
       append: yes
 
@@ -122,15 +124,15 @@
       src: "{{ playbook_dir }}/../files/etc/xdg/pcmanfm/LXDE-pi/desktop-items-1.conf"
       dest: "/etc/xdg/pcmanfm/LXDE-pi/desktop-items-1.conf"
 
-  - name: Create /home/pi/.config/pcmanfm/LXDE-pi directory
+  - name: Create /home/{{ ham_user }}/.config/pcmanfm/LXDE-pi directory
     file:
-      path: /home/pi/.config/pcmanfm/LXDE-pi
+      path: "/home/{{ ham_user }}/.config/pcmanfm/LXDE-pi"
       state: directory
 
-  - name: Create HamPi desktop config in /home/pi/.config/pcmanfm/LXDE-pi
+  - name: Create HamPi desktop config in /home/{{ ham_user }}/.config/pcmanfm/LXDE-pi
     copy:
       src: "{{ playbook_dir }}/../files/home/pi/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
-      dest: "/home/pi/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
+      dest: "/home/{{ ham_user }}/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
 
   - name: Create /etc/lightdm
     become: yes
@@ -144,29 +146,29 @@
       src: "{{ playbook_dir }}/../files/etc/lightdm/pi-greeter.conf"
       dest: "/etc/lightdm/pi-greeter.conf"
 
-  - name: Create /home/pi/Desktop directory
+  - name: Create /home/{{ ham_user }}/Desktop directory
     file:
-      path: /home/pi/Desktop
+      path: "/home/{{ ham_user }}/Desktop"
       state: directory
 
-  - name: Create HamPi README in /home/pi/Desktop
+  - name: Create HamPi README in /home/{{ ham_user }}/Desktop
     copy:
       src: "{{ playbook_dir }}/../files/home/pi/Desktop/HAMPI README.doc"
-      dest: "/home/pi/Desktop/HAMPI README.doc"
+      dest: "/home/{{ ham_user }}/Desktop/HAMPI README.doc"
 
-  - name: Create HamPi LICENSE in /home/pi/Desktop
+  - name: Create HamPi LICENSE in /home/{{ ham_user }}/Desktop
     copy:
       src: "{{ playbook_dir }}/../files/home/pi/Desktop/HAMPI LICENSE.TXT"
-      dest: "/home/pi/Desktop/HAMPI LICENSE.TXT"
+      dest: "/home/{{ ham_user }}/Desktop/HAMPI LICENSE.TXT"
 
-  - name: Create GIVE BACK in /home/pi/Desktop
+  - name: Create GIVE BACK in /home/{{ ham_user }}/Desktop
     copy:
       src: "{{ playbook_dir }}/../files/home/pi/Desktop/GIVE BACK.PDF"
-      dest: "/home/pi/Desktop/GIVE BACK.PDF"
+      dest: "/home/{{ ham_user }}/Desktop/GIVE BACK.PDF"
 
   - name: Insert .bash_local configuration
     blockinfile:
-      dest: /home/pi/.bash_local
+      dest: "/home/{{ ham_user }}/.bash_local"
       create: yes
       block: |
         # BUILD OPTIONS
@@ -190,7 +192,7 @@
 
   - name: Insert .bashrc configuration
     blockinfile:
-      dest: /home/pi/.bashrc
+      dest: "/home/{{ ham_user }}/.bashrc"
       block: |
         if [ -f ~/.bash_local ]; then
             . ~/.bash_local

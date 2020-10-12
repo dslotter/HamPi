@@ -14,7 +14,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Create directory /opt/build

@@ -156,7 +156,7 @@
   - name: Download qrz_callsign_reader executable by W3DJS
     get_url:
       url: https://raw.githubusercontent.com/dslotter/qrz_callsign_reader/master/qrz_callsign_reader.py
-      dest: /home/pi/bin/qrz_callsign_reader.py
+      dest: /home/{{ ham_user }}/bin/qrz_callsign_reader.py
 
   - name: Set qrz_callsign_reader.py to executable
-    file: dest=/home/pi/bin/qrz_callsign_reader.py mode=a+x
+    file: dest=/home/{{ ham_user }}/bin/qrz_callsign_reader.py mode=a+x

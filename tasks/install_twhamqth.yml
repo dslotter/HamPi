@@ -15,7 +15,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Install dependent libraries
@@ -31,26 +31,26 @@
     become: yes
     unarchive:
       src: http://wa0eir.bcts.info/src/twhamqth-{{ twhamqth_version }}.src.tar.gz
-      dest: /home/pi/hamradio
+      dest: /home/{{ ham_user }}/hamradio
       remote_src: yes
 
   - name: Configure TwHamQTH {{ twhamqth_version }}
     command: ./configure
     args:
-      chdir: /home/pi/hamradio/twhamqth-{{ twhamqth_version }}
+      chdir: /home/{{ ham_user }}/hamradio/twhamqth-{{ twhamqth_version }}
 
   - name: Build TwHamQTH {{ twhamqth_version }}
     command: make
     args:
-      chdir: /home/pi/hamradio/twhamqth-{{ twhamqth_version }}
+      chdir: /home/{{ ham_user }}/hamradio/twhamqth-{{ twhamqth_version }}
 
   - name: Install TwHamQTH {{ twhamqth_version }}
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/twhamqth-{{ twhamqth_version }}
+      chdir: /home/{{ ham_user }}/hamradio/twhamqth-{{ twhamqth_version }}
 
   - name: Remove TwHamQTH {{ twhamqth_version }} build directory
     file:
-      path: /home/pi/hamradio/twhamqth-{{ twhamqth_version }}
+      path: /home/{{ ham_user }}/hamradio/twhamqth-{{ twhamqth_version }}
       state: absent

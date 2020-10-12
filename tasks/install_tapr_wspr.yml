@@ -23,7 +23,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
 #
@@ -36,43 +36,43 @@
 #  - name: Clone WsprryPi source
 #    git:
 #      repo: https://github.com/JamesP6000/WsprryPi.git
-#      dest: /home/pi/hamradio/WsprryPi
+#      dest: /home/{{ ham_user }}/hamradio/WsprryPi
 #
 #  - name: Build WsprryPi
 #    command: make
 #    args:
-#      chdir: /home/pi/hamradio/WsprryPi
+#      chdir: /home/{{ ham_user }}/hamradio/WsprryPi
 #
 #  - name: Install WsprryPi
 #    become: yes
 #    command: make install
 #    args:
-#      chdir: /home/pi/hamradio/WsprryPi
+#      chdir: /home/{{ ham_user }}/hamradio/WsprryPi
 #
 #  - name: Remove WsprryPi build directory
 #    file:
-#      path: /home/pi/hamradio/WsprryPi
+#      path: /home/{{ ham_user }}/hamradio/WsprryPi
 #      state: absent
 
   - name: Clone WsprryPi source
     git:
       repo: https://github.com/DanAnkers/WsprryPi.git
-      dest: /home/pi/hamradio/WsprryPi
+      dest: /home/{{ ham_user }}/hamradio/WsprryPi
 
   - name: Build WsprryPi
     command: gcc wspr.c -o wspr-pi
     args:
-      chdir: /home/pi/hamradio/WsprryPi
+      chdir: /home/{{ ham_user }}/hamradio/WsprryPi
 
   - name: Install WsprryPi
     become: yes
     command: install wspr-pi /usr/local/bin
     args:
-      chdir: /home/pi/hamradio/WsprryPi
+      chdir: /home/{{ ham_user }}/hamradio/WsprryPi
 
   - name: Remove WsprryPi build directory
     file:
-      path: /home/pi/hamradio/WsprryPi
+      path: /home/{{ ham_user }}/hamradio/WsprryPi
       state: absent
 
 
@@ -83,22 +83,22 @@
 #  - name: Clone PiCW source
 #    git:
 #      repo: https://github.com/JamesP6000/PiCW.git
-#      dest: /home/pi/hamradio/PiCW
+#      dest: /home/{{ ham_user }}/hamradio/PiCW
 #
 #  - name: Build PiCW
 #    command: make
 #    args:
-#      chdir: /home/pi/hamradio/PiCW
+#      chdir: /home/{{ ham_user }}/hamradio/PiCW
 #
 #  - name: Install PiCW
 #    become: yes
 #    command: make install
 #    args:
-#      chdir: /home/pi/hamradio/PiCW
+#      chdir: /home/{{ ham_user }}/hamradio/PiCW
 #
 #  - name: Remove PiCW build directory
 #    file:
-#      path: /home/pi/hamradio/PiCW
+#      path: /home/{{ ham_user }}/hamradio/PiCW
 #      state: absent
 
 
@@ -109,7 +109,7 @@
 #  - name: Clone Freq_Pi
 #    git:
 #      repo: https://github.com/JennyList/LanguageSpy/blob/master/RaspberryPi/rf/freq_pi/freq_pi.c
-#      dest: /home/pi/hamradio
+#      dest: /home/{{ ham_user }}/hamradio
 
 #
 # PySSTV
@@ -125,10 +125,10 @@
     become: yes
     command: "pip install setuptools --upgrade --no-binary :all:"
     args:
-      chdir: /home/pi/hamradio
+      chdir: /home/{{ ham_user }}/hamradio
 
   - name: pip install PySSTV
     become: yes
     command: pip install PySSTV
     args:
-      chdir: /home/pi/hamradio
+      chdir: /home/{{ ham_user }}/hamradio

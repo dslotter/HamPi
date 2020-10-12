@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-sed -i '/@\/home\/pi\/.config\/lxsession\/LXDE-pi\/qslware.sh/d' /home/pi/.config/lxsession/LXDE-pi/autostart
+sed -i '/@\/home\/pi\/.config\/lxsession\/LXDE-pi\/qslware.sh/d' /home/{{ ham_user }}/.config/lxsession/LXDE-pi/autostart

@@ -2,5 +2,5 @@
 @pcmanfm --desktop --profile LXDE-pi
 @xscreensaver -no-splash
 point-rpi
-@/home/pi/.config/lxsession/LXDE-pi/qslware.sh
-@/home/pi/.config/lxsession/LXDE-pi/boinc.sh
+@/home/{{ ham_user }}/.config/lxsession/LXDE-pi/qslware.sh
+@/home/{{ ham_user }}/.config/lxsession/LXDE-pi/boinc.sh

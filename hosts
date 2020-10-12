@@ -3,25 +3,31 @@
 #
 
 [all]
-#127.0.0.1
-
-[vm]
 127.0.0.1
 
-#[hardware]
-#192.168.1.212
+[vm]
+#127.0.0.1
+
+[hardware]
+#192.168.1.136
 
 [all:vars]
-ansible_user=pi
-ansible_password=raspberry
-ansible_port=8022
+#ansible_user=pi
+#ansible_password=raspberry
+#ansible_port=22
+ansible_user=hampi
+ansible_password=hampi
+ansible_port=9022
 
 [vm:vars]
-ansible_user=pi
-ansible_password=osboxes.org
-ansible_port=8822
+#ansible_user=pi
+#ansible_password=osboxes.org
+#ansible_port=8822
+ansible_user=hampi
+ansible_password=hampi
+ansible_port=9022
 
-#[hardware:vars]
-#ansible_user=
-#ansible_password=
-#ansible_port=
+[hardware:vars]
+ansible_user=pi
+ansible_password=raspberry
+ansible_port=2622

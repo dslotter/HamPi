@@ -13,36 +13,36 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Download latest SoapyMultiSDR sources
     git:
       repo: https://github.com/pothosware/SoapyMultiSDR.git
-      dest: /home/pi/hamradio/SoapyMultiSDR
+      dest: /home/{{ ham_user }}/hamradio/SoapyMultiSDR
 
   - name: Create directory SoapyMultiSDR/build
     file:
-      path: /home/pi/hamradio/SoapyMultiSDR/build
+      path: /home/{{ ham_user }}/hamradio/SoapyMultiSDR/build
       state: directory
 
   - name: Build SoapyMultiSDR CMakeFiles
     command: cmake ..
     args:
-      chdir: /home/pi/hamradio/SoapyMultiSDR/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapyMultiSDR/build
 
   - name: Build SoapyMultiSDR
     command: make
     args:
-      chdir: /home/pi/hamradio/SoapyMultiSDR/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapyMultiSDR/build
 
   - name: Install SoapyMultiSDR
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/SoapyMultiSDR/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapyMultiSDR/build
 
   - name: Remove SoapyMultiSDR build directory
     file:
-      path: /home/pi/hamradio/SoapyMultiSDR
+      path: /home/{{ ham_user }}/hamradio/SoapyMultiSDR
       state: absent

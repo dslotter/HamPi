@@ -13,63 +13,63 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Download and Unarchive latest RTAudio
     unarchive:
       src: "http://www.music.mcgill.ca/~gary/rtaudio/release/rtaudio-5.1.0.tar.gz"
-      dest: "/home/pi/hamradio/"
+      dest: "/home/{{ ham_user }}/hamradio/"
       remote_src: yes
 
   - name: Configure RTAudio
     command: ./configure
     args:
-      chdir: /home/pi/hamradio/rtaudio-5.1.0
+      chdir: /home/{{ ham_user }}/hamradio/rtaudio-5.1.0
 
   - name: Build RTAudio
     command: make all
     args:
-      chdir: /home/pi/hamradio/rtaudio-5.1.0
+      chdir: /home/{{ ham_user }}/hamradio/rtaudio-5.1.0
 
   - name: Install RTAudio
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/rtaudio-5.1.0
+      chdir: /home/{{ ham_user }}/hamradio/rtaudio-5.1.0
 
   - name: Remove RTAudio 5.1.0 build directory
     file:
-      path: /home/pi/hamradio/rtaudio-5.1.0
+      path: /home/{{ ham_user }}/hamradio/rtaudio-5.1.0
       state: absent
 
   - name: Download latest SoapyAudio sources
     git:
       repo: https://github.com/pothosware/SoapyAudio.git
-      dest: /home/pi/hamradio/SoapyAudio
+      dest: /home/{{ ham_user }}/hamradio/SoapyAudio
 
   - name: Create directory SoapyAudio/build
     file:
-      path: /home/pi/hamradio/SoapyAudio/build
+      path: /home/{{ ham_user }}/hamradio/SoapyAudio/build
       state: directory
 
   - name: Build SoapyAudio CMakeFiles
     command: cmake ..
     args:
-      chdir: /home/pi/hamradio/SoapyAudio/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapyAudio/build
 
   - name: Build SoapyAudio
     command: make
     args:
-      chdir: /home/pi/hamradio/SoapyAudio/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapyAudio/build
 
   - name: Install SoapyAudio
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/SoapyAudio/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapyAudio/build
 
   - name: Remove SoapyAudio build directory
     file:
-      path: /home/pi/hamradio/SoapyAudio
+      path: /home/{{ ham_user }}/hamradio/SoapyAudio
       state: absent

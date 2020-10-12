@@ -17,7 +17,7 @@
 
   - name: Create ARDOP directory
     file:
-      path: /home/pi/ardop
+      path: /home/{{ ham_user }}/ardop
       state: directory
 
   - name: Download FindARDOP script
@@ -33,14 +33,14 @@
   - name: Download ICOM Grid Map
     get_url:
       url: https://github.com/km4ack/pi-scripts/raw/master/ardop/grid-map.pdf
-      dest: /home/pi/ardop/grid-map.pdf
+      dest: /home/{{ ham_user }}/ardop/grid-map.pdf
 
-  - name: Ensure a job that runs at 1:30 exists (but is disabled). Creates an entry like "30 1 * * /home/pi/ardop/getardoplist > /dev/null"
+  - name: Ensure a job that runs at 1:30 exists (but is disabled). Creates an entry like "30 1 * * /home/{{ ham_user }}/ardop/getardoplist > /dev/null"
     cron:
       name: "Download ARDOP List from WinLink.org at 01:30 AM"
       minute: "30"
       hour: "1"
-      job: "/home/pi/ardop/getardoplist > /dev/null"
+      job: "/home/{{ ham_user }}/ardop/getardoplist > /dev/null"
       state: present
       disabled: yes
 

@@ -13,7 +13,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Install dependent libraries
@@ -33,30 +33,27 @@
       warn: no
     register: tqsl_version
 
-  - local_action: command echo item
-    with_items: tqsl_version.stdout_lines[0]
-
-  - name: Download and Unarchive TQSL {{ tqsl_version.stdout_lines[0] }}
+  - name: Download and Unarchive TQSL {{ tqsl_version.stdout }}
     unarchive:
-      src: "http://www.arrl.org/files/file/LoTW%20Instructions/tqsl-{{ tqsl_version.stdout_lines[0] }}.tar.gz"
-      dest: "/home/pi/hamradio/"
+      src: "http://www.arrl.org/files/file/LoTW%20Instructions/tqsl-{{ tqsl_version.stdout }}.tar.gz"
+      dest: "/home/{{ ham_user }}/hamradio/"
       remote_src: yes
 
-  - name: Configure TQSL {{ tqsl_version.stdout_lines[0] }}
+  - name: Configure TQSL {{ tqsl_version.stdout }}
     command: cmake .
     args:
-      chdir: /home/pi/hamradio/tqsl-{{ tqsl_version.stdout_lines[0] }}
+      chdir: /home/{{ ham_user }}/hamradio/tqsl-{{ tqsl_version.stdout }}
 
-  - name: Build TQSL {{ tqsl_version.stdout_lines[0] }}
+  - name: Build TQSL {{ tqsl_version.stdout }}
     command: make
     args:
-      chdir: /home/pi/hamradio/tqsl-{{ tqsl_version.stdout_lines[0] }}
+      chdir: /home/{{ ham_user }}/hamradio/tqsl-{{ tqsl_version.stdout }}
 
-  - name: Install TQSL {{ tqsl_version.stdout_lines[0] }}
+  - name: Install TQSL {{ tqsl_version.stdout }}
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/tqsl-{{ tqsl_version.stdout_lines[0] }}
+      chdir: /home/{{ ham_user }}/hamradio/tqsl-{{ tqsl_version.stdout }}
 
   - name: Modify categories for tqsl.desktop
     become: yes
@@ -65,7 +62,7 @@
       regexp: '^Categories=Application;HamRadio;Utility;'
       line: Categories=HamRadio Logging
 
-  - name: Remove TQSL {{ tqsl_version.stdout_lines[0] }} build directory
+  - name: Remove TQSL {{ tqsl_version.stdout }} build directory
     file:
-      path: /home/pi/hamradio/tqsl-{{ tqsl_version.stdout_lines[0] }}
+      path: /home/{{ ham_user }}/hamradio/tqsl-{{ tqsl_version.stdout }}
       state: absent

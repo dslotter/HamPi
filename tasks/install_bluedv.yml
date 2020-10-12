@@ -51,20 +51,20 @@
   - name: Download latest AMBEServer sources
     git:
       repo: https://github.com/marrold/AMBEServer.git
-      dest: /home/pi/hamradio/AMBEServer
+      dest: /home/{{ ham_user }}/hamradio/AMBEServer
 
   - name: Build AMBEServer
     command: make
     args:
-      chdir: /home/pi/hamradio/AMBEServer
+      chdir: /home/{{ ham_user }}/hamradio/AMBEServer
 
   - name: Install AMBEServer
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/AMBEServer
+      chdir: /home/{{ ham_user }}/hamradio/AMBEServer
 
   - name: Remove AMBEServer build directory
     file:
-      path: /home/pi/hamradio/AMBEServer
+      path: /home/{{ ham_user }}/hamradio/AMBEServer
       state: absent

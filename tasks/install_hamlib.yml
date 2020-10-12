@@ -13,12 +13,12 @@
 
     - name: Create directory hamradio
       file:
-        path: /home/pi/hamradio
+        path: /home/{{ ham_user }}/hamradio
         state: directory
 
     - name: Create directory for library
       file:
-        path: /home/pi/hamradio/hamlib-{{ hamlib_version }}
+        path: /home/{{ ham_user }}/hamradio/hamlib-{{ hamlib_version }}
         state: directory
 
     - name: Install dependent libraries
@@ -33,40 +33,41 @@
         - libxml2-dev
         - libgd-dev
         - python-dev
+        - git
 
 #    - name: Download and Unarchive Hamlib {{ hamlib_version }}
 #      unarchive:
 #        src: "https://downloads.sourceforge.net/project/hamlib/hamlib/{{ hamlib_version }}/hamlib-{{ hamlib_version }}.tar.gz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fhamlib%2Ffiles%2Fhamlib%2F{{ hamlib_version }}%2Fhamlib-{{ hamlib_version }}.tar.gz%2Fdownload%3Fuse_mirror%3Dnewcontinuum&ts=1578415351"
 #        #        src: "https://downloads.sourceforge.net/project/hamlib/hamlib/{{ hamlib_version }}/hamlib-{{ hamlib_version }}.tar.gz"
-#        dest: "/home/pi/hamradio/"
+#        dest: "/home/{{ ham_user }}/hamradio/"
 #        remote_src: yes
 #        validate_certs: no
 
     - name: Git clone latest Hamlib {{ hamlib_version }} sources
       git:
         repo: https://github.com/Hamlib/Hamlib.git
-        dest: /home/pi/hamradio/hamlib
+        dest: /home/{{ ham_user }}/hamradio/hamlib
 
     - name: Bootstrap Hamlib {{ hamlib_version }}
       command: ./bootstrap
       args:
-        chdir: /home/pi/hamradio/hamlib
+        chdir: /home/{{ ham_user }}/hamradio/hamlib
 
     - name: Configure Hamlib {{ hamlib_version }}
       command: ./configure --with-python-binding --with-xml-support
       args:
-        chdir: /home/pi/hamradio/hamlib
+        chdir: /home/{{ ham_user }}/hamradio/hamlib
 
     - name: Build Hamlib {{ hamlib_version }}
       command: make all
       args:
-        chdir: /home/pi/hamradio/hamlib
+        chdir: /home/{{ ham_user }}/hamradio/hamlib
 
     - name: Install Hamlib {{ hamlib_version }}
       become: yes
       command: make install
       args:
-        chdir: /home/pi/hamradio/hamlib
+        chdir: /home/{{ ham_user }}/hamradio/hamlib
 
     - name: Configure dynamic linker run-time bindings
       become: yes
@@ -74,10 +75,10 @@
 
     - name: Remove Hamlib {{ hamlib_version }} build directory
       file:
-        path: /home/pi/hamradio/hamlib
+        path: /home/{{ ham_user }}/hamradio/hamlib
         state: absent
 
     - name: Remove Hamlib {{ hamlib_version }} directory
       file:
-        path: /home/pi/hamradio/hamlib-{{ hamlib_version }}
+        path: /home/{{ ham_user }}/hamradio/hamlib-{{ hamlib_version }}
         state: absent

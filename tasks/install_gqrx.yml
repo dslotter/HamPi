@@ -13,7 +13,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Install dependent libraries for GQRX
@@ -34,33 +34,33 @@
   - name: Download GQRX sources
     git:
       repo: https://github.com/csete/gqrx.git
-      dest: /home/pi/hamradio/gqrx-source
+      dest: /home/{{ ham_user }}/hamradio/gqrx-source
 
   - name: Create directory gqrx-source/build
     file:
-      path: /home/pi/hamradio/gqrx-source/build
+      path: /home/{{ ham_user }}/hamradio/gqrx-source/build
       state: directory
 
   - name: Build GQRX CMakeFiles
     command: cmake ..
     args:
-      chdir: /home/pi/hamradio/gqrx-source/build
+      chdir: /home/{{ ham_user }}/hamradio/gqrx-source/build
 
   - name: Build GQRX
     command: make
     args:
-      chdir: /home/pi/hamradio/gqrx-source/build
+      chdir: /home/{{ ham_user }}/hamradio/gqrx-source/build
 
   - name: Install GQRX
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/gqrx-source/build
+      chdir: /home/{{ ham_user }}/hamradio/gqrx-source/build
 
   - name: Modify categories for gqrx.desktop
     become: yes
     lineinfile:
-      path: /home/pi/hamradio/gqrx-source/gqrx.desktop
+      path: /home/{{ ham_user }}/hamradio/gqrx-source/gqrx.desktop
       regexp: '^Categories=Network;HamRadio;'
       line: Categories=HamRadio SDR
 
@@ -68,11 +68,11 @@
     become: yes
     command: cp gqrx.desktop /usr/local/share/applications/gqrx.desktop
     args:
-      chdir: /home/pi/hamradio/gqrx-source
+      chdir: /home/{{ ham_user }}/hamradio/gqrx-source
 
   - name: Remove GQRX build directory
     file:
-      path: /home/pi/hamradio/gqrx-source
+      path: /home/{{ ham_user }}/hamradio/gqrx-source
       state: absent
 
   # gnuradio-grc.desktop is from the gnuradio dpkg but it

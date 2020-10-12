@@ -8,7 +8,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Determine latest version of sparksdr on web
@@ -17,12 +17,9 @@
       warn: no
     register: sparksdr_version
 
-  - local_action: command echo item
-    with_items: sparksdr_version.stdout_lines[0]
-
-  - name: Download and Unarchive sparksdr {{ sparksdr_version.stdout_lines[0] }}
+  - name: Download and Unarchive sparksdr {{ sparksdr_version.stdout }}
     become: yes
     unarchive:
-      src: "http://www.ihopper.org/radio/download.aspx?file=sparksdr{{ sparksdr_version.stdout_lines[0] }}_linux.tar.gz"
+      src: "http://www.ihopper.org/radio/download.aspx?file=sparksdr{{ sparksdr_version.stdout }}_linux.tar.gz"
       dest: "/usr/local/"
       remote_src: yes

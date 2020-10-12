@@ -13,7 +13,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Install dependent libraries
@@ -49,32 +49,32 @@
   - name: Download latest RtAudio sources
     git:
       repo: https://github.com/thestk/rtaudio.git
-      dest: /home/pi/hamradio/rtaudio
+      dest: /home/{{ ham_user }}/hamradio/rtaudio
 
   - name: Create directory rtaudio/build
     file:
-      path: /home/pi/hamradio/rtaudio/build
+      path: /home/{{ ham_user }}/hamradio/rtaudio/build
       state: directory
 
   - name: Build rtaudio CMakeFiles
     command: cmake ..
     args:
-      chdir: /home/pi/hamradio/rtaudio/build
+      chdir: /home/{{ ham_user }}/hamradio/rtaudio/build
 
   - name: Build RtAudio
     command: make
     args:
-      chdir: /home/pi/hamradio/rtaudio/build
+      chdir: /home/{{ ham_user }}/hamradio/rtaudio/build
 
   - name: Install RtAudio
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/rtaudio/build
+      chdir: /home/{{ ham_user }}/hamradio/rtaudio/build
 
   - name: Remove rtaudio build directory
     file:
-      path: /home/pi/hamradio/rtaudio
+      path: /home/{{ ham_user }}/hamradio/rtaudio
       state: absent
 
 #
@@ -84,28 +84,28 @@
   - name: Git clone latest liquid-dsp sources
     git:
       repo: https://github.com/jgaeddert/liquid-dsp
-      dest: /home/pi/hamradio/liquid-dsp
+      dest: /home/{{ ham_user }}/hamradio/liquid-dsp
 
   - name: Bootstrap liquid-dsp
     command: ./bootstrap.sh
     args:
-      chdir: /home/pi/hamradio/liquid-dsp
+      chdir: /home/{{ ham_user }}/hamradio/liquid-dsp
 
   - name: Configure liquid-dsp
     shell: CFLAGS="-march=native -O3" ./configure --enable-fftoverride
     args:
-      chdir: /home/pi/hamradio/liquid-dsp
+      chdir: /home/{{ ham_user }}/hamradio/liquid-dsp
 
   - name: Make liquid-dsp
     command: make
     args:
-      chdir: /home/pi/hamradio/liquid-dsp
+      chdir: /home/{{ ham_user }}/hamradio/liquid-dsp
 
   - name: Install liquid-dsp
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/liquid-dsp
+      chdir: /home/{{ ham_user }}/hamradio/liquid-dsp
 
   - name: Configure dynamic linker run-time bindings
     become: yes
@@ -113,7 +113,7 @@
 
   - name: Remove liquid-dsp build directory
     file:
-      path: /home/pi/hamradio/liquid-dsp
+      path: /home/{{ ham_user }}/hamradio/liquid-dsp
       state: absent
 
 #
@@ -123,28 +123,28 @@
   - name: Git clone latest CubicSDR sources
     git:
       repo: https://github.com/cjcliffe/CubicSDR.git
-      dest: /home/pi/hamradio/CubicSDR
+      dest: /home/{{ ham_user }}/hamradio/CubicSDR
 
   - name: Create directory CubicSDR/build
     file:
-      path: /home/pi/hamradio/CubicSDR/build
+      path: /home/{{ ham_user }}/hamradio/CubicSDR/build
       state: directory
 
   - name: Build CubicSDR CMakeFiles
     command: cmake ../ -DCMAKE_BUILD_TYPE=Release -DwxWidgets_CONFIG_EXECUTABLE=~/hamradio/wxWidgets-staticlib/bin/wx-config
     args:
-      chdir: /home/pi/hamradio/CubicSDR/build
+      chdir: /home/{{ ham_user }}/hamradio/CubicSDR/build
 
   - name: Build CubicSDR
     command: make
     args:
-      chdir: /home/pi/hamradio/CubicSDR/build
+      chdir: /home/{{ ham_user }}/hamradio/CubicSDR/build
 
   - name: Install CubicSDR
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/CubicSDR/build
+      chdir: /home/{{ ham_user }}/hamradio/CubicSDR/build
 
   - name: Modify categories for CubicSDR.desktop
     become: yes
@@ -155,5 +155,5 @@
 
   - name: Remove CubicSDR build directory
     file:
-      path: /home/pi/hamradio/CubicSDR
+      path: /home/{{ ham_user }}/hamradio/CubicSDR
       state: absent

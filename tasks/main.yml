@@ -4,10 +4,10 @@
 
 ---
 
-- name: HamPi v1.1 (Sep 2020) Playbook by W3DJS
-  # hosts: all
+- name: HamPi v1.2d1 (Sep 2020) Playbook by W3DJS
+  hosts: all
   # hosts: vm
-  hosts: hardware
+  # hosts: hardware
   pre_tasks:
     - name: Verify Ansible meets HamPi version requirements.
       assert:

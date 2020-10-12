@@ -8,7 +8,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio/
       state: directory
 
   - name: Install dependent libraries (Common)
@@ -50,7 +50,7 @@
   - name: Download WSJT-X {{ wsjtx_version }} with check (md5) (ARM)
     get_url:
       url: https://physics.princeton.edu/pulsar/K1JT/wsjtx_{{ wsjtx_version }}_armhf.deb
-      dest: /home/pi/hamradio/wsjtx_{{ wsjtx_version }}_armhf.deb
+      dest: /home/{{ ham_user }}/hamradio/wsjtx_{{ wsjtx_version }}_armhf.deb
       validate_certs: no
       checksum: md5:{{ wsjtx_222_md5sum_armf }}
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
@@ -58,12 +58,12 @@
   - name: Install WSJT-X {{ wsjtx_version }} (ARM)
     become: yes
     apt:
-      deb: /home/pi/hamradio/wsjtx_{{ wsjtx_version }}_armhf.deb
+      deb: /home/{{ ham_user }}/hamradio/wsjtx_{{ wsjtx_version }}_armhf.deb
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Remove WSJT-X {{ wsjtx_version }} installer (ARM)
     file:
-      path: /home/pi/hamradio/wsjtx_{{ wsjtx_version }}_armhf.deb
+      path: /home/{{ ham_user }}/hamradio/wsjtx_{{ wsjtx_version }}_armhf.deb
       state: absent
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
@@ -79,11 +79,12 @@
     with_items:
       - libc6:i386
     when: ansible_architecture == "i386"
+    when: ansible_architecture == "x86_64" or ansible_architecture == "i386" or ansible_architecture == "amd64"
 
   - name: Download WSJT-X {{ wsjtx_version }} with check (md5) (x86)
     get_url:
       url: https://physics.princeton.edu/pulsar/K1JT/wsjtx_{{ wsjtx_version }}_i386.deb
-      dest: /home/pi/hamradio/wsjtx_{{ wsjtx_version }}_i386.deb
+      dest: /home/{{ ham_user }}/hamradio/wsjtx_{{ wsjtx_version }}_i386.deb
       validate_certs: no
       checksum: md5:{{ wsjtx_222_md5sum_i386 }}
     when: ansible_architecture == "i386"
@@ -91,14 +92,38 @@
   - name: Install WSJT-X {{ wsjtx_version }} (x86)
     become: yes
     apt:
-      deb: /home/pi/hamradio/wsjtx_{{ wsjtx_version }}_i386.deb
+      deb: /home/{{ ham_user }}/hamradio/wsjtx_{{ wsjtx_version }}_i386.deb
     when: ansible_architecture == "i386"
 
   - name: Remove WSJT-X {{ wsjtx_version }} installer (x86)
     file:
-      path: /home/pi/hamradio/wsjtx_{{ wsjtx_version }}_i386.deb
+      path: /home/{{ ham_user }}/hamradio/wsjtx_{{ wsjtx_version }}_i386.deb
       state: absent
     when: ansible_architecture == "i386"
+
+#
+# x86_64
+#
+
+  - name: Download WSJT-X {{ wsjtx_version }} with check (md5) (x86_64)
+    get_url:
+      url: https://physics.princeton.edu/pulsar/K1JT/wsjtx_{{ wsjtx_version }}_amd64.deb
+      dest: /home/{{ ham_user }}/hamradio/wsjtx_{{ wsjtx_version }}_amd64.deb
+      validate_certs: no
+      checksum: md5:{{ wsjtx_222_md5sum_amd64 }}
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+  - name: Install WSJT-X {{ wsjtx_version }} (x86_64)
+    become: yes
+    apt:
+      deb: /home/{{ ham_user }}/hamradio/wsjtx_{{ wsjtx_version }}_amd64.deb
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+  - name: Remove WSJT-X {{ wsjtx_version }} installer (x86_64)
+    file:
+      path: /home/{{ ham_user }}/hamradio/wsjtx_{{ wsjtx_version }}_amd64.deb
+      state: absent
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
 
 #

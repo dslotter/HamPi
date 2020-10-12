@@ -15,7 +15,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Install dependent libraries
@@ -31,26 +31,26 @@
     become: yes
     unarchive:
       src: http://wa0eir.bcts.info/src/twclock-{{ twclock_version }}.src.tar.gz
-      dest: /home/pi/hamradio
+      dest: /home/{{ ham_user }}/hamradio
       remote_src: yes
 
   - name: Configure TwClock {{ twclock_version }}
     command: ./configure
     args:
-      chdir: /home/pi/hamradio/twclock-{{ twclock_version }}
+      chdir: /home/{{ ham_user }}/hamradio/twclock-{{ twclock_version }}
 
   - name: Build TwClock {{ twclock_version }}
     command: make
     args:
-      chdir: /home/pi/hamradio/twclock-{{ twclock_version }}
+      chdir: /home/{{ ham_user }}/hamradio/twclock-{{ twclock_version }}
 
   - name: Install TwClock {{ twclock_version }}
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/twclock-{{ twclock_version }}
+      chdir: /home/{{ ham_user }}/hamradio/twclock-{{ twclock_version }}
 
   - name: Remove TwClock {{ twclock_version }} build directory
     file:
-      path: /home/pi/hamradio/twclock-{{ twclock_version }}
+      path: /home/{{ ham_user }}/hamradio/twclock-{{ twclock_version }}
       state: absent

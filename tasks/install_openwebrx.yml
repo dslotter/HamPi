@@ -13,31 +13,31 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Git clone latest OpenWebRx sources
     git:
       repo: https://github.com/ha7ilm/openwebrx.git
-      dest: /home/pi/hamradio/openwebrx
+      dest: /home/{{ ham_user }}/hamradio/openwebrx
 
   - name: Git clone latest csdr sources
     git:
       repo: https://github.com/ha7ilm/csdr.git
-      dest: /home/pi/hamradio/csdr
+      dest: /home/{{ ham_user }}/hamradio/csdr
 
   - name: Build csdr
     command: make
     args:
-      chdir: /home/pi/hamradio/csdr
+      chdir: /home/{{ ham_user }}/hamradio/csdr
 
   - name: Install csdr
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/csdr
+      chdir: /home/{{ ham_user }}/hamradio/csdr
 
   - name: Remove csdr build directory
     file:
-      path: /home/pi/hamradio/csdr
+      path: /home/{{ ham_user }}/hamradio/csdr
       state: absent

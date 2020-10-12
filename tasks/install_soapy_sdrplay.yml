@@ -8,16 +8,12 @@
     # Build-Time Tuning:
     CXXFLAGS: -O2 -march=native -mtune=native
     CFLAGS: -O2 -march=native -mtune=native
-#    CXXFLAGS: -O2 -march=armv8-a
-#    CFLAGS: -O2 -march=armv8-a
-#    ARCH: arm
-#    CROSS_COMPILE: arm-linux-gnueabihf-
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Install dependent libraries
@@ -33,78 +29,97 @@
 # Raspbian (ARM)
 #
 
-#  - name: Copy SDRPlay RSP Driver {{ sdrplay_arm_version }} (ARM)
-#    copy:
-#      src: "{{ playbook_dir }}/../files/SDRplay_RSP_API-ARM32-{{ sdrplay_arm_version }}.run"
-#      dest: /home/pi/hamradio/SDRplay_RSP_API-ARM32-{{ sdrplay_arm_version }}.run
-#        when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
-
-#  - name: Make SDRPlay RSP Driver Executable (ARM)
-#    file: dest=/home/pi/hamradio/SDRplay_RSP_API-ARM32-{{ sdrplay_arm_version }}.run mode=a+x
-#        when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
-
-  - debug:
-      msg: ansible_architecture is {{ ansible_architecture }}
-
   - name: Copy SDRPlay RSP Driver Installer {{ sdrplay_arm_version }} (ARM)
     copy:
       src: "{{ playbook_dir }}/../files/SDRplay_RSP_API-RPi-{{ sdrplay_arm_version }}.run"
-      dest: /home/pi/hamradio/SDRplay_RSP_API-RPi-{{ sdrplay_arm_version }}.run
+      dest: /home/{{ ham_user }}/hamradio/SDRplay_RSP_API-RPi-{{ sdrplay_arm_version }}.run
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Copy SDRPlay Expect Script
     copy:
       src: "{{ playbook_dir }}/../files/sdrplay_api2_install.exp"
-      dest: /home/pi/hamradio/sdrplay_api2_install.exp
+      dest: /home/{{ ham_user }}/hamradio/sdrplay_api2_install.exp
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
-  - name: Set SDRPlay RSP Driver Installer {{ sdrplay_arm_version }} to executable
+  - name: Set SDRPlay RSP Driver Installer {{ sdrplay_arm_version }} (ARM) to executable
     become: yes
-    file: dest=/home/pi/hamradio/SDRplay_RSP_API-RPi-{{ sdrplay_arm_version }}.run mode=a+x
+    file: dest=/home/{{ ham_user }}/hamradio/SDRplay_RSP_API-RPi-{{ sdrplay_arm_version }}.run mode=a+x
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
-  - name: Set Expect Script to executable
+  - name: Set Expect Script to executable (ARM)
     become: yes
-    file: dest=/home/pi/hamradio/sdrplay_api2_install.exp mode=a+x
+    file: dest=/home/{{ ham_user }}/hamradio/sdrplay_api2_install.exp mode=a+x
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Install SDRPlay RSP Driver {{ sdrplay_arm_version }} (ARM) using Expect Script
     become: yes
     command: ./sdrplay_api2_install.exp
     args:
-      chdir: /home/pi/hamradio
+      chdir: /home/{{ ham_user }}/hamradio
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
- # - name: Remove SDRPlay RSP Driver Installer
- #   become: yes
- #   file:
- #     path: /home/pi/hamradio/SDRplay_RSP_API-ARM32-{{ sdrplay_arm_version }}.run
- #     state: absent
- #   when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
-
-  - name: Remove SDRPlay RSP Driver Installer
+  - name: Remove SDRPlay RSP Driver Installer (ARM)
     become: yes
     file:
-      path: /home/pi/hamradio/SDRplay_RSP_API-RPi-{{ sdrplay_arm_version }}.run
+      path: /home/{{ ham_user }}/hamradio/SDRplay_RSP_API-RPi-{{ sdrplay_arm_version }}.run
       state: absent
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
-  - name: Remove SDRPlay Driver Expect Script
+  - name: Remove SDRPlay Driver Expect Script (ARM)
     become: yes
     file:
-      path: /home/pi/hamradio/sdrplay_api2_install.exp
+      path: /home/{{ ham_user }}/hamradio/sdrplay_api2_install.exp
       state: absent
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
 
 #
 # Raspbian (x86)
 #
 
-#  - name: Copy SDRPlay Driver {{ sdrplay_x86_version }} (x86)
-#    copy:
-#      src: "{{ playbook_dir }}/../files/SDRplay_RSP_API-Linux-{{ sdrplay_x86_version }}.run"
-#      dest: /home/pi/hamradio/SDRplay_RSP_API-Linux-{{ sdrplay_x86_version }}.run
-#    when: ansible_architecture == "i386"
+  - name: Copy SDRPlay Driver {{ sdrplay_x86_version }} (x86)
+    copy:
+      src: "{{ playbook_dir }}/../files/SDRplay_RSP_API-Linux-{{ sdrplay_x86_version }}.run"
+      dest: /home/{{ ham_user }}/hamradio/SDRplay_RSP_API-Linux-{{ sdrplay_x86_version }}.run
+    when: ansible_architecture == "i386" or ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+  - name: Copy SDRPlay Expect Script (x86)
+    copy:
+      src: "{{ playbook_dir }}/../files/sdrplay_linux_api2_install.exp"
+      dest: /home/{{ ham_user }}/hamradio/sdrplay_linux_api2_install.exp
+    when: ansible_architecture == "i386" or ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+  - name: Set SDRPlay RSP Driver Installer {{ sdrplay_x86_version }} (x86) to executable
+    become: yes
+    file: dest=/home/{{ ham_user }}/hamradio/SDRplay_RSP_API-Linux-{{ sdrplay_x86_version }}.run mode=a+x
+    when: ansible_architecture == "i386" or ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+  - name: Set Expect Script to executable (x86)
+    become: yes
+    file: dest=/home/{{ ham_user }}/hamradio/sdrplay_linux_api2_install.exp mode=a+x
+    when: ansible_architecture == "i386" or ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+  - name: Install SDRPlay RSP Driver {{ sdrplay_x86_version }} (x86) using Expect Script
+    become: yes
+    command: ./sdrplay_linux_api2_install.exp
+    args:
+      chdir: /home/{{ ham_user }}/hamradio
+    when: ansible_architecture == "i386" or ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+  - name: Remove SDRPlay RSP Driver Installer (x86)
+    become: yes
+    file:
+      path: /home/{{ ham_user }}/hamradio/SDRplay_RSP_API-Linux-{{ sdrplay_x86_version }}.run
+      state: absent
+    when: ansible_architecture == "i386" or ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+  - name: Remove SDRPlay Driver Expect Script (x86)
+    become: yes
+    file:
+      path: /home/{{ ham_user }}/hamradio/sdrplay_linux_api2_install.exp
+      state: absent
+    when: ansible_architecture == "i386" or ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
 
 #
 # Build SoapySDRPlay Module
@@ -113,30 +128,30 @@
   - name: Download latest SoapySDRPlay sources
     git:
       repo: https://github.com/pothosware/SoapySDRPlay.git
-      dest: /home/pi/hamradio/SoapySDRPlay
+      dest: /home/{{ ham_user }}/hamradio/SoapySDRPlay
 
   - name: Create directory SoapySDRPlay/build
     file:
-      path: /home/pi/hamradio/SoapySDRPlay/build
+      path: /home/{{ ham_user }}/hamradio/SoapySDRPlay/build
       state: directory
 
   - name: Build SoapySDRPlay CMakeFiles
     command: cmake ..
     args:
-      chdir: /home/pi/hamradio/SoapySDRPlay/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapySDRPlay/build
 
   - name: Build SoapySDRPlay
     command: make
     args:
-      chdir: /home/pi/hamradio/SoapySDRPlay/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapySDRPlay/build
 
   - name: Install SoapySDRPlay
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/SoapySDRPlay/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapySDRPlay/build
 
   - name: Remove SoapySDRPlay build directory
     file:
-      path: /home/pi/hamradio/SoapySDRPlay
+      path: /home/{{ ham_user }}/hamradio/SoapySDRPlay
       state: absent

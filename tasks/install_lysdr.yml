@@ -13,7 +13,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Install dependent libraries
@@ -33,30 +33,30 @@
   - name: Download latest lysdr sources
     git:
       repo: https://github.com/gordonjcp/lysdr.git
-      dest: /home/pi/hamradio/lysdr
+      dest: /home/{{ ham_user }}/hamradio/lysdr
 
   - name: Run autoreconf for lysdr
     command: autoreconf -i
     args:
-      chdir: /home/pi/hamradio/lysdr
+      chdir: /home/{{ ham_user }}/hamradio/lysdr
 
   - name: Configure lysdr
     command: ./configure
     args:
-      chdir: /home/pi/hamradio/lysdr
+      chdir: /home/{{ ham_user }}/hamradio/lysdr
 
   - name: Build lysdr
     command: make
     args:
-      chdir: /home/pi/hamradio/lysdr
+      chdir: /home/{{ ham_user }}/hamradio/lysdr
 
   - name: Install lysdr
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/lysdr
+      chdir: /home/{{ ham_user }}/hamradio/lysdr
 
   - name: Remove lysdr build directory
     file:
-      path: /home/pi/hamradio/lysdr
+      path: /home/{{ ham_user }}/hamradio/lysdr
       state: absent

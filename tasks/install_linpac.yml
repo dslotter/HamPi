@@ -13,41 +13,41 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Download latest linpac sources
     git:
       repo: https://git.code.sf.net/p/linpac/linpac
-      dest: /home/pi/hamradio/linpac
+      dest: /home/{{ ham_user }}/hamradio/linpac
 
   - name: Checkout develop branch of linpac
     command: git checkout develop
     args:
-      chdir: /home/pi/hamradio/linpac
+      chdir: /home/{{ ham_user }}/hamradio/linpac
 
   - name: Autoreconf linpac
     command: autoreconf --install
     args:
-      chdir: /home/pi/hamradio/linpac
+      chdir: /home/{{ ham_user }}/hamradio/linpac
 
   - name: Configure linpac
     command: ./configure
     args:
-      chdir: /home/pi/hamradio/linpac
+      chdir: /home/{{ ham_user }}/hamradio/linpac
 
   - name: Build linpac
     command: make
     args:
-      chdir: /home/pi/hamradio/linpac
+      chdir: /home/{{ ham_user }}/hamradio/linpac
 
   - name: Install linpac
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/linpac
+      chdir: /home/{{ ham_user }}/hamradio/linpac
 
   - name: Remove linpac build directory
     file:
-      path: /home/pi/hamradio/linpac
+      path: /home/{{ ham_user }}/hamradio/linpac
       state: absent
