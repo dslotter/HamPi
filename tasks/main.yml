@@ -4,7 +4,7 @@
 
 ---
 
-- name: HamPi v1.1 (Sep 2020) Playbook by W3DJS
+- name: HamPi v1.2 (Dec 2020) Playbook by W3DJS
   # hosts: all
   # hosts: vm
   hosts: hardware
@@ -125,6 +125,7 @@
 # OpenDV git repository has some issues, but
 # some of them have been worked around.
 - import_playbook: install_opendv.yml
+- import_playbook: install_rpitx.yml
 
 # Install SDR GUI apps after all pre-requisite SDR drivers are installed
 - import_playbook: install_cutesdr.yml
