@@ -117,6 +117,7 @@
 - import_playbook: install_wxtoimg.yml
 - import_playbook: install_freedv.yml
 - import_playbook: install_dump1090.yml
+- import_playbook: install_acarsdec.yml
 # Fails to build under aarch64:
 - import_playbook: install_voacapl.yml
 - import_playbook: install_openwebrx.yml
