@@ -1,0 +1,52 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install leansdr Software
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+
+#
+# Build and install leansdr
+#
+
+  - name: Download latest leansdr sources
+    git:
+      repo: https://github.com/pabr/leansdr
+      dest: /home/pi/hamradio/leansdr
+
+  - name: Build leansdr
+    command: make
+    args:
+      chdir: /home/pi/hamradio/leansdr/src/apps
+
+  - name: Install leansdr (Makefile has no install target)
+    become: yes
+    command: install -o root "/home/pi/hamradio/leansdr/src/apps/{{ item }}" /usr/local/bin
+    with_items:
+      - leanchansim
+      - leandvb
+      - leandvb_tui.sh
+      - leandvbtx
+      - leandvb_vt100ui.sh
+      - leanmlmrx
+      - leansdrcat
+      - leansdrscan
+      - leansdrserv
+      - leantsgen
+
+  - name: Remove build directory leansdr
+    file:
+      path: /home/pi/hamradio/leansdr
+      state: absent

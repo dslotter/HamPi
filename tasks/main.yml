@@ -127,6 +127,7 @@
 # some of them have been worked around.
 - import_playbook: install_opendv.yml
 - import_playbook: install_rpitx.yml
+- import_playbook: install_leansdr.yml
 
 # Install SDR GUI apps after all pre-requisite SDR drivers are installed
 - import_playbook: install_cutesdr.yml
