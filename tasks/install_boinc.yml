@@ -16,6 +16,40 @@
       - boinc
       - boinctui
 
+  - name: Create directory boinc-client
+    become: yes
+    file:
+      path: /etc/boinc-client
+      state: directory
+
+  - name: Change Ownership of /etc/boinc-client to boinc
+    become: yes
+    file: dest=/etc/boinc-client owner=boinc group=boinc
+
+  - name: Make BOINC run a little nicer 1
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/boinc-client/cc_config.xml"
+      dest: "/etc/boinc-client/cc_config.xml"
+
+  - name: Make BOINC run a little nicer 2
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/boinc-client/global_prefs_override.xml"
+      dest: "/etc/boinc-client/global_prefs_override.xml"
+
+  - name: Change Ownership of /etc/boinc-client to boinc
+    become: yes
+    file: dest=/etc/boinc-client owner=boinc group=boinc
+
+  - name: Change Ownership of /etc/boinc-client/cc_config.xml to boinc
+    become: yes
+    file: dest=/etc/boinc-client/cc_config.xml owner=boinc group=boinc
+
+  - name: Change Ownership of /etc/boinc-client/global_prefs_override.xml to boinc
+    become: yes
+    file: dest=/etc/boinc-client/global_prefs_override.xml owner=boinc group=boinc
+
   - name: Create /home/pi/.config/lxsession/LXDE-pi directory
     file:
       path: /home/pi/.config/lxsession/LXDE-pi
