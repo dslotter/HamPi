@@ -30,6 +30,9 @@
     with_items:
       - wolfram-engine
       - wolframscript
+      - bluej
+      - greenfoot-unbundled
+      - minecraft-pi
 
   # This allows apt-add-repository command to be added
   - name: Install software-properties-common Packages

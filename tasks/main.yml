@@ -117,6 +117,7 @@
 - import_playbook: install_wxtoimg.yml
 - import_playbook: install_freedv.yml
 - import_playbook: install_dump1090.yml
+- import_playbook: install_acarsdec.yml
 # Fails to build under aarch64:
 - import_playbook: install_voacapl.yml
 - import_playbook: install_openwebrx.yml
@@ -125,6 +126,9 @@
 # OpenDV git repository has some issues, but
 # some of them have been worked around.
 - import_playbook: install_opendv.yml
+- import_playbook: install_rpitx.yml
+- import_playbook: install_leansdr.yml
+- import_playbook: install_cygnusRFI.yml
 
 # Install SDR GUI apps after all pre-requisite SDR drivers are installed
 - import_playbook: install_cutesdr.yml

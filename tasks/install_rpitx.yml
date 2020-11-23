@@ -1,0 +1,107 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install RPiTx Software
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - git
+      - libsndfile1-dev
+      - imagemagick
+      - libfftw3-dev
+      - buffer
+
+
+#
+# Download rpitx
+#
+
+  - name: Download latest rpitx sources
+    git:
+      repo: https://github.com/F5OEO/rpitx
+      dest: /home/pi/hamradio/rpitx
+
+#
+# Build and install csdr
+#
+
+  - name: Download latest csdr sources
+    git:
+      repo: https://github.com/F5OEO/csdr
+      dest: /home/pi/hamradio/rpitx/csdr
+
+  - name: Build csdr
+    command: make
+    args:
+      chdir: /home/pi/hamradio/rpitx/csdr
+
+  - name: Install csdr
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/rpitx/csdr
+
+  - name: Clean csdr
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/rpitx/csdr
+
+#
+# Build librpitx
+#
+
+  - name: Download latest librpitx sources
+    git:
+      repo: https://github.com/F5OEO/librpitx
+      dest: /home/pi/hamradio/rpitx/src/librpitx
+
+  - name: Build librpitx
+    command: make
+    args:
+      chdir: /home/pi/hamradio/rpitx/src/librpitx/src
+
+#
+# Download pift8
+#
+
+  - name: Download latest pift8 sources
+    git:
+      repo: https://github.com/kgoba/ft8_lib
+      dest: /home/pi/hamradio/rpitx/src/pift8/ft8_lib
+
+#
+# Build rpitx
+#
+
+  - name: Build rpitx
+    command: make
+    args:
+      chdir: /home/pi/hamradio/rpitx/src
+
+  - name: Install rpitx
+    become: yes
+    command: make install
+    args:
+      chdir: /home/pi/hamradio/rpitx/src
+
+  - name: Clean rpitx
+    command: make clean
+    args:
+      chdir: /home/pi/hamradio/rpitx/src

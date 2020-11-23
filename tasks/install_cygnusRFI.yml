@@ -1,0 +1,32 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install CygnusRFI Software
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Install dependent components for CygnusRFI
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - python
+      - gnuradio-dev
+      - gr-osmosdr
+
+#
+# Download CygnusRFI
+#
+
+  - name: Download latest CygnusRFI sources
+    git:
+      repo: https://github.com/0xCoto/CygnusRFI
+      dest: /home/pi/hamradio/CygnusRFI
