@@ -46,6 +46,7 @@
     command: ./install.sh
     args:
       chdir: /home/pi/hamradio/ambeserver-install
+    ignore_errors: yes
 
   - name: Stop ambeserver@ThumbDV service to replace with optimized version
     become: yes
@@ -68,3 +69,4 @@
   - name: Restart ambeserver@ThumbDV service using optimized binary
     become: yes
     command: systemctl restart ambeserver@ThumbDV
+    ignore_errors: yes
