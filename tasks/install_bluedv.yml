@@ -35,6 +35,16 @@
       remote_src: yes
       validate_certs: no
 
+  - name: Copy BlueDV default preferences file
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/bluedv/BlueDVconfig.ini"
+      dest: "/usr/local/bluedv/BlueDVconfig.ini"
+
+  - name: Change owner of BlueDV default preferences file to ham radio user
+    become: yes
+    file: dest=/usr/local/bluedv/BlueDVconfig.ini owner=pi group=pi
+
   - name: Copy BlueDV desktop file
     become: yes
     copy:
