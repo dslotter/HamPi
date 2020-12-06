@@ -90,7 +90,7 @@
 
   - name: Install GPSd
     become: yes
-    shell: scons udev-install
+    shell: scons install
     args:
       chdir: /home/pi/hamradio/gpsd
 
