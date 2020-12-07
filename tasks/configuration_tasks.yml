@@ -8,7 +8,13 @@
 
   - name: Change hostname to hampi
     become: yes
-    command: hostname hampi
+    command: hostname -b hampi
+
+  - name: Store a basic version file in public location
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/hampi-release"
+      dest: "/etc/hampi-release"
 
   - name: Check that the /boot/cmdline.txt exists
     stat:
