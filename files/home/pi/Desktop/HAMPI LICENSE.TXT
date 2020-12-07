@@ -1,4 +1,4 @@
-HamPi Software License:
+Software License:
 
 The Software available on this website are provided "as is" without warranty of any kind, either express or implied. Use at your own risk.
 
@@ -32,10 +32,10 @@ No waiver of either party of any breach or default of this Agreement will be dee
 
 If any provision of this Agreement is found to be unenforceable or invalid, that provision will be limited or eliminated to the extent necessary so that this Agreement will otherwise remain in full force and effect, and enforceable.
 
-Usage of this image means that you freely give your consent to running the Berkeley Open Infrastructure for Network Computing software, which is configured to only run when the Raspberry Pi is powered on and idle. The reason this image includes this software is that the author originally asked for QSL cards for usage of the previous software image. When there were over 8,000 direct downloads of the previous image (plus an unknown number of BitTorrent / indirect downloads) and the author received less than five QSL cards, the author determined the only way to get something in return for all the hard work (non-monetary, mind you) was to code it into the image. The BOINC client will run benign network computing tasks, such as science applications like protein folding, or searching for neutron stars. The author also believes that this rule isn't for "other people" but includes the author as well, and runs the BOINC software on his Raspberry Pi as well. If you don't consent to this, you should stop running and destroy your copy of the image.
+Usage of this image means that you freely give your consent to running the Berkeley Open Infrastructure for Network Computing software, which is configured to only run when the Raspberry Pi is powered on and idle. The reason this image includes this software is that the author originally asked for QSL cards for usage of the previous software image. When there were over 8,000 direct downloads of the previous image (plus an unknown number of BitTorrent / indirect downloads) and the author received less than five QSL cards, the author determined the only way to get something in return for all the hard work (non-monetary, mind you) was to code it into the image. The BOINC client will run benign network computing tasks, such as science applications like protein folding, or searching for neutron stars. The author also believes that this rule isn't for "other people" but includes the author as well, and runs the BOINC software on his Raspberry Pi as well. If you don't consent to this, you may opt out only for your use by running the include boinctui tool to disable.
 
 We assume no responsibility for errors or omissions in the software or documentation available from its web site. In no event shall we be liable to you or any third parties for any special, punitive, incidental, indirect or consequential damages of any kind, or any damages whatsoever, including, without limitation, those resulting from loss of use, data or profits, and on any theory of liability, arising out of or in connection with the use of this software.
 
 This Agreement and software image are protected by copyright. © HamPi, 2020. All rights reserved.
 
-Last updated: June 20, 2020
+Last updated: December 6, 2020
