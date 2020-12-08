@@ -146,9 +146,7 @@
     get_url:
       url: https://raw.githubusercontent.com/dslotter/wsjtx_to_n3fjp/master/config
       dest: /home/pi/bin/config
-
-  - name: Set wsjtx_to_n3fjp.py to executable
-    file: dest=/home/pi/bin/wsjtx_to_n3fjp.py mode=a+x
+      mode: a+x
 
   - name: Install upload_adif_log dependencies
     become: yes
@@ -164,9 +162,7 @@
     get_url:
       url: https://raw.githubusercontent.com/dslotter/upload_adif_log/master/upload_adif_log
       dest: /home/pi/bin/upload_adif_log
-
-  - name: Set upload_adif_log to executable
-    file: dest=/home/pi/bin/upload_adif_log mode=a+x
+      mode: a+x
 
 # Todo:
 # twlog - basic logging program for ham radio

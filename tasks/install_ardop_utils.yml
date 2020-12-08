@@ -25,10 +25,7 @@
     get_url:
       url: https://raw.githubusercontent.com/km4ack/pi-scripts/master/ardop/findardop
       dest: /usr/local/bin/findardop
-
-  - name: Set FindARDOP script to executable
-    become: yes
-    file: dest=/usr/local/bin/findardop mode=a+x
+      mode: a+x
 
   - name: Download ICOM Grid Map
     get_url:
@@ -52,11 +49,7 @@
     get_url:
       url: https://www.cantab.net/users/john.wiseman/Downloads/Beta/piARDOP_GUI
       dest: /usr/local/bin/piARDOP_GUI
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
-
-  - name: Set Pi ARDOP GUI (ARM) to executable
-    become: yes
-    file: dest=/usr/local/bin/piARDOP_GUI mode=a+x
+      mode: a+x
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
 #
@@ -67,9 +60,5 @@
     get_url:
       url: https://www.cantab.net/users/john.wiseman/Downloads/Beta/ARDOP_GUI
       dest: /usr/local/bin/ARDOP_GUI
-    when: ansible_architecture == "i386"
-
-  - name: Set ARDOP GUI (x86) to executable
-    become: yes
-    file: dest=/usr/local/bin/ARDOP_GUI mode=a+x
+      mode: a+x
     when: ansible_architecture == "i386"

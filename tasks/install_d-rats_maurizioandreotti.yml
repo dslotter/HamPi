@@ -29,10 +29,7 @@
     copy:
       src: "{{ playbook_dir }}/../files/usr/local/bin/update_d-rats"
       dest: "/usr/local/bin/update_d-rats"
-
-  - name: Set D-Rats update script to executable
-    become: yes
-    file: dest=/usr/local/bin/update_d-rats mode=a+x
+      mode: a+x
 
   - name: Run D-Rats update script (which builds and installs D-Rats from Git)
     command: /usr/local/bin/update_d-rats
