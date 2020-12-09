@@ -27,6 +27,16 @@
         name: "{{ item }}"
         state: present
       with_items:
+        - build-essential
+        - libfltk1.3-dev
+        - libsamplerate0-dev
+        - portaudio19-dev
+        - libsndfile1-dev
+        - libxft-dev
+        - libxinerama-dev
+        - libxcursor-dev
+        - libpulse-dev
+        - pavucontrol
         - swig
         - libusb-1.0-0-dev
         - libreadline-dev
@@ -67,6 +77,17 @@
       command: make install
       args:
         chdir: /home/pi/hamradio/hamlib
+
+    - name: Build Hamlib {{ hamlib_version }} Python bindings
+      command: make
+      args:
+        chdir: /home/pi/hamradio/hamlib/bindings
+
+    - name: Install Hamlib {{ hamlib_version }} Python bindings
+      become: yes
+      command: make install
+      args:
+        chdir: /home/pi/hamradio/hamlib/bindings
 
     - name: Configure dynamic linker run-time bindings
       become: yes
