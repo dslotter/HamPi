@@ -152,7 +152,7 @@
 
   - name: Create HamPi desktop config in /home/{{ ham_user }}/.config/pcmanfm/LXDE-pi
     copy:
-      src: "{{ playbook_dir }}/../files/home/pi/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
       dest: "/home/{{ ham_user }}/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
 
   - name: Create /etc/lightdm
@@ -174,17 +174,17 @@
 
   - name: Create HamPi README in /home/{{ ham_user }}/Desktop
     copy:
-      src: "{{ playbook_dir }}/../files/home/pi/Desktop/HAMPI README.doc"
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/HAMPI README.doc"
       dest: "/home/{{ ham_user }}/Desktop/HAMPI README.doc"
 
   - name: Create HamPi LICENSE in /home/{{ ham_user }}/Desktop
     copy:
-      src: "{{ playbook_dir }}/../files/home/pi/Desktop/HAMPI LICENSE.TXT"
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/HAMPI LICENSE.TXT"
       dest: "/home/{{ ham_user }}/Desktop/HAMPI LICENSE.TXT"
 
   - name: Create GIVE BACK in /home/{{ ham_user }}/Desktop
     copy:
-      src: "{{ playbook_dir }}/../files/home/pi/Desktop/GIVE BACK.PDF"
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/GIVE BACK.PDF"
       dest: "/home/{{ ham_user }}/Desktop/GIVE BACK.PDF"
 
   - name: Insert .bash_local configuration

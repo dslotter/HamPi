@@ -156,29 +156,29 @@
   - name: Download qrz_callsign_reader executable by W3DJS
     get_url:
       url: https://raw.githubusercontent.com/dslotter/ham_radio_scripts/main/qrz_callsign_reader.py
-      dest: /home/pi/bin/qrz_callsign_reader.py
+      dest: /home/{{ ham_user }}/bin/qrz_callsign_reader.py
       mode: a+x
 
   - name: Download update_fldigi_suite executable by W3DJS
     get_url:
       url: https://raw.githubusercontent.com/dslotter/ham_radio_scripts/main/update_fldigi_suite
-      dest: /home/pi/bin/update_fldigi_suite
+      dest: /home/{{ ham_user }}/bin/update_fldigi_suite
       mode: a+x
 
   - name: Download update_wsjtx_from_deb executable by W3DJS
     get_url:
       url: https://raw.githubusercontent.com/dslotter/ham_radio_scripts/main/update_wsjtx_from_deb
-      dest: /home/pi/bin/update_wsjtx_from_deb
+      dest: /home/{{ ham_user }}/bin/update_wsjtx_from_deb
       mode: a+x
 
   - name: Download update_wsjtx_from_src executable by W3DJS
     get_url:
       url: https://raw.githubusercontent.com/dslotter/ham_radio_scripts/main/update_wsjtx_from_src
-      dest: /home/pi/bin/update_wsjtx_from_src
+      dest: /home/{{ ham_user }}/bin/update_wsjtx_from_src
       mode: a+x
 
   - name: Download upload_adif_log executable by W3DJS
     get_url:
       url: https://raw.githubusercontent.com/dslotter/ham_radio_scripts/main/upload_adif_log
-      dest: /home/pi/bin/upload_adif_log
+      dest: /home/{{ ham_user }}/bin/upload_adif_log
       mode: a+x

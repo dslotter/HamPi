@@ -15,17 +15,17 @@
   - name: Install executable QSLware nag script
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/home/pi/.config/lxsession/LXDE-pi/qslware.sh"
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/.config/lxsession/LXDE-pi/qslware.sh"
       dest: "/home/{{ ham_user }}/.config/lxsession/LXDE-pi/qslware.sh"
       mode: a+x
 
   - name: Install lxsession autostart
     copy:
-      src: "{{ playbook_dir }}/../files/home/pi/.config/lxsession/LXDE-pi/autostart"
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/.config/lxsession/LXDE-pi/autostart"
       dest: "/home/{{ ham_user }}/.config/lxsession/LXDE-pi/autostart"
 
   - name: Install remove script
     copy:
-      src: "{{ playbook_dir }}/../files/home/pi/.config/lxsession/LXDE-pi/remove_nag_dialog"
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/.config/lxsession/LXDE-pi/remove_nag_dialog"
       dest: "/home/{{ ham_user }}/.config/lxsession/LXDE-pi/remove_nag_dialog"
       mode: a+x

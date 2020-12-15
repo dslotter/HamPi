@@ -219,6 +219,6 @@ https://github.com/wb2osz/direwolf.git
 
   - name: Add Northwest Digital Documentation to Desktop
     copy:
-      src: "{{ playbook_dir }}/../files/home/pi/Desktop/Activating your DRAWS™ HAT.pdf"
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/Activating your DRAWS™ HAT.pdf"
       dest: "/home/{{ ham_user }}/Desktop/Activating your DRAWS™ HAT.pdf"
     when: ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64"

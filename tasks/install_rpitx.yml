@@ -13,7 +13,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Install dependent libraries
@@ -36,7 +36,7 @@
   - name: Download latest rpitx sources
     git:
       repo: https://github.com/F5OEO/rpitx
-      dest: /home/pi/hamradio/rpitx
+      dest: /home/{{ ham_user }}/hamradio/rpitx
 
 #
 # Build and install csdr
@@ -45,23 +45,23 @@
   - name: Download latest csdr sources
     git:
       repo: https://github.com/F5OEO/csdr
-      dest: /home/pi/hamradio/rpitx/csdr
+      dest: /home/{{ ham_user }}/hamradio/rpitx/csdr
 
   - name: Build csdr
     command: make
     args:
-      chdir: /home/pi/hamradio/rpitx/csdr
+      chdir: /home/{{ ham_user }}/hamradio/rpitx/csdr
 
   - name: Install csdr
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/rpitx/csdr
+      chdir: /home/{{ ham_user }}/hamradio/rpitx/csdr
 
   - name: Clean csdr
     command: make clean
     args:
-      chdir: /home/pi/hamradio/rpitx/csdr
+      chdir: /home/{{ ham_user }}/hamradio/rpitx/csdr
 
 #
 # Build librpitx
@@ -70,12 +70,12 @@
   - name: Download latest librpitx sources
     git:
       repo: https://github.com/F5OEO/librpitx
-      dest: /home/pi/hamradio/rpitx/src/librpitx
+      dest: /home/{{ ham_user }}/hamradio/rpitx/src/librpitx
 
   - name: Build librpitx
     command: make
     args:
-      chdir: /home/pi/hamradio/rpitx/src/librpitx/src
+      chdir: /home/{{ ham_user }}/hamradio/rpitx/src/librpitx/src
 
 #
 # Download pift8
@@ -84,7 +84,7 @@
   - name: Download latest pift8 sources
     git:
       repo: https://github.com/kgoba/ft8_lib
-      dest: /home/pi/hamradio/rpitx/src/pift8/ft8_lib
+      dest: /home/{{ ham_user }}/hamradio/rpitx/src/pift8/ft8_lib
 
 #
 # Build rpitx
@@ -93,15 +93,15 @@
   - name: Build rpitx
     command: make
     args:
-      chdir: /home/pi/hamradio/rpitx/src
+      chdir: /home/{{ ham_user }}/hamradio/rpitx/src
 
   - name: Install rpitx
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/rpitx/src
+      chdir: /home/{{ ham_user }}/hamradio/rpitx/src
 
   - name: Clean rpitx
     command: make clean
     args:
-      chdir: /home/pi/hamradio/rpitx/src
+      chdir: /home/{{ ham_user }}/hamradio/rpitx/src

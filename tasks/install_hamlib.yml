@@ -82,13 +82,13 @@
     - name: Build Hamlib {{ hamlib_version }} Python bindings
       command: make
       args:
-        chdir: /home/pi/hamradio/hamlib/bindings
+        chdir: /home/{{ ham_user }}/hamradio/hamlib/bindings
 
     - name: Install Hamlib {{ hamlib_version }} Python bindings
       become: yes
       command: make install
       args:
-        chdir: /home/pi/hamradio/hamlib/bindings
+        chdir: /home/{{ ham_user }}/hamradio/hamlib/bindings
 
     - name: Configure dynamic linker run-time bindings
       become: yes
