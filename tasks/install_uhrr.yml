@@ -1,0 +1,48 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Universal Ham Radio Remote (UHRR)
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/pi/hamradio
+      state: directory
+
+  - name: Install dependent libraries for Universal Ham Radio Remote (UHRR)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - git
+      - autoconf
+      - automake
+      - libtool
+      - swig
+      - python3
+      - python3-pip
+      - python3-numpy
+      - python3-tornado
+      - python3-serial
+      - python3-pyaudio
+      - rtl-sdr
+      - libasound2-dev
+      - libopus0
+      - python3-pampy
+
+  - name: Install Python module dependencies for Universal Ham Radio Remote (UHRR)
+    become: yes
+    command: pip3 install tornado pyalsaaudio numpy pyrtlsdr
+
+  - name: Git clone latest Universal Ham Radio Remote (UHRR) sources
+    git:
+      repo: https://github.com/F4HTB/Universal_HamRadio_Remote_HTML5.git
+      dest: /home/pi/hamradio/Universal_HamRadio_Remote_HTML5

@@ -59,7 +59,4 @@
     copy:
       src: "{{ playbook_dir }}/../files/home/pi/.config/lxsession/LXDE-pi/boinc.sh"
       dest: "/home/{{ ham_user }}/.config/lxsession/LXDE-pi/boinc.sh"
-
-  - name: Set BOINC script to executable
-    become: yes
-    file: dest=/home/{{ ham_user }}/.config/lxsession/LXDE-pi/boinc.sh mode=a+x
+      mode: a+x

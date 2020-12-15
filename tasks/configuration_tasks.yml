@@ -6,9 +6,27 @@
   hosts: all
   tasks:
 
-  - name: Change hostname to hampi
+  - name: Change hostname to hampi (for current session)
     become: yes
-    command: hostname hampi
+    command: hostname -b hampi
+
+  - name: Change hostname to hampi (permanently)
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/hostname"
+      dest: "/etc/hostname"
+
+  - name: Change hostname to hampi (for hosts file)
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/hosts"
+      dest: "/etc/hosts"
+
+  - name: Store a basic version file in public location
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/hampi-release"
+      dest: "/etc/hampi-release"
 
   - name: Check that the /boot/cmdline.txt exists
     stat:

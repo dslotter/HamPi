@@ -4,8 +4,8 @@
 
 ---
 
-- name: HamPi v1.2d1 (Sep 2020) Playbook by W3DJS
-  hosts: all
+- name: HamPi v1.3d1 (Dec 2020) Playbook by W3DJS
+  # hosts: all
   # hosts: vm
   # hosts: hardware
   pre_tasks:
@@ -129,6 +129,7 @@
 - import_playbook: install_rpitx.yml
 - import_playbook: install_leansdr.yml
 - import_playbook: install_cygnusRFI.yml
+- import_playbook: install_uhrr.yml
 
 # Install SDR GUI apps after all pre-requisite SDR drivers are installed
 - import_playbook: install_cutesdr.yml

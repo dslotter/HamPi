@@ -764,6 +764,20 @@
       regexp: '^Categories=Network;HamRadio;'
       line: Categories=HamRadio SDR
 
+  - name: Modify path for sdrangel.desktop
+    become: yes
+    lineinfile:
+      path: /opt/install/sdrangel/share/applications/sdrangel.desktop
+      regexp: '^Exec=sdrangel'
+      line: Exec=/opt/install/sdrangel/bin/sdrangel
+
+  - name: Modify icon for sdrangel.desktop
+    become: yes
+    lineinfile:
+      path: /opt/install/sdrangel/share/applications/sdrangel.desktop
+      regexp: '^Icon=sdrangel_icon'
+      line: Icon=/opt/install/sdrangel/share/icons/hicolor/scalable/apps/sdrangel_icon.svg
+
   - name: Copy sdrangel.desktop to where system will recognize it
     become: yes
     command: cp /opt/install/sdrangel/share/applications/sdrangel.desktop /usr/local/share/applications/sdrangel.desktop

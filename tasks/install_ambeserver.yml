@@ -46,7 +46,7 @@
     command: ./install.sh
     args:
       chdir: /home/{{ ham_user }}/hamradio/ambeserver-install
-    ignore_errors: True
+    ignore_errors: yes
     # Installation returns error if ThumbDV isn't present and service cannot start
 
   - name: Stop ambeserver@ThumbDV service to replace with optimized version
@@ -70,5 +70,5 @@
   - name: Restart ambeserver@ThumbDV service using optimized binary
     become: yes
     command: systemctl restart ambeserver@ThumbDV
-    ignore_errors: True
+    ignore_errors: yes
     # systemctl returns error if ThumbDV isn't present

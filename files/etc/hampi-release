@@ -1,0 +1,7 @@
+PRETTY_NAME="HamPi 1.2 (December 2020)"
+NAME="HamPi"
+VERSION_ID="1,2"
+VERSION="1.2 (December 2020)"
+HOME_URL="http://hampi.radiowaves.ca"
+SUPPORT_URL="https://groups.io/g/Ham-Pi"
+BUG_REPORT_URL="https://github.com/dslotter/HamPi/issues/"

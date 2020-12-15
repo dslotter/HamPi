@@ -52,14 +52,12 @@
     get_url:
       url: https://raw.githubusercontent.com/dslotter/wsjtx_to_n3fjp/master/wsjtx_to_n3fjp.py
       dest: /home/{{ ham_user }}/bin/wsjtx_to_n3fjp.py
+      mode: a+x
 
   - name: Download wsjtx_to_n3fjp default config
     get_url:
       url: https://raw.githubusercontent.com/dslotter/wsjtx_to_n3fjp/master/config
       dest: /home/{{ ham_user }}/bin/config
-
-  - name: Set wsjtx_to_n3fjp.py to executable
-    file: dest=/home/{{ ham_user }}/bin/wsjtx_to_n3fjp.py mode=a+x
 
   - name: Install upload_adif_log dependencies
     become: yes
@@ -75,9 +73,7 @@
     get_url:
       url: https://raw.githubusercontent.com/dslotter/upload_adif_log/master/upload_adif_log
       dest: /home/{{ ham_user }}/bin/upload_adif_log
-
-  - name: Set upload_adif_log to executable
-    file: dest=/home/{{ ham_user }}/bin/upload_adif_log mode=a+x
+      mode: a+x
 
   - name: Install Logging Packages (ARM 32)
     become: yes
