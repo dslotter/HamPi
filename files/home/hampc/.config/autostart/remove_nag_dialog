@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+rm -f /home/hampi/.config/autostart/qslware.desktop
