@@ -22,18 +22,33 @@
       path: /home/{{ ham_user }}/hamradio
       state: directory
 
-  - name: Install dependent libraries
+  - name: Install dependent libraries (Raspberry Pi)
     become: yes
     package:
       name: "{{ item }}"
       state: present
     with_items:
       - libssl-dev
-      - qt4-qmake
       - curl
       - gcc
       - build-essential
       - unzip
+      - qt4-qmake
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Install dependent libraries (Xubuntu)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libssl-dev
+      - curl
+      - gcc
+      - build-essential
+      - unzip
+      - qt5-qmake
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
 
 
 #
