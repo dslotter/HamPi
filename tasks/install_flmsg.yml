@@ -26,7 +26,7 @@
         - libfltk1.3-dev
 
     - name: Determine latest version of flmsg on web
-      shell: curl --silent "http://www.w1hkj.com/files/flmsg/" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq | tail -n 1 1
+      shell: curl --silent "http://www.w1hkj.com/files/flmsg/" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq | tail -n 1
       args:
         warn: no
       register: download_date
