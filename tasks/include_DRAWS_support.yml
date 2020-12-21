@@ -58,6 +58,37 @@
       - npm
       - lm-sensors
       - libasound2-dev
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - git
+      - scons
+      - gpsd
+      - python-gi
+      - python-gi-cairo
+      - python-gi-dev
+      - python-cairo
+      - python3-serial
+      - libqt5core5a
+      - libqt5network5
+      - libcap-dev
+      - libncurses-dev
+      - pps-tools
+      - libusb-1.0-0-dev
+      - gnuplot
+      - asciidoctor
+#      - libgps-dev # This isn't allowing compiles to complete yet
+      - libudev-dev
+      - nodejs
+      - npm
+      - lm-sensors
+      - libasound2-dev
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
 
   - name: Insert sensors configuration for D.R.A.W.S. / UDRC
     become: yes
