@@ -20,7 +20,7 @@
 - import_playbook: configuration_tasks.yml
 - import_playbook: install_menus.yml
 - import_playbook: install_wallpaper.yml
-- import_playbook: upgrade_raspbian_packages.yml
+- import_playbook: upgrade_debian_packages.yml
 - import_playbook: install_chromium_bookmarks.yml
 - import_playbook: install_cmake.yml
 - import_playbook: install_wxwidgets.yml
