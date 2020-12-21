@@ -5,11 +5,10 @@
 - name: Install SoapyUHD
   hosts: all
   environment:
-    # Build-Time Tuning for Raspberry Pi 4:
-    CXXFLAGS: "-O2 -march=armv7-a -mfloat-abi=hard -mfpu=neon -mtune=cortex-a72 -Wno-psabi"
-    CFLAGS: "-O2 -march=armv7-a -mfloat-abi=hard -mfpu=neon -mtune=cortex-a72 -Wno-psabi"
-    ASMFLAGS: "-O2 -march=armv7-a -mfloat-abi=hard -mfpu=neon -mtune=cortex-a72 -g"
-    # Build-Time Tuning for Raspberry Pi 3:
+    CXXFLAGS: "{{ UHD_CXXFLAGS }}"
+    CFLAGS: "{{ UHD_CFLAGS }}"
+    ASMFLAGS: "{{ UHD_ASMFLAGS }}"
+# Build-Time Tuning for Raspberry Pi 3:
 #    CXXFLAGS: "-O2 -march=armv7-a -mfloat-abi=hard -mfpu=neon -mtune=cortex-a53 -Wno-psabi"
 #    CFLAGS: "-O2 -march=armv7-a -mfloat-abi=hard -mfpu=neon -mtune=cortex-a53 -Wno-psabi"
 #    ASMFLAGS: "-O2 -march=armv7-a -mfloat-abi=hard -mfpu=neon -mtune=cortex-a53 -g"
