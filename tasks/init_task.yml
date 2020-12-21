@@ -4,14 +4,14 @@
 
 - name: Init Tasks
   hosts: all
-  gather_facts: no
+  gather_facts: yes
   tasks:
 
   - name: Include needed global variables
     include_vars:
       file: ../default/main.yml
 
-  - name: Include needed variables for Raspberry Pi
+  - name: Include needed variables for Raspberry Pi OS
     include_vars:
       file: ../default/raspbianos.yml
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")

@@ -4,8 +4,9 @@
 
 ---
 
-- name: HamPi v1.3d1 (Dec 2020) Playbook by W3DJS
+- name: HamPi v1.2b1 (Dec 2020) Playbook by W3DJS
   # hosts: all
+  hosts: nuc
   # hosts: vm
   # hosts: hardware
   pre_tasks:

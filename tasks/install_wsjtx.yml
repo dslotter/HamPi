@@ -78,7 +78,6 @@
       state: present
     with_items:
       - libc6:i386
-    when: ansible_architecture == "i386"
     when: ansible_architecture == "x86_64" or ansible_architecture == "i386" or ansible_architecture == "amd64"
 
   - name: Download WSJT-X {{ wsjtx_version }} with check (md5) (x86)

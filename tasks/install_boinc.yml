@@ -54,9 +54,34 @@
     file:
       path: /home/{{ ham_user }}/.config/lxsession/LXDE-pi
       state: directory
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
   - name: Install BOINC script
     copy:
       src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/.config/lxsession/LXDE-pi/boinc.sh"
       dest: "/home/{{ ham_user }}/.config/lxsession/LXDE-pi/boinc.sh"
       mode: a+x
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+#
+# Xubuntu
+#
+
+  - name: Create /home/{{ ham_user }}/.config/autostart directory
+    file:
+      path: /home/{{ ham_user }}/.config/autostart
+      state: directory
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Install BOINC autostart
+    copy:
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/.config/autostart/boinc.desktop"
+      dest: "/home/{{ ham_user }}/.config/autostart/boinc.desktop"
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Install BOINC script
+    copy:
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/.config/autostart/boinc.sh"
+      dest: "/home/{{ ham_user }}/.config/autostart/boinc.sh"
+      mode: a+x
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")

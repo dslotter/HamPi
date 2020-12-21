@@ -15,24 +15,28 @@
       file:
         path: /home/{{ ham_user }}/hamradio
         state: directory
+      when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
     - name: Install dependent libraries
       become: yes
       package:
         name: libfltk1.3-dev
         state: present
+      when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
     - name: Determine latest version of Pi Stats Monitor on web
       shell: curl --silent "http://www.w1hkj.com/pi3/" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq | tail -n 1
       args:
         warn: no
       register: download_date
+      when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
     - name: Download and Unarchive Pi Stats Monitor {{ download_date.stdout }}
       unarchive:
         src: "http://www.w1hkj.com/pi3/pistats-{{ download_date.stdout }}.tgz"
         dest: "/home/{{ ham_user }}/hamradio/"
         remote_src: yes
+      when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
     - name: Configure Pi Stats Monitor {{ download_date.stdout }}
       command: ./configure
@@ -43,14 +47,17 @@
       command: make all
       args:
         chdir: /home/{{ ham_user }}/hamradio/pistats-{{ download_date.stdout }}
+      when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
     - name: Install Pi Stats Monitor {{ download_date.stdout }}
       become: yes
       command: make install
       args:
         chdir: /home/{{ ham_user }}/hamradio/pistats-{{ download_date.stdout }}
+      when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
     - name: Remove Pi Stats Monitor {{ download_date.stdout }} build directory
       file:
         path: /home/{{ ham_user }}/hamradio/pistats-{{ download_date.stdout }}
         state: absent
+      when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
