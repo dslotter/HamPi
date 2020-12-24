@@ -57,7 +57,6 @@
 #        when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Copy JTDX from local file (because automated downloads don't work reliably) (ARM)
-    become: yes
     copy:
       src: "{{ playbook_dir }}/../files/jtdx-2.2.0-rc152_u_armhf.deb"
       dest: "/home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc152_u_armhf.deb"
@@ -106,7 +105,6 @@
 #    when: ansible_architecture == "i386"
 
   - name: Copy JTDX from local file (because automated downloads don't work reliably) (x86)
-    become: yes
     copy:
       src: "{{ playbook_dir }}/../files/jtdx-2.2.0-rc152_i386.deb"
       dest: "/home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc152_i386.deb"
@@ -130,21 +128,20 @@
 #
 
   - name: Copy JTDX from local file (because automated downloads don't work reliably) (AMD64)
-    become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/jtdx-2.2.0-rc152_1804_amd64.deb"
-      dest: "/home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc152_1804_amd64.deb"
+      src: "{{ playbook_dir }}/../files/jtdx-2.2.0-rc154_2004_amd64.deb"
+      dest: "/home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc154_2004_amd64.deb"
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
   - name: Install JTDX from local file (because automated downloads don't work reliably) (AMD64)
     become: yes
     apt:
-      deb: /home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc152_1804_amd64.deb
+      deb: /home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc154_2004_amd64.deb
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
   - name: Remove JTDX installer from local file (because automated downloads don't work reliably) (AMD64)
     file:
-      path: /home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc152_1804_amd64.deb
+      path: /home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc154_2004_amd64.deb
       state: absent
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
