@@ -42,6 +42,7 @@
       command: ./configure
       args:
         chdir: /home/{{ ham_user }}/hamradio/pistats-{{ download_date.stdout }}
+      when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
     - name: Build Pi Stats Monitor {{ download_date.stdout }}
       command: make all
