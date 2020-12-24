@@ -26,11 +26,24 @@
       - build-essential
       - automake
       - debhelper
-      - libwxgtk3.0-dev
       - libasound2-dev
       - portaudio19-dev
       - libusb-1.0-0-dev
       - fakeroot
+
+  - name: Install dependent libraries for OpenDV (Raspberry Pi)
+    become: yes
+    package:
+      name: libwxgtk3.0-dev
+      state: present
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Install dependent libraries for OpenDV (Xubuntu)
+    become: yes
+    package:
+      name: libwxgtk3.0-gtk3-dev
+      state: present
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
 
   - name: Install dependent libraries for OpenDV (ARM)
     become: yes
