@@ -16,7 +16,7 @@
       path: /home/{{ ham_user }}/hamradio
       state: directory
 
-  - name: Install dependent libraries for freedv-gui
+  - name: Install dependent libraries for freedv-gui (Common)
     become: yes
     package:
       name: "{{ item }}"
@@ -24,7 +24,6 @@
     with_items:
       - libfltk1.3-dev
       - subversion
-      - libwxgtk3.0-dev
       - portaudio19-dev
       - libusb-1.0-0-dev
       - libsamplerate0-dev
@@ -40,6 +39,20 @@
       - libsndfile-dev
       - sox
 #        - libjpeg9-dev
+
+  - name: Install dependent libraries for FreeDV (Raspberry Pi)
+    become: yes
+    package:
+      name: libwxgtk3.0-dev
+      state: present
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Install dependent libraries for FreeDV (Xubuntu)
+    become: yes
+    package:
+      name: libwxgtk3.0-gtk3-dev
+      state: present
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
 
 #
 # Build and install FreeDV GUI
