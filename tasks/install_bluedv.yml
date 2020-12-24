@@ -43,7 +43,7 @@
 
   - name: Change owner of BlueDV default preferences file to ham radio user
     become: yes
-    file: dest=/usr/local/bluedv/BlueDVconfig.ini owner=pi group=pi
+    file: dest=/usr/local/bluedv/BlueDVconfig.ini owner="{{ ham_user }}" group="{{ ham_user }}"
 
   - name: Copy BlueDV desktop file
     become: yes
