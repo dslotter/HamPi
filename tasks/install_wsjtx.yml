@@ -21,15 +21,6 @@
       - libqt5multimedia5-plugins
       - libqt5serialport5
 
-  - name: Install dependent libraries (ARM32)
-    become: yes
-    package:
-      name: "{{ item }}"
-      state: present
-    with_items:
-      - libgfortran3
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
-
   - name: Create directory for documentation
     become: yes
     file:
@@ -46,6 +37,15 @@
 #
 # Raspbian ARM
 #
+
+  - name: Install dependent libraries (ARM32)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libgfortran3
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
 
   - name: Download WSJT-X {{ wsjtx_version }} with check (md5) (ARM)
     get_url:
@@ -104,6 +104,16 @@
 # x86_64
 #
 
+  - name: Install dependent libraries (x86_64)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libgfortran4
+      - libreadline8
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
   - name: Download WSJT-X {{ wsjtx_version }} with check (md5) (x86_64)
     get_url:
       url: https://physics.princeton.edu/pulsar/K1JT/wsjtx_{{ wsjtx_version }}_amd64.deb
@@ -116,6 +126,7 @@
     become: yes
     apt:
       deb: /home/{{ ham_user }}/hamradio/wsjtx_{{ wsjtx_version }}_amd64.deb
+      dpkg_options: "ignore-depends=libgfortran3,libreadline7"
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
   - name: Remove WSJT-X {{ wsjtx_version }} installer (x86_64)
