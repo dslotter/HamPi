@@ -164,6 +164,13 @@
       state: directory
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
+  - name: Enable passwordless sudo for HamPC
+    become: yes
+    blockinfile:
+      dest: /etc/sudoers.d/010_hampc-nopasswd
+      block: |
+        hampc ALL=(ALL) NOPASSWD: ALL
+
   - name: Create HamPi desktop config 0 for Raspberry Pi OS in /etc/xdg/pcmanfm/LXDE-pi
     become: yes
     copy:
