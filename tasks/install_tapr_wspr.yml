@@ -58,22 +58,26 @@
     git:
       repo: https://github.com/DanAnkers/WsprryPi.git
       dest: /home/{{ ham_user }}/hamradio/WsprryPi
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
   - name: Build WsprryPi
     command: gcc wspr.c -o wspr-pi
     args:
       chdir: /home/{{ ham_user }}/hamradio/WsprryPi
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
   - name: Install WsprryPi
     become: yes
     command: install wspr-pi /usr/local/bin
     args:
       chdir: /home/{{ ham_user }}/hamradio/WsprryPi
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
   - name: Remove WsprryPi build directory
     file:
       path: /home/{{ ham_user }}/hamradio/WsprryPi
       state: absent
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
 
 #
@@ -118,17 +122,17 @@
   - name: Install dependent packages
     become: yes
     package:
-      name: python-pip
+      name: python3-pip
       state: present
 
-  - name: pip install setuptools
+  - name: pip3 install setuptools
     become: yes
-    command: "pip install setuptools --upgrade --no-binary :all:"
+    command: "pip3 install setuptools --upgrade --no-binary :all:"
     args:
       chdir: /home/{{ ham_user }}/hamradio
 
-  - name: pip install PySSTV
+  - name: pip3 install PySSTV
     become: yes
-    command: pip install PySSTV
+    command: pip3 install PySSTV
     args:
       chdir: /home/{{ ham_user }}/hamradio
