@@ -122,11 +122,13 @@
       checksum: md5:{{ wsjtx_222_md5sum_amd64 }}
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
+  # Install WSJT-X the hard way because we're having issues
+  # getting apt to ignore "missing" dependencies
   - name: Install WSJT-X {{ wsjtx_version }} (x86_64)
     become: yes
-    apt:
-      deb: /home/{{ ham_user }}/hamradio/wsjtx_{{ wsjtx_version }}_amd64.deb
-      dpkg_options: "ignore-depends=libgfortran3,libreadline7"
+    command: dpkg -i --ignore-depends\=libgfortran3,libreadline7 ./wsjtx_{{ wsjtx_version }}_amd64.deb
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
   - name: Remove WSJT-X {{ wsjtx_version }} installer (x86_64)
