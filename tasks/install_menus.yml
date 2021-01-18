@@ -8,7 +8,7 @@
   tasks:
 
   # In recent versions of Debian, extra-xdg-menus
-  # package supercedes the hamradiomenus package.
+  # package supersedes the hamradiomenus package.
   - name: Install HamRadio menus
     become: yes
     package:
