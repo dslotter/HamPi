@@ -13,7 +13,7 @@
 
     - name: Create directory hamradio
       file:
-        path: /home/pi/hamradio
+        path: /home/{{ ham_user }}/hamradio
         state: directory
 
     - name: Install dependent libraries
@@ -36,35 +36,32 @@
         - pavucontrol
 
     - name: Determine latest version of FLDigi on web
-      shell: curl --silent "http://www.w1hkj.com/files/fldigi/" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq
+      shell: curl --silent "http://www.w1hkj.com/files/fldigi/" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq | tail -n 1
       args:
         warn: no
       register: download_date
 
-    - local_action: command echo item
-      with_items: download_date.stdout_lines[0]
-
-    - name: Download and Unarchive FLDigi {{ download_date.stdout_lines[0] }}
+    - name: Download and Unarchive FLDigi {{ download_date.stdout }}
       unarchive:
-        src: "http://www.w1hkj.com/files/fldigi/fldigi-{{ download_date.stdout_lines[0] }}.tar.gz"
-        dest: "/home/pi/hamradio/"
+        src: "http://www.w1hkj.com/files/fldigi/fldigi-{{ download_date.stdout }}.tar.gz"
+        dest: "/home/{{ ham_user }}/hamradio/"
         remote_src: yes
 
-    - name: Configure FlDigi {{ download_date.stdout_lines[0] }}
+    - name: Configure FlDigi {{ download_date.stdout }}
       command: ./configure
       args:
-        chdir: /home/pi/hamradio/fldigi-{{ download_date.stdout_lines[0] }}
+        chdir: /home/{{ ham_user }}/hamradio/fldigi-{{ download_date.stdout }}
 
-    - name: Build FlDigi {{ download_date.stdout_lines[0] }}
+    - name: Build FlDigi {{ download_date.stdout }}
       command: make all
       args:
-        chdir: /home/pi/hamradio/fldigi-{{ download_date.stdout_lines[0] }}
+        chdir: /home/{{ ham_user }}/hamradio/fldigi-{{ download_date.stdout }}
 
-    - name: Install FlDigi {{ download_date.stdout_lines[0] }}
+    - name: Install FlDigi {{ download_date.stdout }}
       become: yes
       command: make install
       args:
-        chdir: /home/pi/hamradio/fldigi-{{ download_date.stdout_lines[0] }}
+        chdir: /home/{{ ham_user }}/hamradio/fldigi-{{ download_date.stdout }}
 
     - name: Modify categories for flarq.desktop
       become: yes
@@ -80,12 +77,12 @@
         regexp: '^Categories=Network;HamRadio;'
         line: Categories=HamRadio Fldigi
 
-    - name: Clean FlDigi {{ download_date.stdout_lines[0] }}
+    - name: Clean FlDigi {{ download_date.stdout }}
       command: make clean
       args:
-        chdir: /home/pi/hamradio/fldigi-{{ download_date.stdout_lines[0] }}
+        chdir: /home/{{ ham_user }}/hamradio/fldigi-{{ download_date.stdout }}
 
-    - name: Remove FlDigi {{ download_date.stdout_lines[0] }} build directory
+    - name: Remove FlDigi {{ download_date.stdout }} build directory
       file:
-        path: /home/pi/hamradio/fldigi-{{ download_date.stdout_lines[0] }}
+        path: /home/{{ ham_user }}/hamradio/fldigi-{{ download_date.stdout }}
         state: absent

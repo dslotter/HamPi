@@ -1,0 +1,42 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Bookmarks for Chromium or Firefox
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Include needed variables
+    include_vars:
+      file: ../default/main.yml
+
+  - name: Create directory chromium
+    file:
+      path: /home/{{ ham_user }}/.config/chromium/Default
+      state: directory
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Copy initial Chromium Bookmarks
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/Bookmarks"
+      dest: "/home/{{ ham_user }}/.config/chromium/Default/Bookmarks"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+#
+# How to create initial bookmarks for Firefox:
+# https://mike.kaply.com/2012/03/26/customizing-firefox-distribution-ini/
+#
+  - name: Create directory /usr/lib/firefox/distribution for Xubuntu
+    file:
+      path: /usr/lib/firefox/distribution
+      state: directory
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Copy initial Mozilla Firefox Bookmarks
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/lib/firefox/distribution/distribution.ini"
+      dest: "/usr/lib/firefox/distribution/distribution.ini"
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")

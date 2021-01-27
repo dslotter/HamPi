@@ -13,7 +13,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Install dependent libraries
@@ -29,32 +29,32 @@
   - name: Download latest HackRF sources
     git:
       repo: https://github.com/mossmann/hackrf.git
-      dest: /home/pi/hamradio/hackrf
+      dest: /home/{{ ham_user }}/hamradio/hackrf
 
   - name: Create directory hackrf/host/build
     file:
-      path: /home/pi/hamradio/hackrf/host/build
+      path: /home/{{ ham_user }}/hamradio/hackrf/host/build
       state: directory
 
   - name: Build HackRF CMakeFiles
     command: cmake ..
     args:
-      chdir: /home/pi/hamradio/hackrf/host/build
+      chdir: /home/{{ ham_user }}/hamradio/hackrf/host/build
 
   - name: Build HackRF
     command: make
     args:
-      chdir: /home/pi/hamradio/hackrf/host/build
+      chdir: /home/{{ ham_user }}/hamradio/hackrf/host/build
 
   - name: Install HackRF
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/hackrf/host/build
+      chdir: /home/{{ ham_user }}/hamradio/hackrf/host/build
 
   - name: Remove HackRF build directory
     file:
-      path: /home/pi/hamradio/hackrf
+      path: /home/{{ ham_user }}/hamradio/hackrf
       state: absent
 
   - name: Configure dynamic linker run-time bindings
@@ -64,30 +64,30 @@
   - name: Download latest SoapyHackRF sources
     git:
       repo: https://github.com/pothosware/SoapyHackRF.git
-      dest: /home/pi/hamradio/SoapyHackRF
+      dest: /home/{{ ham_user }}/hamradio/SoapyHackRF
 
   - name: Create directory SoapyHackRF/build
     file:
-      path: /home/pi/hamradio/SoapyHackRF/build
+      path: /home/{{ ham_user }}/hamradio/SoapyHackRF/build
       state: directory
 
   - name: Build SoapyHackRF CMakeFiles
     command: cmake ..
     args:
-      chdir: /home/pi/hamradio/SoapyHackRF/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapyHackRF/build
 
   - name: Build SoapyHackRF
     command: make
     args:
-      chdir: /home/pi/hamradio/SoapyHackRF/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapyHackRF/build
 
   - name: Install SoapyHackRF
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/SoapyHackRF/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapyHackRF/build
 
   - name: Remove SoapyHackRF build directory
     file:
-      path: /home/pi/hamradio/SoapyHackRF
+      path: /home/{{ ham_user }}/hamradio/SoapyHackRF
       state: absent

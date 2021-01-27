@@ -14,7 +14,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Install dependent libraries for OpenDV (Common)
@@ -26,11 +26,24 @@
       - build-essential
       - automake
       - debhelper
-      - libwxgtk3.0-dev
       - libasound2-dev
       - portaudio19-dev
       - libusb-1.0-0-dev
       - fakeroot
+
+  - name: Install dependent libraries for OpenDV (Raspberry Pi)
+    become: yes
+    package:
+      name: libwxgtk3.0-dev
+      state: present
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Install dependent libraries for OpenDV (Xubuntu)
+    become: yes
+    package:
+      name: libwxgtk3.0-gtk3-dev
+      state: present
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
 
   - name: Install dependent libraries for OpenDV (ARM)
     become: yes
@@ -42,7 +55,7 @@
   - name: Download latest OpenDV sources
     git:
       repo: https://github.com/dl5di/OpenDV.git
-      dest: /home/pi/hamradio/OpenDV
+      dest: /home/{{ ham_user }}/hamradio/OpenDV
 
 #
 # AMBETools
@@ -50,20 +63,21 @@
 
   - name: Fix architecture for OpenDV - AMBETools
     lineinfile:
-      path: /home/pi/hamradio/OpenDV/AMBETools/settings.mk
+      path: /home/{{ ham_user }}/hamradio/OpenDV/AMBETools/settings.mk
       regexp: '^export ARCH := x86-64'
       line: export ARCH := native
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Build OpenDV - AMBETools
     command: make
     args:
-      chdir: /home/pi/hamradio/OpenDV/AMBETools
+      chdir: /home/{{ ham_user }}/hamradio/OpenDV/AMBETools
 
   - name: Install OpenDV - AMBETools
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/OpenDV/AMBETools
+      chdir: /home/{{ ham_user }}/hamradio/OpenDV/AMBETools
 
 
 #
@@ -72,18 +86,18 @@
   - name: Configure OpenDV - AnalogueRepeater
     command: ./configure
     args:
-      chdir: /home/pi/hamradio/OpenDV/AnalogueRepeater
+      chdir: /home/{{ ham_user }}/hamradio/OpenDV/AnalogueRepeater
 
   - name: Build OpenDV - AnalogueRepeater
     command: make
     args:
-      chdir: /home/pi/hamradio/OpenDV/AnalogueRepeater
+      chdir: /home/{{ ham_user }}/hamradio/OpenDV/AnalogueRepeater
 
   - name: Install OpenDV - AnalogueRepeater
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/OpenDV/AnalogueRepeater
+      chdir: /home/{{ ham_user }}/hamradio/OpenDV/AnalogueRepeater
 
 
 #
@@ -92,20 +106,21 @@
 
   - name: Fix architecture for OpenDV - Digital Voice
     lineinfile:
-      path: "/home/pi/hamradio/OpenDV/Digital Voice/settings.mk"
+      path: "/home/{{ ham_user }}/hamradio/OpenDV/Digital Voice/settings.mk"
       regexp: '^export ARCH := x86-64'
       line: export ARCH := native
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Build OpenDV - Digital Voice
     command: make
     args:
-      chdir: "/home/pi/hamradio/OpenDV/Digital Voice"
+      chdir: "/home/{{ ham_user }}/hamradio/OpenDV/Digital Voice"
 
   - name: Install OpenDV - Digital Voice
     become: yes
     command: make install
     args:
-      chdir: "/home/pi/hamradio/OpenDV/Digital Voice"
+      chdir: "/home/{{ ham_user }}/hamradio/OpenDV/Digital Voice"
 
 
 #
@@ -115,18 +130,18 @@
   - name: Configure OpenDV - DStarRepeater
     command: ./configure
     args:
-      chdir: /home/pi/hamradio/OpenDV/DStarRepeater
+      chdir: /home/{{ ham_user }}/hamradio/OpenDV/DStarRepeater
 
   - name: Build OpenDV - DStarRepeater
     command: make
     args:
-      chdir: /home/pi/hamradio/OpenDV/DStarRepeater
+      chdir: /home/{{ ham_user }}/hamradio/OpenDV/DStarRepeater
 
   - name: Install OpenDV - DStarRepeater
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/OpenDV/DStarRepeater
+      chdir: /home/{{ ham_user }}/hamradio/OpenDV/DStarRepeater
 
 
 #
@@ -136,18 +151,18 @@
   - name: Configure OpenDV - DummyRepeater
     command: ./configure --with-ambeserver
     args:
-      chdir: /home/pi/hamradio/OpenDV/DummyRepeater
+      chdir: /home/{{ ham_user }}/hamradio/OpenDV/DummyRepeater
 
   - name: Build OpenDV - DummyRepeater
     command: make
     args:
-      chdir: /home/pi/hamradio/OpenDV/DummyRepeater
+      chdir: /home/{{ ham_user }}/hamradio/OpenDV/DummyRepeater
 
   - name: Install OpenDV - DummyRepeater
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/OpenDV/DummyRepeater
+      chdir: /home/{{ ham_user }}/hamradio/OpenDV/DummyRepeater
 
 
 #
@@ -157,18 +172,18 @@
   - name: Configure OpenDV - ircDDBGateway
     command: ./configure
     args:
-      chdir: /home/pi/hamradio/OpenDV/ircDDBGateway
+      chdir: /home/{{ ham_user }}/hamradio/OpenDV/ircDDBGateway
 
   - name: Build OpenDV - ircDDBGateway
     command: make
     args:
-      chdir: /home/pi/hamradio/OpenDV/ircDDBGateway
+      chdir: /home/{{ ham_user }}/hamradio/OpenDV/ircDDBGateway
 
   - name: Install OpenDV - ircDDBGateway
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/OpenDV/ircDDBGateway
+      chdir: /home/{{ ham_user }}/hamradio/OpenDV/ircDDBGateway
 
 
 #
@@ -178,24 +193,24 @@
   - name: Configure OpenDV - XReflector
     command: ./configure
     args:
-      chdir: /home/pi/hamradio/OpenDV/XReflector
+      chdir: /home/{{ ham_user }}/hamradio/OpenDV/XReflector
 
   - name: Build OpenDV - XReflector
     command: make
     args:
-      chdir: /home/pi/hamradio/OpenDV/XReflector
+      chdir: /home/{{ ham_user }}/hamradio/OpenDV/XReflector
 
   - name: Install OpenDV - XReflector
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/OpenDV/XReflector
+      chdir: /home/{{ ham_user }}/hamradio/OpenDV/XReflector
 
 # Work around a Git issue -- missing libircDDB.a file
   - name: Build OpenDV - XReflectorDaemon
     command: cp libircDDB.a ../ircDDB
     args:
-      chdir: /home/pi/hamradio/OpenDV/XReflector
+      chdir: /home/{{ ham_user }}/hamradio/OpenDV/XReflector
 
 
 #
@@ -210,20 +225,20 @@
 
 ## Work around a Git issue -- missing IRCDDB.h file
 #  - name: Build OpenDV - XReflectorDaemon
-#    command: cp /home/pi/hamradio/OpenDV/XReflector/ircDDB/IRCDDB.h Common
+#    command: cp /home/{{ ham_user }}/hamradio/OpenDV/XReflector/ircDDB/IRCDDB.h Common
 #    args:
-#      chdir: /home/pi/hamradio/OpenDV/XReflectorDaemon
+#      chdir: /home/{{ ham_user }}/hamradio/OpenDV/XReflectorDaemon
 #
 #  - name: Build OpenDV - XReflectorDaemon
 #    command: make
 #    args:
-#      chdir: /home/pi/hamradio/OpenDV/XReflectorDaemon
+#      chdir: /home/{{ ham_user }}/hamradio/OpenDV/XReflectorDaemon
 #
 #  - name: Install OpenDV - XReflectorDaemon
 #    become: yes
 #    command: make install
 #    args:
-#      chdir: /home/pi/hamradio/OpenDV/XReflectorDaemon
+#      chdir: /home/{{ ham_user }}/hamradio/OpenDV/XReflectorDaemon
 #
 
 ##
@@ -233,15 +248,15 @@
 #  - name: Build OpenDV - RepeaterExtras
 #    command: make
 #    args:
-#      chdir: /home/pi/hamradio/OpenDV/RepeaterExtras
+#      chdir: /home/{{ ham_user }}/hamradio/OpenDV/RepeaterExtras
 #
 #  - name: Install OpenDV - RepeaterExtras
 #    become: yes
 #    command: make install
 #    args:
-#      chdir: /home/pi/hamradio/OpenDV/RepeaterExtras
+#      chdir: /home/{{ ham_user }}/hamradio/OpenDV/RepeaterExtras
 
   - name: Remove OpenDV build directory
     file:
-      path: /home/pi/hamradio/OpenDV
+      path: /home/{{ ham_user }}/hamradio/OpenDV
       state: absent

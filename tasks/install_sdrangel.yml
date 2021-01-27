@@ -14,7 +14,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Create directory /opt/build
@@ -23,9 +23,9 @@
       path: /opt/build
       state: directory
 
-  - name: Change Ownership of /opt/build to pi
+  - name: Change Ownership of /opt/build to {{ ham_user }}
     become: yes
-    file: dest=/opt/build owner=pi
+    file: dest=/opt/build owner={{ ham_user }}
 
   - name: Create directory /opt/install
     become: yes
@@ -33,9 +33,9 @@
       path: /opt/install
       state: directory
 
-  - name: Change Ownership of /opt/install to pi
+  - name: Change Ownership of /opt/install to {{ ham_user }}
     become: yes
-    file: dest=/opt/install owner=pi
+    file: dest=/opt/install owner={{ ham_user }}
 
 
   - name: Install dependent libraries

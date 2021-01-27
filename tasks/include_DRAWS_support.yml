@@ -23,10 +23,11 @@
         # Enable audio (loads snd_bcm2835)
         # dtparam=audio=0
         # End of D.R.A.W.S. / UDRC section
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio/
       state: directory
 
   - name: Install dependent libraries
@@ -57,6 +58,37 @@
       - npm
       - lm-sensors
       - libasound2-dev
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - git
+      - scons
+      - gpsd
+      - python-gi
+      - python-gi-cairo
+      - python-gi-dev
+      - python-cairo
+      - python3-serial
+      - libqt5core5a
+      - libqt5network5
+      - libcap-dev
+      - libncurses-dev
+      - pps-tools
+      - libusb-1.0-0-dev
+      - gnuplot
+      - asciidoctor
+#      - libgps-dev # This isn't allowing compiles to complete yet
+      - libudev-dev
+      - nodejs
+      - npm
+      - lm-sensors
+      - libasound2-dev
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
 
   - name: Insert sensors configuration for D.R.A.W.S. / UDRC
     become: yes
@@ -74,6 +106,7 @@
                 compute in4 ((48.7/10)+1)*@, @/((48.7/10)+1)
 
         # End of D.R.A.W.S. / UDRC section
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
 #
 # Install D.R.A.W.S. compatible version of GPSd
@@ -81,22 +114,22 @@
   - name: Git clone latest GPSd sources
     git:
       repo: https://gitlab.com/gpsd/gpsd.git
-      dest: /home/pi/hamradio/gpsd
+      dest: /home/{{ ham_user }}/hamradio/gpsd
 
   - name: Build GPSd sources
     shell: scons prefix=/usr
     args:
-      chdir: /home/pi/hamradio/gpsd
+      chdir: /home/{{ ham_user }}/hamradio/gpsd
 
   - name: Install GPSd
     become: yes
     shell: scons install
     args:
-      chdir: /home/pi/hamradio/gpsd
+      chdir: /home/{{ ham_user }}/hamradio/gpsd
 
   - name: Remove GPSd build directory
     file:
-      path: /home/pi/hamradio/gpsd
+      path: /home/{{ ham_user }}/hamradio/gpsd
       state: absent
 
   - name: Fix a troublesome gpsd config entry
@@ -112,6 +145,7 @@
       path: /etc/default/gpsd
       regexp: '^DEVICES=\"\"'
       line: DEVICES="/dev/ttySC0 /dev/pps0"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
   - name: Add D.R.A.W.S. gps option to gpsd config
     become: yes
@@ -119,6 +153,7 @@
       path: /etc/default/gpsd
       regexp: '^GPSD_OPTIONS=\"\"'
       line: GPSD_OPTIONS="-n"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
 #
 # Install D.R.A.W.S. compatible version of Direwolf
@@ -126,45 +161,45 @@
   - name: Git clone latest Direwolf sources
     git:
       repo: https://www.github.com/wb2osz/direwolf
-      dest: /home/pi/hamradio/direwolf
+      dest: /home/{{ ham_user }}/hamradio/direwolf
 
   - name: Checkout Dev Direwolf sources
     shell: git checkout dev
     args:
-      chdir: /home/pi/hamradio/direwolf
+      chdir: /home/{{ ham_user }}/hamradio/direwolf
 
   - name: Fix check for D.R.A.W.S. support
     lineinfile:
-      path: /home/pi/hamradio/direwolf/src/dwgpsd.c
+      path: /home/{{ ham_user }}/hamradio/direwolf/src/dwgpsd.c
       regexp: '^#if GPSD_API_MAJOR_VERSION \< 5 \|\| GPSD_API_MAJOR_VERSION \> 10'
       line: '#if GPSD_API_MAJOR_VERSION < 5 || GPSD_API_MAJOR_VERSION > 11'
 
   - name: Create directory direwolf/build
     file:
-      path: /home/pi/hamradio/direwolf/build
+      path: /home/{{ ham_user }}/hamradio/direwolf/build
       state: directory
 
   - name: Build Dev Direwolf CMakeFiles
     command: cmake ..
     args:
-      chdir: /home/pi/hamradio/direwolf/build
+      chdir: /home/{{ ham_user }}/hamradio/direwolf/build
 
   - name: Build Dev Direwolf
     command: make
     args:
-      chdir: /home/pi/hamradio/direwolf/build
+      chdir: /home/{{ ham_user }}/hamradio/direwolf/build
 
   - name: Install Dev Direwolf
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/direwolf/build
+      chdir: /home/{{ ham_user }}/hamradio/direwolf/build
 
   - name: Install-conf Dev Direwolf
     become: yes
     command: make install-conf
     args:
-      chdir: /home/pi/hamradio/direwolf/build
+      chdir: /home/{{ ham_user }}/hamradio/direwolf/build
 
   - name: Modify categories for direwolf.desktop
     become: yes
@@ -175,7 +210,7 @@
 
   - name: Remove Dev Direwolf build directory
     file:
-      path: /home/pi/hamradio/direwolf
+      path: /home/{{ ham_user }}/hamradio/direwolf
       state: absent
 
 #
@@ -184,31 +219,37 @@
   - name: Update npm
     become: yes
     shell: npm install -g npm
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
   - name: Git clone latest DRAWS Manager sources
     git:
       repo: https://github.com/nwdigitalradio/draws-manager.git
-      dest: /home/pi/hamradio/draws-manager
+      dest: /home/{{ ham_user }}/hamradio/draws-manager
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
   - name: Install DRAWS Manager service file
     become: yes
     shell: cp draws-manager.service /lib/systemd/system
     args:
-      chdir: /home/pi/hamradio/draws-manager
+      chdir: /home/{{ ham_user }}/hamradio/draws-manager
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
   - name: Install DRAWS Manager config file
     become: yes
     shell: cp draws-manager /etc/default
     args:
-      chdir: /home/pi/hamradio/draws-manager
+      chdir: /home/{{ ham_user }}/hamradio/draws-manager
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
   - name: Install DRAWS-Manager webapp
     become: yes
     shell: /usr/bin/npm install
     args:
-      chdir: /home/pi/hamradio/draws-manager/webapp
+      chdir: /home/{{ ham_user }}/hamradio/draws-manager/webapp
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
   - name: Add Northwest Digital Documentation to Desktop
     copy:
-      src: "{{ playbook_dir }}/../files/home/pi/Desktop/Activating your DRAWS™ HAT.pdf"
-      dest: "/home/pi/Desktop/Activating your DRAWS™ HAT.pdf"
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/Activating your DRAWS™ HAT.pdf"
+      dest: "/home/{{ ham_user }}/Desktop/Activating your DRAWS™ HAT.pdf"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")

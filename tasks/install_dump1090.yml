@@ -8,7 +8,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio/
       state: directory
 
   - name: Install dependent libraries
@@ -27,12 +27,12 @@
   - name: Download and unarchive dump1090 1.3.1 for SDRPlay (ARM)
     unarchive:
       src: https://www.sdrplay.com/software/dump1090_1.3.1.rpi.tar.gz
-      dest: /home/pi/hamradio/
+      dest: /home/{{ ham_user }}/hamradio/
       remote_src: yes
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Make directory name more meaningful
-    command: mv /home/pi/hamradio/dump1090_1.3.1 /home/pi/hamradio/dump1090_sdrplay_1.3.1
+    command: mv /home/{{ ham_user }}/hamradio/dump1090_1.3.1 /home/{{ ham_user }}/hamradio/dump1090_sdrplay_1.3.1
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
 
@@ -43,13 +43,13 @@
   - name: Download and unarchive dump1090 1.3.1 for SDRPlay (amd64)
     unarchive:
       src: https://www.sdrplay.com/software/dump1090_1.3.1.linux.tar.gz
-      dest: /home/pi/hamradio/
+      dest: /home/{{ ham_user }}/hamradio/
       remote_src: yes
-    when: ansible_architecture == "amd64"
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
   - name: Make directory name more meaningful
-    command: mv /home/pi/hamradio/dump1090_1.3.1 /home/pi/hamradio/dump1090_sdrplay_1.3.1
-    when: ansible_architecture == "amd64"
+    command: mv /home/{{ ham_user }}/hamradio/dump1090_1.3.1 /home/{{ ham_user }}/hamradio/dump1090_sdrplay_1.3.1
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
 #
 # Install dump1090-mutability for RTL-SDR
@@ -66,25 +66,21 @@
     register: dump1090_version
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
-  - local_action: command echo item
-    with_items: dump1090_version.stdout_lines[0]
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
-
-  - name: Download dump1090-mutability {{ dump1090_version.stdout_lines[0] }} (ARM)
+  - name: Download dump1090-mutability {{ dump1090_version.stdout }} (ARM)
     get_url:
-      url: https://github.com/abcd567a/dump1090/releases/download/v1/dump1090-mutability_{{ dump1090_version.stdout_lines[0] }}_dev_armhf.deb
-      dest: /home/pi/hamradio/dump1090-mutability_{{ dump1090_version.stdout_lines[0] }}_dev_armhf.deb
+      url: https://github.com/abcd567a/dump1090/releases/download/v1/dump1090-mutability_{{ dump1090_version.stdout }}_dev_armhf.deb
+      dest: /home/{{ ham_user }}/hamradio/dump1090-mutability_{{ dump1090_version.stdout }}_dev_armhf.deb
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
-  - name: Install dump1090-mutability {{ dump1090_version.stdout_lines[0] }} (ARM)
+  - name: Install dump1090-mutability {{ dump1090_version.stdout }} (ARM)
     become: yes
     apt:
-      deb: /home/pi/hamradio/dump1090-mutability_{{ dump1090_version.stdout_lines[0] }}_dev_armhf.deb
+      deb: /home/{{ ham_user }}/hamradio/dump1090-mutability_{{ dump1090_version.stdout }}_dev_armhf.deb
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
-  - name: Remove dump1090-mutability installer {{ dump1090_version.stdout_lines[0] }} (ARM)
+  - name: Remove dump1090-mutability installer {{ dump1090_version.stdout }} (ARM)
     file:
-      path: /home/pi/hamradio/dump1090-mutability_{{ dump1090_version.stdout_lines[0] }}_dev_armhf.deb
+      path: /home/{{ ham_user }}/hamradio/dump1090-mutability_{{ dump1090_version.stdout }}_dev_armhf.deb
       state: absent
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
@@ -97,29 +93,25 @@
     args:
       warn: no
     register: dump1090_version
-    when: ansible_architecture == "amd64"
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
-  - local_action: command echo item
-    with_items: dump1090_version.stdout_lines[0]
-    when: ansible_architecture == "amd64"
-
-  - name: Download dump1090-mutability {{ dump1090_version.stdout_lines[0] }} (AMD64)
+  - name: Download dump1090-mutability {{ dump1090_version.stdout }} (AMD64)
     get_url:
-      url: https://github.com/abcd567a/dump1090/releases/download/v1/dump1090-mutability_{{ dump1090_version.stdout_lines[0] }}.dev_amd64.deb
-      dest: /home/pi/hamradio/dump1090-mutability_{{ dump1090_version.stdout_lines[0] }}.dev_amd64.deb
-    when: ansible_architecture == "amd64"
+      url: https://github.com/abcd567a/dump1090/releases/download/v1/dump1090-mutability_{{ dump1090_version.stdout }}.dev_amd64.deb
+      dest: /home/{{ ham_user }}/hamradio/dump1090-mutability_{{ dump1090_version.stdout }}.dev_amd64.deb
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
-  - name: Install dump1090-mutability {{ dump1090_version.stdout_lines[0] }} (AMD64)
+  - name: Install dump1090-mutability {{ dump1090_version.stdout }} (AMD64)
     become: yes
     apt:
-      deb: /home/pi/hamradio/dump1090-mutability_{{ dump1090_version.stdout_lines[0] }}.dev_amd64.deb
-    when: ansible_architecture == "amd64"
+      deb: /home/{{ ham_user }}/hamradio/dump1090-mutability_{{ dump1090_version.stdout }}.dev_amd64.deb
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
-  - name: Remove dump1090-mutability installer {{ dump1090_version.stdout_lines[0] }} (AMD64)
+  - name: Remove dump1090-mutability installer {{ dump1090_version.stdout }} (AMD64)
     file:
-      path: /home/pi/hamradio/dump1090-mutability_{{ dump1090_version.stdout_lines[0] }}.dev_amd64.deb
+      path: /home/{{ ham_user }}/hamradio/dump1090-mutability_{{ dump1090_version.stdout }}.dev_amd64.deb
       state: absent
-    when: ansible_architecture == "amd64"
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
 #
 # i386 -- There is no dump1090-mutability for i386

@@ -13,7 +13,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Install dependent components
@@ -39,5 +39,5 @@
     become: yes
     file:
       path: /usr/local/JS8CallUtilities_V2
-      owner: pi
-      group: pi
+      owner: "{{ ham_user }}"
+      group: "{{ ham_user }}"

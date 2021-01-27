@@ -13,7 +13,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Install dependent libraries
@@ -29,61 +29,61 @@
   - name: Download latest bladeRF library sources
     git:
       repo: https://github.com/nuand/bladeRF
-      dest: /home/pi/hamradio/bladeRF
+      dest: /home/{{ ham_user }}/hamradio/bladeRF
 
   - name: Create directory bladeRF/host/build
     file:
-      path: /home/pi/hamradio/bladeRF/host/build
+      path: /home/{{ ham_user }}/hamradio/bladeRF/host/build
       state: directory
 
   - name: Build bladeRF library CMakeFiles
     command: cmake ..
     args:
-      chdir: /home/pi/hamradio/bladeRF/host/build
+      chdir: /home/{{ ham_user }}/hamradio/bladeRF/host/build
 
   - name: Build bladeRF library
     command: make
     args:
-      chdir: /home/pi/hamradio/bladeRF/host/build
+      chdir: /home/{{ ham_user }}/hamradio/bladeRF/host/build
 
   - name: Install bladeRF library
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/bladeRF/host/build
+      chdir: /home/{{ ham_user }}/hamradio/bladeRF/host/build
 
   - name: Remove bladeRF build directory
     file:
-      path: /home/pi/hamradio/bladeRF
+      path: /home/{{ ham_user }}/hamradio/bladeRF
       state: absent
 
   - name: Download latest SoapyBladeRF sources
     git:
       repo: https://github.com/pothosware/SoapyBladeRF
-      dest: /home/pi/hamradio/SoapyBladeRF
+      dest: /home/{{ ham_user }}/hamradio/SoapyBladeRF
 
   - name: Create directory SoapyBladeRF/build
     file:
-      path: /home/pi/hamradio/SoapyBladeRF/build
+      path: /home/{{ ham_user }}/hamradio/SoapyBladeRF/build
       state: directory
 
   - name: Build SoapyBladeRF CMakeFiles
     command: cmake ..
     args:
-      chdir: /home/pi/hamradio/SoapyBladeRF/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapyBladeRF/build
 
   - name: Build SoapyBladeRF
     command: make
     args:
-      chdir: /home/pi/hamradio/SoapyBladeRF/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapyBladeRF/build
 
   - name: Install SoapyBladeRF
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/SoapyBladeRF/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapyBladeRF/build
 
   - name: Remove SoapyBladeRF build directory
     file:
-      path: /home/pi/hamradio/SoapyBladeRF
+      path: /home/{{ ham_user }}/hamradio/SoapyBladeRF
       state: absent

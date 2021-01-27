@@ -19,20 +19,37 @@
   
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
-  - name: Install dependent libraries - libssl-dev
+  - name: Install dependent libraries (Raspberry Pi)
     become: yes
     package:
-      name: libssl-dev
+      name: "{{ item }}"
       state: present
+    with_items:
+      - libssl-dev
+      - curl
+      - gcc
+      - build-essential
+      - unzip
+      - qt4-qmake
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
-  - name: Install dependent libraries - qt4-qmake
+  - name: Install dependent libraries (Xubuntu)
     become: yes
     package:
-      name: qt4-qmake
+      name: "{{ item }}"
       state: present
+    with_items:
+      - libssl-dev
+      - curl
+      - gcc
+      - build-essential
+      - unzip
+      - qt5-qmake
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
 
 #
 # Build and install CMake
@@ -44,32 +61,29 @@
       warn: no
     register: cmake_version
 
-  - local_action: command echo item
-    with_items: cmake_version.stdout_lines[0]
-
-  - name: Download and Unarchive CMake {{ cmake_version.stdout_lines[0] }} sources
+  - name: Download and Unarchive CMake {{ cmake_version.stdout }} sources
     unarchive:
-      src: https://github.com/Kitware/CMake/releases/download/v{{ cmake_version.stdout_lines[0] }}/cmake-{{ cmake_version.stdout_lines[0] }}.tar.gz
-      dest: /home/pi/hamradio
+      src: https://github.com/Kitware/CMake/releases/download/v{{ cmake_version.stdout }}/cmake-{{ cmake_version.stdout }}.tar.gz
+      dest: /home/{{ ham_user }}/hamradio
       remote_src: yes
 
-  - name: Configure CMake {{ cmake_version.stdout_lines[0] }}
+  - name: Configure CMake {{ cmake_version.stdout }}
     command: ./configure
     args:
-      chdir: /home/pi/hamradio/cmake-{{ cmake_version.stdout_lines[0] }}
+      chdir: /home/{{ ham_user }}/hamradio/cmake-{{ cmake_version.stdout }}
 
-  - name: Build CMake {{ cmake_version.stdout_lines[0] }}
+  - name: Build CMake {{ cmake_version.stdout }}
     command: make
     args:
-      chdir: /home/pi/hamradio/cmake-{{ cmake_version.stdout_lines[0] }}
+      chdir: /home/{{ ham_user }}/hamradio/cmake-{{ cmake_version.stdout }}
 
-  - name: Install CMake {{ cmake_version.stdout_lines[0] }}
+  - name: Install CMake {{ cmake_version.stdout }}
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/cmake-{{ cmake_version.stdout_lines[0] }}
+      chdir: /home/{{ ham_user }}/hamradio/cmake-{{ cmake_version.stdout }}
 
-  - name: Remove CMake {{ cmake_version.stdout_lines[0] }} build directory
+  - name: Remove CMake {{ cmake_version.stdout }} build directory
     file:
-      path: /home/pi/hamradio/cmake-{{ cmake_version.stdout_lines[0] }}
+      path: /home/{{ ham_user }}/hamradio/cmake-{{ cmake_version.stdout }}
       state: absent

@@ -9,7 +9,7 @@
 
   - name: Create directory CTY_FILES
     file:
-      path: /home/pi/hamradio/CTY_FILES
+      path: /home/{{ ham_user }}/hamradio/CTY_FILES
       state: directory
 
   - name: Determine latest version of CTY_FILES on web
@@ -18,30 +18,27 @@
       warn: no
     register: cty_version
 
-  - local_action: command echo item
-    with_items: cty_version.stdout_lines[0]
-
-  - name: Download and Unarchive CTY {{ cty_version.stdout_lines[0] }} from http://www.country-files.com/
+  - name: Download and Unarchive CTY {{ cty_version.stdout }} from http://www.country-files.com/
     unarchive:
-      src: https://www.country-files.com/cty/download/{{ cty_version.stdout_lines[0] }}/cty-{{ cty_version.stdout_lines[0] }}.zip
-      dest: /home/pi/hamradio/CTY_FILES
+      src: https://www.country-files.com/cty/download/{{ cty_version.stdout }}/cty-{{ cty_version.stdout }}.zip
+      dest: /home/{{ ham_user }}/hamradio/CTY_FILES
       remote_src: yes
 
   - name: Create FLDigi data directory
     file:
-      path: /home/pi/.fldigi
+      path: /home/{{ ham_user }}/.fldigi
       state: directory
 
   - name: Create WSJT-X data directory
     file:
-      path: /home/pi/.local/share/WSJT-X
+      path: /home/{{ ham_user }}/.local/share/WSJT-X
       state: directory
 
   - name: Copy cty.dat to FLDigi
-    shell: cp /home/pi/hamradio/CTY_FILES/cty.dat /home/pi/.fldigi
+    shell: cp /home/{{ ham_user }}/hamradio/CTY_FILES/cty.dat /home/{{ ham_user }}/.fldigi
 
   - name: Copy cty.dat to WSJT-X
-    shell: cp /home/pi/hamradio/CTY_FILES/cty.dat /home/pi/.local/share/WSJT-X
+    shell: cp /home/{{ ham_user }}/hamradio/CTY_FILES/cty.dat /home/{{ ham_user }}/.local/share/WSJT-X
 
   - name: Determine latest version of BIGCTY on web
     shell: curl --silent "https://www.country-files.com/" | grep -Po "https://www.country-files.com/bigcty/download/bigcty-[0-9]+.zip" | head -n 1 | grep -Po "[0-9]+"
@@ -49,11 +46,8 @@
       warn: no
     register: bigcty_version
 
-  - local_action: command echo item
-    with_items: bigcty_version.stdout_lines[0]
-
-  - name: Download and Unarchive Big CTY {{ bigcty_version.stdout_lines[0] }} from http://www.country-files.com/
+  - name: Download and Unarchive Big CTY {{ bigcty_version.stdout }} from http://www.country-files.com/
     unarchive:
-      src: https://www.country-files.com/bigcty/download/bigcty-{{ bigcty_version.stdout_lines[0] }}.zip
-      dest: /home/pi/hamradio/CTY_FILES
+      src: https://www.country-files.com/bigcty/download/bigcty-{{ bigcty_version.stdout }}.zip
+      dest: /home/{{ ham_user }}/hamradio/CTY_FILES
       remote_src: yes

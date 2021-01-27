@@ -7,7 +7,7 @@
   gather_facts: no
   tasks:
 
-  - name: Install dependent Python components for D-Rats
+  - name: Install dependent Python components for D-Rats (Raspberry Pi)
     become: yes
     package:
       name: "{{ item }}"
@@ -18,18 +18,63 @@
       - python-libxml2
       - python-libxslt1
       - python-serial
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Install dependent Python components for D-Rats (Xubuntu)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - python-lxml
+      - python
+      - python-libxml2
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Install dependent Python component python-gtk for D-Rats (Xubuntu)
+    become: yes
+    apt:
+      deb: http://archive.ubuntu.com/ubuntu/pool/universe/p/pygtk/python-gtk2_2.24.0-5.1ubuntu2_amd64.deb
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Install dependent Python component python-serial for D-Rats (Xubuntu)
+    become: yes
+    apt:
+      deb: http://mirrors.kernel.org/ubuntu/pool/main/p/pyserial/python-serial_3.4-2_all.deb
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Install dependent Python component python-glade2 for D-Rats (Xubuntu)
+    become: yes
+    apt:
+      deb: http://archive.ubuntu.com/ubuntu/pool/universe/p/pygtk/python-glade2_2.24.0-5.1ubuntu2_amd64.deb
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Install dependent Python component python-libxslt1 for D-Rats (Xubuntu)
+    become: yes
+    apt:
+      deb: http://security.ubuntu.com/ubuntu/pool/main/libx/libxslt/python-libxslt1_1.1.29-5ubuntu0.2_amd64.deb
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
 
   - name: Download D-Rats sources
     git:
       repo: https://github.com/maurizioandreotti/D-Rats.git
-      dest: /home/pi/hamradio/D-Rats
+      dest: /home/{{ ham_user }}/hamradio/D-Rats
 
-  - name: Install D-Rats update script
+  - name: Install D-Rats update script (ARM)
     become: yes
     copy:
       src: "{{ playbook_dir }}/../files/usr/local/bin/update_d-rats"
       dest: "/usr/local/bin/update_d-rats"
       mode: a+x
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Install D-Rats update script (x86)
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/bin/update_d-rats_linux"
+      dest: "/usr/local/bin/update_d-rats"
+      mode: a+x
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "i386" or ansible_architecture == "amd64")
 
   - name: Run D-Rats update script (which builds and installs D-Rats from Git)
     command: /usr/local/bin/update_d-rats

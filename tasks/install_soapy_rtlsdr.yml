@@ -13,7 +13,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Install dependent libraries
@@ -25,61 +25,61 @@
   - name: Download latest RTL-SDR sources
     git:
       repo: https://github.com/steve-m/librtlsdr
-      dest: /home/pi/hamradio/librtlsdr
+      dest: /home/{{ ham_user }}/hamradio/librtlsdr
 
   - name: Create directory librtlsdr/build
     file:
-      path: /home/pi/hamradio/librtlsdr/build
+      path: /home/{{ ham_user }}/hamradio/librtlsdr/build
       state: directory
 
   - name: Build RTL-SDR CMakeFiles
     command: cmake ..
     args:
-      chdir: /home/pi/hamradio/librtlsdr/build
+      chdir: /home/{{ ham_user }}/hamradio/librtlsdr/build
 
   - name: Build RTL-SDR
     command: make
     args:
-      chdir: /home/pi/hamradio/librtlsdr/build
+      chdir: /home/{{ ham_user }}/hamradio/librtlsdr/build
 
   - name: Install RTL-SDR
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/librtlsdr/build
+      chdir: /home/{{ ham_user }}/hamradio/librtlsdr/build
 
   - name: Remove RTL-SDR build directory
     file:
-      path: /home/pi/hamradio/librtlsdr
+      path: /home/{{ ham_user }}/hamradio/librtlsdr
       state: absent
 
   - name: Download latest SoapyRTLSDR sources
     git:
       repo: https://github.com/pothosware/SoapyRTLSDR.git
-      dest: /home/pi/hamradio/SoapyRTLSDR
+      dest: /home/{{ ham_user }}/hamradio/SoapyRTLSDR
 
   - name: Create directory SoapyRTLSDR/build
     file:
-      path: /home/pi/hamradio/SoapyRTLSDR/build
+      path: /home/{{ ham_user }}/hamradio/SoapyRTLSDR/build
       state: directory
 
   - name: Build SoapyRTLSDR CMakeFiles
     command: cmake ..
     args:
-      chdir: /home/pi/hamradio/SoapyRTLSDR/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapyRTLSDR/build
 
   - name: Build SoapyRTLSDR
     command: make
     args:
-      chdir: /home/pi/hamradio/SoapyRTLSDR/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapyRTLSDR/build
 
   - name: Install SoapyRTLSDR
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/SoapyRTLSDR/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapyRTLSDR/build
 
   - name: Remove SoapyRTLSDR build directory
     file:
-      path: /home/pi/hamradio/SoapyRTLSDR
+      path: /home/{{ ham_user }}/hamradio/SoapyRTLSDR
       state: absent

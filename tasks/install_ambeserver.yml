@@ -36,17 +36,18 @@
   - name: Git clone latest NW Radio AMBEServer sources
     git:
       repo: https://github.com/nwdigitalradio/ambeserver-install.git
-      dest: /home/pi/hamradio/ambeserver-install
+      dest: /home/{{ ham_user }}/hamradio/ambeserver-install
 
   - name: Set install script to executable
-    file: dest=/home/pi/hamradio/ambeserver-install/install.sh mode=a+x
+    file: dest=/home/{{ ham_user }}/hamradio/ambeserver-install/install.sh mode=a+x
 
   - name: Install AMBEServer package
     become: yes
     command: ./install.sh
     args:
-      chdir: /home/pi/hamradio/ambeserver-install
+      chdir: /home/{{ ham_user }}/hamradio/ambeserver-install
     ignore_errors: yes
+    # Installation returns error if ThumbDV isn't present and service cannot start
 
   - name: Stop ambeserver@ThumbDV service to replace with optimized version
     become: yes
@@ -55,18 +56,19 @@
   - name: Build optimized version of AMBEServer
     command: gcc -O2 -march=native -mtune=native -o AMBEserver AMBEserver.c
     args:
-      chdir: /home/pi/hamradio/ambeserver-install/usr/local/src/AMBEserver
+      chdir: /home/{{ ham_user }}/hamradio/ambeserver-install/usr/local/src/AMBEserver
 
   - name: Install optimized AMBEServer executable
     become: yes
-    command: cp /home/pi/hamradio/ambeserver-install/usr/local/src/AMBEserver/AMBEserver /usr/local/sbin
+    command: cp /home/{{ ham_user }}/hamradio/ambeserver-install/usr/local/src/AMBEserver/AMBEserver /usr/local/sbin
 
   - name: Remove AMBEServer build directory
     file:
-      path: /home/pi/hamradio/ambeserver-install
+      path: /home/{{ ham_user }}/hamradio/ambeserver-install
       state: absent
 
   - name: Restart ambeserver@ThumbDV service using optimized binary
     become: yes
     command: systemctl restart ambeserver@ThumbDV
     ignore_errors: yes
+    # systemctl returns error if ThumbDV isn't present

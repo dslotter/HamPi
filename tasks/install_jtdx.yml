@@ -13,7 +13,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
 #  - name: Install dependent components
@@ -38,44 +38,39 @@
 #    register: jtdx_name
 #        when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
-#  - local_action: command echo item
-#    with_items: jtdx_name.stdout_lines[0]
-#        when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
-
- # - name: Download JTDX {{ jtdx_name.stdout_lines[0] }} (ARM)
+ # - name: Download JTDX {{ jtdx_name.stdout }} (ARM)
  #   get_url:
- #     url: "https://www.jtdx.tech/downloads/Linux/{{ jtdx_name.stdout_lines[0] }}"
- #     dest: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
+ #     url: "https://www.jtdx.tech/downloads/Linux/{{ jtdx_name.stdout }}"
+ #     dest: /home/{{ ham_user }}/hamradio/{{ jtdx_name.stdout }}
  #       when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
-#  - name: Install JTDX {{ jtdx_name.stdout_lines[0] }} (ARM)
+#  - name: Install JTDX {{ jtdx_name.stdout }} (ARM)
 #    become: yes
 #    apt:
-#      deb: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
+#      deb: /home/{{ ham_user }}/hamradio/{{ jtdx_name.stdout }}
 #        when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
-#  - name: Remove JTDX {{ jtdx_name.stdout_lines[0] }} installer (ARM)
+#  - name: Remove JTDX {{ jtdx_name.stdout }} installer (ARM)
 #    file:
-#      path: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
+#      path: /home/{{ ham_user }}/hamradio/{{ jtdx_name.stdout }}
 #      state: absent
 #        when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
-  - name: Copy JTDX from local file (because automated downloads don't work reliably)
-    become: yes
+  - name: Copy JTDX from local file (because automated downloads don't work reliably) (ARM)
     copy:
       src: "{{ playbook_dir }}/../files/jtdx-2.2.0-rc152_u_armhf.deb"
-      dest: "/home/pi/hamradio/jtdx-2.2.0-rc152_u_armhf.deb"
+      dest: "/home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc152_u_armhf.deb"
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Install JTDX from local file (because automated downloads don't work reliably) (ARM)
     become: yes
     apt:
-      deb: /home/pi/hamradio/jtdx-2.2.0-rc152_u_armhf.deb
+      deb: /home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc152_u_armhf.deb
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Remove JTDX installer from local file (because automated downloads don't work reliably) (ARM)
     file:
-      path: /home/pi/hamradio/jtdx-2.2.0-rc152_u_armhf.deb
+      path: /home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc152_u_armhf.deb
       state: absent
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
@@ -91,47 +86,64 @@
 #    register: jtdx_name
 #    when: ansible_architecture == "i386"
 
-#  - local_action: command echo item
-#    with_items: jtdx_name.stdout_lines[0]
-#    when: ansible_architecture == "i386"
-
-#  - name: Download JTDX {{ jtdx_name.stdout_lines[0] }} (x86)
+#  - name: Download JTDX {{ jtdx_name.stdout }} (x86)
 #    get_url:
-#      url: "https://www.jtdx.tech/downloads/Linux/{{ jtdx_name.stdout_lines[0] }}"
-#      dest: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
+#      url: "https://www.jtdx.tech/downloads/Linux/{{ jtdx_name.stdout }}"
+#      dest: /home/{{ ham_user }}/hamradio/{{ jtdx_name.stdout }}
 #    when: ansible_architecture == "i386"
 
-#  - name: Install JTDX {{ jtdx_name.stdout_lines[0] }} (x86)
+#  - name: Install JTDX {{ jtdx_name.stdout }} (x86)
 #    become: yes
 #    apt:
-#      deb: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
+#      deb: /home/{{ ham_user }}/hamradio/{{ jtdx_name.stdout }}
 #    when: ansible_architecture == "i386"
 
-#  - name: Remove JTDX {{ jtdx_name.stdout_lines[0] }} installer (x86)
+#  - name: Remove JTDX {{ jtdx_name.stdout }} installer (x86)
 #    file:
-#      path: /home/pi/hamradio/{{ jtdx_name.stdout_lines[0] }}
+#      path: /home/{{ ham_user }}/hamradio/{{ jtdx_name.stdout }}
 #      state: absent
 #    when: ansible_architecture == "i386"
 
   - name: Copy JTDX from local file (because automated downloads don't work reliably) (x86)
-    become: yes
     copy:
       src: "{{ playbook_dir }}/../files/jtdx-2.2.0-rc152_i386.deb"
-      dest: "/home/pi/hamradio/jtdx-2.2.0-rc152_i386.deb"
+      dest: "/home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc152_i386.deb"
     when: ansible_architecture == "i386"
 
   - name: Install JTDX from local file (because automated downloads don't work reliably) (x86)
     become: yes
     apt:
-      deb: /home/pi/hamradio/jtdx-2.2.0-rc152_i386.deb
+      deb: /home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc152_i386.deb
     when: ansible_architecture == "i386"
 
   - name: Remove JTDX installer from local file (because automated downloads don't work reliably) (x86)
     file:
-      path: /home/pi/hamradio/jtdx-2.2.0-rc152_i386.deb
+      path: /home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc152_i386.deb
       state: absent
     when: ansible_architecture == "i386"
 
+
+#
+# AMD64
+#
+
+  - name: Copy JTDX from local file (because automated downloads don't work reliably) (AMD64)
+    copy:
+      src: "{{ playbook_dir }}/../files/jtdx-2.2.0-rc154_2004_amd64.deb"
+      dest: "/home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc154_2004_amd64.deb"
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+  - name: Install JTDX from local file (because automated downloads don't work reliably) (AMD64)
+    become: yes
+    apt:
+      deb: /home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc154_2004_amd64.deb
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+  - name: Remove JTDX installer from local file (because automated downloads don't work reliably) (AMD64)
+    file:
+      path: /home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc154_2004_amd64.deb
+      state: absent
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
 #
 # Common

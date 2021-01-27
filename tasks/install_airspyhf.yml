@@ -13,7 +13,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Install dependent libraries for AirSpy HF driver
@@ -30,29 +30,29 @@
   - name: Download and unarchive latest AirSpy HF driver sources
     unarchive:
       src: https://github.com/airspy/airspyhf/archive/master.zip
-      dest: /home/pi/hamradio
+      dest: /home/{{ ham_user }}/hamradio
       remote_src: yes
 
   - name: Create directory airspyhf-master/build
     file:
-      path: /home/pi/hamradio/airspyhf-master/build
+      path: /home/{{ ham_user }}/hamradio/airspyhf-master/build
       state: directory
 
   - name: Build AirSpy HF driver CMakeFiles
     command: cmake .. -DINSTALL_UDEV_RULES=ON
     args:
-      chdir: /home/pi/hamradio/airspyhf-master/build
+      chdir: /home/{{ ham_user }}/hamradio/airspyhf-master/build
 
   - name: Build AirSpy HF driver
     command: make
     args:
-      chdir: /home/pi/hamradio/airspyhf-master/build
+      chdir: /home/{{ ham_user }}/hamradio/airspyhf-master/build
 
   - name: Install AirSpy HF driver
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/airspyhf-master/build
+      chdir: /home/{{ ham_user }}/hamradio/airspyhf-master/build
 
   - name: Configure dynamic linker run-time bindings
     become: yes
@@ -60,5 +60,5 @@
 
   - name: Remove AirSpy HF driver build directory
     file:
-      path: /home/pi/hamradio/airspyhf-master
+      path: /home/{{ ham_user }}/hamradio/airspyhf-master
       state: absent

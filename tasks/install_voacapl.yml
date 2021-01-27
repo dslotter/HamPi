@@ -15,7 +15,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Install dependent components for VOACAPL
@@ -36,42 +36,42 @@
   - name: Git clone latest VOACAPL sources
     git:
       repo: https://github.com/jawatson/voacapl
-      dest: /home/pi/hamradio/voacapl
+      dest: /home/{{ ham_user }}/hamradio/voacapl
 
   - name: Autoreconf VOACAPL
     command: autoreconf -f -i
     args:
-      chdir: /home/pi/hamradio/voacapl
+      chdir: /home/{{ ham_user }}/hamradio/voacapl
 
   - name: Configure VOACAPL
     command: ./configure
     args:
-      chdir: /home/pi/hamradio/voacapl
+      chdir: /home/{{ ham_user }}/hamradio/voacapl
 
   - name: Build VOACAPL
     command: make all
     args:
-      chdir: /home/pi/hamradio/voacapl
+      chdir: /home/{{ ham_user }}/hamradio/voacapl
 
   - name: Install VOACAPL
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/voacapl
+      chdir: /home/{{ ham_user }}/hamradio/voacapl
 
   - name: Create VOACAPL data files
     command: makeitshfbc
     args:
-      chdir: /home/pi/hamradio/voacapl
+      chdir: /home/{{ ham_user }}/hamradio/voacapl
 
   - name: Clean VOACAPL
     command: make clean
     args:
-      chdir: /home/pi/hamradio/voacapl
+      chdir: /home/{{ ham_user }}/hamradio/voacapl
 
   - name: Remove voacapl build directory
     file:
-      path: /home/pi/hamradio/voacapl
+      path: /home/{{ ham_user }}/hamradio/voacapl
       state: absent
 
 #
@@ -82,7 +82,7 @@
     become: yes
     command: pip3 install matplotlib
     args:
-      chdir: /home/pi/hamradio
+      chdir: /home/{{ ham_user }}/hamradio
 
   - name: Install dependent components for pythonprop
     become: yes
@@ -99,44 +99,41 @@
       warn: no
     register: pythonprop_version
 
-  - local_action: command echo item
-    with_items: pythonprop_version.stdout_lines[0]
-
-  - name: Download and Unarchive pythonprop {{ pythonprop_version.stdout_lines[0] }}
+  - name: Download and Unarchive pythonprop {{ pythonprop_version.stdout }}
     unarchive:
-      src: "https://github.com/jawatson/pythonprop/archive/v{{ pythonprop_version.stdout_lines[0] }}.tar.gz"
-      dest: "/home/pi/hamradio/"
+      src: "https://github.com/jawatson/pythonprop/archive/v{{ pythonprop_version.stdout }}.tar.gz"
+      dest: "/home/{{ ham_user }}/hamradio/"
       remote_src: yes
 
-  - name: Autogen pythonprop {{ pythonprop_version.stdout_lines[0] }}
+  - name: Autogen pythonprop {{ pythonprop_version.stdout }}
     command: ./autogen.sh
     args:
-      chdir: /home/pi/hamradio/pythonprop-{{ pythonprop_version.stdout_lines[0] }}
+      chdir: /home/{{ ham_user }}/hamradio/pythonprop-{{ pythonprop_version.stdout }}
 
-  - name: Configure pythonprop {{ pythonprop_version.stdout_lines[0] }}
+  - name: Configure pythonprop {{ pythonprop_version.stdout }}
     command: ./configure
     args:
-      chdir: /home/pi/hamradio/pythonprop-{{ pythonprop_version.stdout_lines[0] }}
+      chdir: /home/{{ ham_user }}/hamradio/pythonprop-{{ pythonprop_version.stdout }}
 
-  - name: Build pythonprop {{ pythonprop_version.stdout_lines[0] }}
+  - name: Build pythonprop {{ pythonprop_version.stdout }}
     command: make all
     args:
-      chdir: /home/pi/hamradio/pythonprop-{{ pythonprop_version.stdout_lines[0] }}
+      chdir: /home/{{ ham_user }}/hamradio/pythonprop-{{ pythonprop_version.stdout }}
 
-  - name: Install pythonprop {{ pythonprop_version.stdout_lines[0] }}
+  - name: Install pythonprop {{ pythonprop_version.stdout }}
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/pythonprop-{{ pythonprop_version.stdout_lines[0] }}
+      chdir: /home/{{ ham_user }}/hamradio/pythonprop-{{ pythonprop_version.stdout }}
 
-  - name: Clean pythonprop {{ pythonprop_version.stdout_lines[0] }}
+  - name: Clean pythonprop {{ pythonprop_version.stdout }}
     command: make clean
     args:
-      chdir: /home/pi/hamradio/pythonprop-{{ pythonprop_version.stdout_lines[0] }}
+      chdir: /home/{{ ham_user }}/hamradio/pythonprop-{{ pythonprop_version.stdout }}
 
   - name: Remove pythonprop build directory
     file:
-      path: /home/pi/hamradio/pythonprop-{{ pythonprop_version.stdout_lines[0] }}
+      path: /home/{{ ham_user }}/hamradio/pythonprop-{{ pythonprop_version.stdout }}
       state: absent
 
   - name: Modify categories for voacapgui.desktop

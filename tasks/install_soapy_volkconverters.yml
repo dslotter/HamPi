@@ -13,7 +13,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Install dependent libraries
@@ -35,68 +35,68 @@
   - name: Download latest volk sources
     git:
       repo: https://github.com/gnuradio/volk
-      dest: /home/pi/hamradio/volk
+      dest: /home/{{ ham_user }}/hamradio/volk
 
   - name: Create directory volk/build
     file:
-      path: /home/pi/hamradio/volk/build
+      path: /home/{{ ham_user }}/hamradio/volk/build
       state: directory
 
   - name: Build volk CMakeFiles (ARM)
     command: cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchains/arm_cortex_a72_hardfp_native.cmake ..
     args:
-      chdir: /home/pi/hamradio/volk/build
+      chdir: /home/{{ ham_user }}/hamradio/volk/build
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Build volk CMakeFiles (x86)
     command: cmake ..
     args:
-      chdir: /home/pi/hamradio/volk/build
-    when: ansible_architecture == "i386"
+      chdir: /home/{{ ham_user }}/hamradio/volk/build
+    when: ansible_architecture == "i386" or ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
   - name: Build volk
     command: make
     args:
-      chdir: /home/pi/hamradio/volk/build
+      chdir: /home/{{ ham_user }}/hamradio/volk/build
 
   - name: Install volk
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/volk/build
+      chdir: /home/{{ ham_user }}/hamradio/volk/build
 
   - name: Remove volk build directory
     file:
-      path: /home/pi/hamradio/volk
+      path: /home/{{ ham_user }}/hamradio/volk
       state: absent
 
   - name: Download latest SoapyVOLKConverters sources
     git:
       repo: https://github.com/pothosware/SoapyVOLKConverters
-      dest: /home/pi/hamradio/SoapyVOLKConverters
+      dest: /home/{{ ham_user }}/hamradio/SoapyVOLKConverters
 
   - name: Create directory SoapyVOLKConverters/build
     file:
-      path: /home/pi/hamradio/SoapyVOLKConverters/build
+      path: /home/{{ ham_user }}/hamradio/SoapyVOLKConverters/build
       state: directory
 
   - name: Build SoapyVOLKConverters CMakeFiles
     command: cmake ..
     args:
-      chdir: /home/pi/hamradio/SoapyVOLKConverters/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapyVOLKConverters/build
 
   - name: Build SoapyVOLKConverters
     command: make
     args:
-      chdir: /home/pi/hamradio/SoapyVOLKConverters/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapyVOLKConverters/build
 
   - name: Install SoapyVOLKConverters
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/SoapyVOLKConverters/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapyVOLKConverters/build
 
   - name: Remove SoapyVOLKConverters build directory
     file:
-      path: /home/pi/hamradio/SoapyVOLKConverters
+      path: /home/{{ ham_user }}/hamradio/SoapyVOLKConverters
       state: absent

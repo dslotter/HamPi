@@ -13,7 +13,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
 
@@ -24,16 +24,16 @@
   - name: Download latest leansdr sources
     git:
       repo: https://github.com/pabr/leansdr
-      dest: /home/pi/hamradio/leansdr
+      dest: /home/{{ ham_user }}/hamradio/leansdr
 
   - name: Build leansdr
     command: make
     args:
-      chdir: /home/pi/hamradio/leansdr/src/apps
+      chdir: /home/{{ ham_user }}/hamradio/leansdr/src/apps
 
   - name: Install leansdr (Makefile has no install target)
     become: yes
-    command: install -o root "/home/pi/hamradio/leansdr/src/apps/{{ item }}" /usr/local/bin
+    command: install -o root "/home/{{ ham_user }}/hamradio/leansdr/src/apps/{{ item }}" /usr/local/bin
     with_items:
       - leanchansim
       - leandvb
@@ -48,5 +48,5 @@
 
   - name: Remove build directory leansdr
     file:
-      path: /home/pi/hamradio/leansdr
+      path: /home/{{ ham_user }}/hamradio/leansdr
       state: absent

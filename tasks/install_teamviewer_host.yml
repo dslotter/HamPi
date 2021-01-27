@@ -9,7 +9,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
 #
@@ -39,13 +39,13 @@
   - name: Download TeamViewer Host (ARM)
     get_url:
       url: https://download.teamviewer.com/download/linux/teamviewer-host_armhf.deb
-      dest: /home/pi/hamradio/teamviewer-host_armhf.deb
+      dest: /home/{{ ham_user }}/hamradio/teamviewer-host_armhf.deb
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Install TeamViewer Host (ARM)
     become: yes
     apt:
-      deb: /home/pi/hamradio/teamviewer-host_armhf.deb
+      deb: /home/{{ ham_user }}/hamradio/teamviewer-host_armhf.deb
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Setup TeamViewer Host (ARM)

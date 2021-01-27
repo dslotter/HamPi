@@ -13,7 +13,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Install dependent libraries
@@ -29,30 +29,30 @@
   - name: Download latest SoapyOsmo sources
     git:
       repo: https://github.com/pothosware/SoapyOsmo
-      dest: /home/pi/hamradio/SoapyOsmo
+      dest: /home/{{ ham_user }}/hamradio/SoapyOsmo
 
   - name: Create directory SoapyOsmo/build
     file:
-      path: /home/pi/hamradio/SoapyOsmo/build
+      path: /home/{{ ham_user }}/hamradio/SoapyOsmo/build
       state: directory
 
   - name: Build SoapyOsmo CMakeFiles
     command: cmake ..
     args:
-      chdir: /home/pi/hamradio/SoapyOsmo/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapyOsmo/build
 
   - name: Build SoapyOsmo
     command: make
     args:
-      chdir: /home/pi/hamradio/SoapyOsmo/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapyOsmo/build
 
   - name: Install SoapyOsmo
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/SoapyOsmo/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapyOsmo/build
 
   - name: Remove SoapyOsmo build directory
     file:
-      path: /home/pi/hamradio/SoapyOsmo
+      path: /home/{{ ham_user }}/hamradio/SoapyOsmo
       state: absent

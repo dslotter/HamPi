@@ -21,9 +21,9 @@
       - pulseaudio
       - pavucontrol
 
-  - name: Create directory /home/pi/lopora
+  - name: Create directory /home/{{ ham_user }}/lopora
     file:
-      path: /home/pi/lopora
+      path: /home/{{ ham_user }}/lopora
       state: directory
 
 
@@ -34,21 +34,21 @@
   - name: Download and Unarchive Lopora QRSS beacon reception program
     unarchive:
       src: https://www.qsl.net/pa2ohh/11lopsource.zip
-      dest: /home/pi/lopora
+      dest: /home/{{ ham_user }}/lopora
       remote_src: yes
 
   - name: Set quickstart script to executable
-    file: dest=/home/pi/lopora/scriptfiles/quickstartlopora.sh mode=a+x
+    file: dest=/home/{{ ham_user }}/lopora/scriptfiles/quickstartlopora.sh mode=a+x
 
   - name: Create quickstartlopora-hampi.sh
     copy:
-      dest: /home/pi/lopora/scriptfiles/quickstartlopora-hampi.sh
+      dest: /home/{{ ham_user }}/lopora/scriptfiles/quickstartlopora-hampi.sh
       mode: 0755
       content: |
         #!/bin/sh
 
         # Start Lopora
-        cd /home/pi/lopora
+        cd /home/{{ ham_user }}/lopora
         lxterminal -l -e 'python3 LOPORA-v5d.py ; /bin/sh' &
         lxterminal -l -e 'python3 LOPEXTftp-v1a.py ; /bin/sh' &
 

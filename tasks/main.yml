@@ -4,10 +4,11 @@
 
 ---
 
-- name: HamPi v1.2a (Dec 2020) Playbook by W3DJS
+- name: HamPi / HamPC v1.2rc1 (Dec 2020) Playbook by W3DJS
   # hosts: all
+  hosts: nuc
   # hosts: vm
-  hosts: hardware
+  # hosts: hardware
   pre_tasks:
     - name: Verify Ansible meets HamPi version requirements.
       assert:
@@ -19,8 +20,8 @@
 - import_playbook: configuration_tasks.yml
 - import_playbook: install_menus.yml
 - import_playbook: install_wallpaper.yml
-- import_playbook: upgrade_raspbian_packages.yml
-- import_playbook: install_chromium_bookmarks.yml
+- import_playbook: upgrade_debian_packages.yml
+- import_playbook: install_bookmarks.yml
 - import_playbook: install_cmake.yml
 - import_playbook: install_wxwidgets.yml
 # ^^^ This part takes about 1 hour to build on a RPi 4 ^^^
@@ -137,7 +138,7 @@
 - import_playbook: install_lysdr.yml
 - import_playbook: install_cubicsdr.yml
 - import_playbook: install_sdrangel.yml
-# ^^^ SDRAngel takes about 55 minutes to build on a RPi 4 ^^^
+# ^^^ SDRAngel takes about 55 minutes to build on a RPi 4 and 42 minutes on a x86_64 ^^^
 
 # Final tasks
 - import_playbook: finish_tasks.yml

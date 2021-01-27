@@ -39,6 +39,42 @@
       src: "{{ playbook_dir }}/../files/usr/local/share/applications/klog.desktop"
       dest: "/usr/local/share/applications/klog.desktop"
 
+#
+# Logging helpers by W3DJS
+#
+
+  - name: Create /home/{{ ham_user }}/bin
+    file:
+      path: /home/{{ ham_user }}/bin
+      state: directory
+
+  - name: Download wsjtx_to_n3fjp executable by W3DJS
+    get_url:
+      url: https://raw.githubusercontent.com/dslotter/wsjtx_to_n3fjp/master/wsjtx_to_n3fjp.py
+      dest: /home/{{ ham_user }}/bin/wsjtx_to_n3fjp.py
+      mode: a+x
+
+  - name: Download wsjtx_to_n3fjp default config
+    get_url:
+      url: https://raw.githubusercontent.com/dslotter/wsjtx_to_n3fjp/master/config
+      dest: /home/{{ ham_user }}/bin/config
+
+  - name: Install upload_adif_log dependencies
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - curl
+      - espeak
+      - ruby-notify
+
+  - name: Download upload_adif_log executable by W3DJS
+    get_url:
+      url: https://raw.githubusercontent.com/dslotter/upload_adif_log/master/upload_adif_log
+      dest: /home/{{ ham_user }}/bin/upload_adif_log
+      mode: a+x
+
   - name: Install Logging Packages (ARM 32)
     become: yes
     package:
@@ -76,7 +112,7 @@
 #  - name: Download latest Cartopy from Git repo
 #    git:
 #      repo: https://github.com/SciTools/cartopy.git
-#      dest: /home/pi/hamradio/cartopy
+#      dest: /home/{{ ham_user }}/hamradio/cartopy
 
   - name: Install Python module - Cython
     become: yes
@@ -111,58 +147,26 @@
   - name: Download latest PyQSO from Git repo
     git:
       repo: https://github.com/ctjacobs/pyqso.git
-      dest: /home/pi/hamradio/pyqso
+      dest: /home/{{ ham_user }}/hamradio/pyqso
 
 # Doing this manually for now due to fouled up cartopy module
 #  - name: Install PyQSO module dependencies
 #    become: yes
 #    command: pip3 install -U -r requirements.txt
 #    args:
-#      chdir: /home/pi/hamradio/pyqso
+#      chdir: /home/{{ ham_user }}/hamradio/pyqso
 
   - name: Install PyQSO systemwide
     become: yes
     command: make install
     args:
-      chdir: /home/pi/hamradio/pyqso
+      chdir: /home/{{ ham_user }}/hamradio/pyqso
 
   - name: Copy pyqso desktop file
     become: yes
     copy:
       src: "{{ playbook_dir }}/../files/usr/local/share/applications/pyqso.desktop"
       dest: "/usr/local/share/applications/pyqso.desktop"
-
-  - name: Create /home/pi/bin
-    file:
-      path: /home/pi/bin
-      state: directory
-
-  - name: Download wsjtx_to_n3fjp executable by W3DJS
-    get_url:
-      url: https://raw.githubusercontent.com/dslotter/wsjtx_to_n3fjp/master/wsjtx_to_n3fjp.py
-      dest: /home/pi/bin/wsjtx_to_n3fjp.py
-
-  - name: Download wsjtx_to_n3fjp default config
-    get_url:
-      url: https://raw.githubusercontent.com/dslotter/wsjtx_to_n3fjp/master/config
-      dest: /home/pi/bin/config
-      mode: a+x
-
-  - name: Install upload_adif_log dependencies
-    become: yes
-    package:
-      name: "{{ item }}"
-      state: present
-    with_items:
-      - curl
-      - espeak
-      - ruby-notify
-
-  - name: Download upload_adif_log executable by W3DJS
-    get_url:
-      url: https://raw.githubusercontent.com/dslotter/upload_adif_log/master/upload_adif_log
-      dest: /home/pi/bin/upload_adif_log
-      mode: a+x
 
 # Todo:
 # twlog - basic logging program for ham radio

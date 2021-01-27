@@ -29,7 +29,13 @@
       - cwdaemon
       - qrq
       - morse
-      - multimon-ng
+
+  - name: Install multimon-ng
+    become: yes
+    package:
+      name: multimon-ng
+      state: present
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
   - name: Modify categories for qrq.desktop
     become: yes

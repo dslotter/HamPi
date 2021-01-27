@@ -21,15 +21,15 @@
   - name: Git clone latest adifmerg sources
     git:
       repo: https://github.com/oh7bf/adifmerg.git
-      dest: /home/pi/hamradio/adifmerg
+      dest: /home/{{ ham_user }}/hamradio/adifmerg
 
   - name: Install adifmerg
     become: yes
     command: ./install
     args:
-      chdir: /home/pi/hamradio/adifmerg
+      chdir: /home/{{ ham_user }}/hamradio/adifmerg
 
   - name: Remove adifmerg build directory
     file:
-      path: /home/pi/hamradio/adifmerg
+      path: /home/{{ ham_user }}/hamradio/adifmerg
       state: absent

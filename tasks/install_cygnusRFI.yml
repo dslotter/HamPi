@@ -9,7 +9,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Install dependent components for CygnusRFI
@@ -29,4 +29,4 @@
   - name: Download latest CygnusRFI sources
     git:
       repo: https://github.com/0xCoto/CygnusRFI
-      dest: /home/pi/hamradio/CygnusRFI
+      dest: /home/{{ ham_user }}/hamradio/CygnusRFI

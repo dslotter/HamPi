@@ -9,24 +9,54 @@
   - name: Change hostname to hampi (for current session)
     become: yes
     command: hostname -b hampi
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Change hostname to hampc (for current session)
+    become: yes
+    command: hostname -b hampc
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
 
   - name: Change hostname to hampi (permanently)
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/etc/hostname"
+      src: "{{ playbook_dir }}/../files/etc/hostname_hampi"
       dest: "/etc/hostname"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Change hostname to hampc (permanently)
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/hostname_hampc"
+      dest: "/etc/hostname"
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
 
   - name: Change hostname to hampi (for hosts file)
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/etc/hosts"
+      src: "{{ playbook_dir }}/../files/etc/hosts_hampi"
       dest: "/etc/hosts"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Change hostname to hampi (for hosts file)
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/hosts_hampc"
+      dest: "/etc/hosts"
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
 
   - name: Store a basic version file in public location
     become: yes
     copy:
       src: "{{ playbook_dir }}/../files/etc/hampi-release"
       dest: "/etc/hampi-release"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Store a basic version file in public location
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/hampc-release"
+      dest: "/etc/hampc-release"
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
 
   - name: Check that the /boot/cmdline.txt exists
     stat:
@@ -72,15 +102,17 @@
       regexp: '^\/\/Unattended-Upgrade::Mail \"\";'
       line: Unattended-Upgrade::Mail "pi";
 
-  - name: Add the user 'pi' to group of 'dialout'
+  - name: Add the user account to group of 'dialout'
+    become: yes
     user:
-      name: pi
+      name: "{{ ham_user }}"
       groups: dialout
       append: yes
 
-  - name: Add the user 'pi' to group of 'plugdev'
+  - name: Add the user account to group of 'plugdev'
+    become: yes
     user:
-      name: pi
+      name: "{{ ham_user }}"
       groups: plugdev
       append: yes
 
@@ -125,33 +157,63 @@
       - tightvncserver
     when: ansible_architecture == "aarch64"
 
-  - name: Create /etc/xdg/pcmanfm/LXDE-pi directory
+  - name: Create /etc/xdg/pcmanfm/LXDE-pi directory for Raspberry Pi OS
     become: yes
     file:
       path: /etc/xdg/pcmanfm/LXDE-pi
       state: directory
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
-  - name: Create HamPi desktop config 0 in /etc/xdg/pcmanfm/LXDE-pi
+  - name: Create /etc/sudoers.d/010_hampc-nopasswd file for Xubuntu
+    become: yes
+    copy:
+      content: ""
+      dest: /etc/sudoers.d/010_hampc-nopasswd
+      group: root
+      owner: root
+      mode: 0440
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Enable passwordless sudo for HamPC
+    become: yes
+    blockinfile:
+      dest: /etc/sudoers.d/010_hampc-nopasswd
+      block: |
+        hampc ALL=(ALL) NOPASSWD: ALL
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Create HamPi desktop config 0 for Raspberry Pi OS in /etc/xdg/pcmanfm/LXDE-pi
     become: yes
     copy:
       src: "{{ playbook_dir }}/../files/etc/xdg/pcmanfm/LXDE-pi/desktop-items-0.conf"
       dest: "/etc/xdg/pcmanfm/LXDE-pi/desktop-items-0.conf"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
-  - name: Create HamPi desktop config 1 in /etc/xdg/pcmanfm/LXDE-pi
+  - name: Create HamPi desktop config 1 for Raspberry Pi OS in /etc/xdg/pcmanfm/LXDE-pi
     become: yes
     copy:
       src: "{{ playbook_dir }}/../files/etc/xdg/pcmanfm/LXDE-pi/desktop-items-1.conf"
       dest: "/etc/xdg/pcmanfm/LXDE-pi/desktop-items-1.conf"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
-  - name: Create /home/pi/.config/pcmanfm/LXDE-pi directory
-    file:
-      path: /home/pi/.config/pcmanfm/LXDE-pi
-      state: directory
-
-  - name: Create HamPi desktop config in /home/pi/.config/pcmanfm/LXDE-pi
+  - name: Create HamPi desktop config 1 for Xubuntu in /etc/xdg/pcmanfm/LXDE-pi
+    become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/home/pi/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
-      dest: "/home/pi/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
+      src: "{{ playbook_dir }}/../files/etc/xdg/xdg-xubuntu/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml"
+      dest: "/etc/xdg/xdg-xubuntu/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml"
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Create /home/{{ ham_user }}/.config/pcmanfm/LXDE-pi directory
+    file:
+      path: "/home/{{ ham_user }}/.config/pcmanfm/LXDE-pi"
+      state: directory
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Create HamPi desktop config in /home/{{ ham_user }}/.config/pcmanfm/LXDE-pi
+    copy:
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
+      dest: "/home/{{ ham_user }}/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
   - name: Create /etc/lightdm
     become: yes
@@ -159,35 +221,57 @@
       path: /etc/lightdm
       state: directory
 
-  - name: Create HamPi greeter config in /etc/
+  - name: Create HamPi greeter config in /etc/lightdm for Raspberry Pi OS
     become: yes
     copy:
       src: "{{ playbook_dir }}/../files/etc/lightdm/pi-greeter.conf"
       dest: "/etc/lightdm/pi-greeter.conf"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
-  - name: Create /home/pi/Desktop directory
+  - name: Create HamPi greeter config in /etc/lightdm for Xubuntu
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/lightdm/lightdm-gtk-greeter.conf"
+      dest: "/etc/lightdm/lightdm-gtk-greeter.conf"
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Create /home/{{ ham_user }}/Desktop directory
     file:
-      path: /home/pi/Desktop
+      path: "/home/{{ ham_user }}/Desktop"
       state: directory
 
-  - name: Create HamPi README in /home/pi/Desktop
+  - name: Create HamPi README in /home/{{ ham_user }}/Desktop
     copy:
-      src: "{{ playbook_dir }}/../files/home/pi/Desktop/HAMPI README.doc"
-      dest: "/home/pi/Desktop/HAMPI README.doc"
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/HAMPI README.docx"
+      dest: "/home/{{ ham_user }}/Desktop/HAMPI README.docx"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
-  - name: Create HamPi LICENSE in /home/pi/Desktop
+  - name: Create HamPC README in /home/{{ ham_user }}/Desktop
     copy:
-      src: "{{ playbook_dir }}/../files/home/pi/Desktop/HAMPI LICENSE.TXT"
-      dest: "/home/pi/Desktop/HAMPI LICENSE.TXT"
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/HAMPC README.docx"
+      dest: "/home/{{ ham_user }}/Desktop/HAMPC README.docx"
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
 
-  - name: Create GIVE BACK in /home/pi/Desktop
+  - name: Create HamPi LICENSE in /home/{{ ham_user }}/Desktop
     copy:
-      src: "{{ playbook_dir }}/../files/home/pi/Desktop/GIVE BACK.PDF"
-      dest: "/home/pi/Desktop/GIVE BACK.PDF"
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/HAMPI LICENSE.TXT"
+      dest: "/home/{{ ham_user }}/Desktop/HAMPI LICENSE.TXT"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Create HamPC LICENSE in /home/{{ ham_user }}/Desktop
+    copy:
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/HAMPC LICENSE.TXT"
+      dest: "/home/{{ ham_user }}/Desktop/HAMPC LICENSE.TXT"
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Create GIVE BACK in /home/{{ ham_user }}/Desktop
+    copy:
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/GIVE BACK.PDF"
+      dest: "/home/{{ ham_user }}/Desktop/GIVE BACK.PDF"
 
   - name: Insert .bash_local configuration
     blockinfile:
-      dest: /home/pi/.bash_local
+      dest: "/home/{{ ham_user }}/.bash_local"
       create: yes
       block: |
         # BUILD OPTIONS
@@ -211,7 +295,7 @@
 
   - name: Insert .bashrc configuration
     blockinfile:
-      dest: /home/pi/.bashrc
+      dest: "/home/{{ ham_user }}/.bashrc"
       block: |
         if [ -f ~/.bash_local ]; then
             . ~/.bash_local

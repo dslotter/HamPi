@@ -19,5 +19,5 @@
 
   - name: Remove SSH trusted keys
     file:
-      path: /home/pi/.ssh/authorized_keys
+      path: /home/{{ ham_user }}/.ssh/authorized_keys
       state: absent

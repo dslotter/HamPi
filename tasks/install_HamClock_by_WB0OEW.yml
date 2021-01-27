@@ -13,7 +13,7 @@
 
   - name: Create directory hamradio
     file:
-      path: /home/pi/hamradio
+      path: /home/{{ ham_user }}/hamradio
       state: directory
 
   - name: Install dependent libraries
@@ -28,25 +28,25 @@
   - name: Download and Unarchive HamClock by WB0OEW
     unarchive:
       src: https://www.clearskyinstitute.com/ham/HamClock/ESPHamClock.zip
-      dest: /home/pi/hamradio
+      dest: /home/{{ ham_user }}/hamradio
       remote_src: yes
 
   - name: Build HamClock by WB0OEW
     command: make hamclock-800x480
     args:
-      chdir: /home/pi/hamradio/ESPHamClock
+      chdir: /home/{{ ham_user }}/hamradio/ESPHamClock
 
   - name: Install HamClock application by WB0OEW
     become: yes
     command: cp hamclock-800x480 /usr/local/bin
     args:
-      chdir: /home/pi/hamradio/ESPHamClock
+      chdir: /home/{{ ham_user }}/hamradio/ESPHamClock
 
   - name: Install HamClock icon
     become: yes
     command: cp hamclock.png /usr/local/share/icons
     args:
-      chdir: /home/pi/hamradio/ESPHamClock
+      chdir: /home/{{ ham_user }}/hamradio/ESPHamClock
 
   - name: Copy HamClock desktop file
     become: yes
@@ -56,5 +56,5 @@
 
   - name: Remove HamClock by WB0OEW build directory
     file:
-      path: /home/pi/hamradio/ESPHamClock
+      path: /home/{{ ham_user }}/hamradio/ESPHamClock
       state: absent
