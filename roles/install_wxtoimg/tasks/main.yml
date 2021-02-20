@@ -1,0 +1,98 @@
+---
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Create directory hamradio
+  file:
+    path: /home/{{ ham_user }}/hamradio
+    state: directory
+
+#
+# Raspbian ARM
+#
+
+- name: Determine latest version of wxtoimg on web (ARM)
+  shell: curl --silent "https://wxtoimgrestored.xyz/downloads/" | grep -Po "wxtoimg-armhf-[0-9]+.[0-9]+.[0-9]+-beta.deb" | grep -Po "[0-9]+.[0-9]+.[0-9]+"
+  args:
+    warn: no
+  register: wxtoimg_version
+  when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+- name: Download wxtoimg {{ wxtoimg_version.stdout }} (ARM)
+  get_url:
+    url: "https://wxtoimgrestored.xyz/beta/wxtoimg-linux-armhf-{{ wxtoimg_version.stdout }}-beta.tar.gz"
+    dest: /home/{{ ham_user }}/hamradio/wxtoimg-linux-armhf-{{ wxtoimg_version.stdout }}-beta.tar.gz
+  when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+- name: Install wxtoimg {{ wxtoimg_version.stdout }} (ARM)
+  become: yes
+  shell: tar -xzvf wxtoimg-linux-armhf-{{ wxtoimg_version.stdout }}-beta.tar.gz --directory /
+  args:
+    chdir: /home/{{ ham_user }}/hamradio/
+    warn: no
+  when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+- name: Remove wxtoimg {{ wxtoimg_version.stdout }} gzip (ARM)
+  file:
+    path: /home/{{ ham_user }}/hamradio/wxtoimg-linux-armhf-{{ wxtoimg_version.stdout }}-beta.tar.gz
+    state: absent
+  when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+#
+# Raspbian x86
+#
+
+- name: Determine latest version of wxtoimg on web (x86)
+  shell: curl --silent "https://wxtoimgrestored.xyz/downloads/" | grep -Po "wxtoimg-i386-[0-9]+.[0-9]+.[0-9]+-beta.deb" | grep -Po "\-[0-9].*\-" | grep -Po "[0-9]+.[0-9]+.[0-9]"
+  args:
+    warn: no
+  register: wxtoimg_version
+  when: ansible_architecture == "i386"
+
+- name: Download wxtoimg {{ wxtoimg_version.stdout }} (x86)
+  get_url:
+    url: "https://wxtoimgrestored.xyz/beta/wxtoimg-i386-{{ wxtoimg_version.stdout }}-beta.deb"
+    dest: /home/{{ ham_user }}/hamradio/wxtoimg-i386-{{ wxtoimg_version.stdout }}-beta.deb
+  when: ansible_architecture == "i386"
+
+- name: Install wxtoimg {{ wxtoimg_version.stdout }} (x86)
+  become: yes
+  apt:
+    deb: /home/{{ ham_user }}/hamradio/wxtoimg-i386-{{ wxtoimg_version.stdout }}-beta.deb
+  when: ansible_architecture == "i386"
+
+- name: Remove wxtoimg {{ wxtoimg_version.stdout }} installer (x86)
+  file:
+    path: /home/{{ ham_user }}/hamradio/wxtoimg-i386-{{ wxtoimg_version.stdout }}-beta.deb
+    state: absent
+  when: ansible_architecture == "i386"
+
+#
+# AMD64
+#
+
+- name: Determine latest version of wxtoimg on web (AMD64)
+  shell: curl --silent "https://wxtoimgrestored.xyz/downloads/" | grep -Po "wxtoimg-amd64-[0-9]+.[0-9]+.[0-9]+-beta.deb" | grep -Po "\-[0-9].*\-" | grep -Po "[0-9]+.[0-9]+.[0-9]" | uniq
+  args:
+    warn: no
+  register: wxtoimg_version
+  when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+- name: Download wxtoimg {{ wxtoimg_version.stdout }} (AMD64)
+  get_url:
+    url: "https://wxtoimgrestored.xyz/beta/wxtoimg-amd64-{{ wxtoimg_version.stdout }}-beta.deb"
+    dest: /home/{{ ham_user }}/hamradio/wxtoimg-amd64-{{ wxtoimg_version.stdout }}-beta.deb
+  when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+- name: Install wxtoimg {{ wxtoimg_version.stdout }} (AMD64)
+  become: yes
+  apt:
+    deb: /home/{{ ham_user }}/hamradio/wxtoimg-amd64-{{ wxtoimg_version.stdout }}-beta.deb
+  when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+- name: Remove wxtoimg {{ wxtoimg_version.stdout }} installer (AMD64)
+  file:
+    path: /home/{{ ham_user }}/hamradio/wxtoimg-amd64-{{ wxtoimg_version.stdout }}-beta.deb
+    state: absent
+  when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"

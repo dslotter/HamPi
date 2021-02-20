@@ -1,0 +1,163 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install GridTracker
+  hosts: all
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio/
+      state: directory
+
+# 2020-09-19 - GridTracker has gone to an online documentation model
+#  - name: Create directory for documentation
+#    become: yes
+#    file:
+#      path: /usr/share/doc/gridtracker
+#      state: directory
+#
+#  - name: Download GridTracker Documentation
+#    become: yes
+#    get_url:
+#      url: https://www.dropbox.com/s/nmgqszm4t85mrg2/GTQS_0406.pdf?dl=1
+#      dest: /usr/share/doc/gridtracker/GTQS_0406.pdf
+#      validate_certs: no
+
+  - name: Create directory for desktop files
+    become: yes
+    file:
+      path: /usr/local/share/applications/
+      state: directory
+
+#
+# Raspbian ARM
+#
+
+  - name: Determine latest version of GridTracker (ARM) on web
+    shell: curl --silent "https://tagloomis.com/downloads/" | grep -Po "https:\/\/.*GridTracker-Linux-Arm-.*.tar.gz\?dl=1"
+    args:
+      warn: no
+    register: download_date
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+  - name: Download and Unarchive GridTracker {{ download_date.stdout }} (ARM)
+    become: yes
+    unarchive:
+      src: "{{ download_date.stdout }}"
+      dest: /usr/local
+      remote_src: yes
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+  - name: Copy GridTracker Desktop file (ARM)
+    become: yes
+    copy:
+      src: /usr/local/GridTracker/GridTracker.desktop
+      dest: /usr/local/share/applications/GridTracker.desktop
+      remote_src: yes
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+  - name: Fix the lazy path that GridTracker uses to what we're using
+    become: yes
+    replace:
+      path: /usr/local/share/applications/GridTracker.desktop
+      regexp: '\/home\/pi\/Downloads'
+      replace: '/usr/local'
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+  - name: Modify categories for GridTracker.desktop
+    become: yes
+    lineinfile:
+      path: /usr/local/share/applications/GridTracker.desktop
+      regexp: '^Categories=None;'
+      line: Categories=HamRadio Weak Signal
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+#
+# Raspbian x86
+#
+
+  - name: Determine latest version of GridTracker (x86) on web
+    shell: curl --silent "https://tagloomis.com/downloads/" | grep -Po "https:\/\/.*GridTracker-Linux-32-.*.tar.gz\?dl=1"
+    args:
+      warn: no
+    register: download_date
+    when: ansible_architecture == "i386"
+
+  - name: Download and Unarchive GridTracker {{ download_date.stdout }} (x86)
+    become: yes
+    unarchive:
+      src: "{{ download_date.stdout }}"
+      dest: /usr/local
+      remote_src: yes
+    when: ansible_architecture == "i386"
+
+  - name: Copy GridTracker Desktop file (x86)
+    become: yes
+    copy:
+      src: /usr/local/GridTracker/GridTracker.desktop
+      dest: /usr/local/share/applications/GridTracker.desktop
+      remote_src: yes
+    when: ansible_architecture == "i386"
+
+  - name: Fix the lazy path that GridTracker uses to what we're using
+    become: yes
+    replace:
+      path: /usr/local/share/applications/GridTracker.desktop
+      regexp: '~\/Downloads'
+      replace: '/usr/local'
+    when: ansible_architecture == "i386"
+
+  - name: Modify categories for GridTracker.desktop
+    become: yes
+    lineinfile:
+      path: /usr/local/share/applications/GridTracker.desktop
+      regexp: '^Categories=None;'
+      line: Categories=HamRadio Weak Signal
+    when: ansible_architecture == "i386"
+
+
+#
+# AMD64
+#
+
+  - name: Determine latest version of GridTracker (AMD64) on web
+    shell: curl --silent "https://tagloomis.com/downloads/" | grep -Po "https:\/\/.*GridTracker-Linux-64-.*.tar.gz\?dl=1"
+    args:
+      warn: no
+    register: download_date
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+  - name: Download and Unarchive GridTracker {{ download_date.stdout }} (AMD64)
+    become: yes
+    unarchive:
+      src: "{{ download_date.stdout }}"
+      dest: /usr/local
+      remote_src: yes
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+#
+# Common
+#
+
+  - name: Copy GridTracker Desktop file (AMD64)
+    become: yes
+    copy:
+      src: /usr/local/GridTracker/GridTracker.desktop
+      dest: /usr/local/share/applications/GridTracker.desktop
+      remote_src: yes
+
+  - name: Fix the lazy path that GridTracker uses to what we're using
+    become: yes
+    replace:
+      path: /usr/local/share/applications/GridTracker.desktop
+      regexp: '~\/Downloads'
+      replace: '/usr/local'
+
+  - name: Modify categories for GridTracker.desktop
+    become: yes
+    lineinfile:
+      path: /usr/local/share/applications/GridTracker.desktop
+      regexp: '^Categories=None;'
+      line: Categories=HamRadio Weak Signal

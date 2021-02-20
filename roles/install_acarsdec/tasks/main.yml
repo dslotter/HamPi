@@ -1,0 +1,105 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install acarsdec Software
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - git
+      - libusb-1.0-0-dev
+      - zlib1g-dev
+      - libxml2-dev
+
+
+#
+# Build and install libacars
+#
+
+  - name: Download latest libacars sources
+    git:
+      repo: https://github.com/szpajder/libacars
+      dest: /home/{{ ham_user }}/hamradio/libacars
+
+  - name: Create directory libacars/build
+    file:
+      path: /home/{{ ham_user }}/hamradio/libacars/build
+      state: directory
+
+  - name: Build libacars cmake
+    command: cmake ..
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/libacars/build
+
+  - name: Build libacars
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/libacars/build
+
+  - name: Install libacars
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/libacars/build
+
+  - name: Remove libacars build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/libacars
+      state: absent
+
+  - name: Run ldconfig
+    become: yes
+    command: ldconfig
+
+#
+# Build and install acarsdec
+#
+
+  - name: Download latest acarsdec sources
+    git:
+      repo: https://github.com/TLeconte/acarsdec
+      dest: /home/{{ ham_user }}/hamradio/acarsdec
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio/acarsdec/build
+      state: directory
+
+  - name: Build acarsdec cmake for RTL-SDR
+    command: cmake .. -Drtl=ON
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/acarsdec/build
+
+  - name: Build acarsdec
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/acarsdec/build
+
+  - name: Install acarsdec
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/acarsdec/build
+
+  # Intentionally leave behind acarsdec directory so
+  # end-user can instead re-compile for AirSpy or SDRPlay.
+  - name: Remove build directory acarsdec/build
+    file:
+      path: /home/{{ ham_user }}/hamradio/acarsdec/build
+      state: absent

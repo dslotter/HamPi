@@ -1,0 +1,58 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install SoapyOsmo
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - gr-osmosdr
+      - libfftw3-dev
+      - libusb-1.0-0-dev
+
+  - name: Download latest SoapyOsmo sources
+    git:
+      repo: https://github.com/pothosware/SoapyOsmo
+      dest: /home/{{ ham_user }}/hamradio/SoapyOsmo
+
+  - name: Create directory SoapyOsmo/build
+    file:
+      path: /home/{{ ham_user }}/hamradio/SoapyOsmo/build
+      state: directory
+
+  - name: Build SoapyOsmo CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/SoapyOsmo/build
+
+  - name: Build SoapyOsmo
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/SoapyOsmo/build
+
+  - name: Install SoapyOsmo
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/SoapyOsmo/build
+
+  - name: Remove SoapyOsmo build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/SoapyOsmo
+      state: absent

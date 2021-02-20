@@ -1,0 +1,12 @@
+# Ettus Research UHD Build-Time Tuning for Raspberry Pi 4:
+UHD_CXXFLAGS: '-O2 -march=armv7-a -mfloat-abi=hard -mfpu=neon -mtune=cortex-a72 -Wno-psabi' 
+UHD_CFLAGS: '-O2 -march=armv7-a -mfloat-abi=hard -mfpu=neon -mtune=cortex-a72 -Wno-psabi' 
+UHD_ASMFLAGS: '-O2 -march=armv7-a -mfloat-abi=hard -mfpu=neon -mtune=cortex-a72 -g' 
+
+ham_user: pi
+wallpaper_prefix: /usr/share/rpd-wallpaper/
+
+wxwidgets_version: 3.1.3
+CXXFLAGS: -O2 -march=native -mtune=native
+CFLAGS: -O2 -march=native -mtune=native
+MAKEFLAGS: -j {{ ansible_processor_vcpus }}

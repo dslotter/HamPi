@@ -1,0 +1,77 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install APRS Software
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Install aprsdigi Package (APRS digipeater)
+    become: yes
+    package:
+      name: aprsdigi
+      state: present
+
+  - name: Install aprx Package (APRS Digipeater and iGate)
+    become: yes
+    package:
+      name: aprx
+      state: present
+
+  - name: Install soundmodem Package (Sound Card Amateur Packet Radio Modems)
+    become: yes
+    package:
+      name: soundmodem
+      state: present
+
+  - name: Install Xastir Package
+    become: yes
+    package:
+      name: xastir
+      state: present
+
+  - name: Modify categories for xastir.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/xastir.desktop
+      regexp: '^Categories=Network;HamRadio'
+      line: Categories=HamRadio APRS
+
+#
+# Install YAAC - Yet Another APRS Client
+#
+
+  - name: Install YAAC prerequisite library
+    become: yes
+    package:
+      name: librxtx-java
+      state: present
+
+  - name: Create directory /usr/local/YAAC
+    become: yes
+    file:
+      path: /usr/local/YAAC
+      state: directory
+
+  - name: Download and Unarchive latest YAAC from KA2DDO
+    become: yes
+    unarchive:
+      src: https://www.ka2ddo.org/ka2ddo/YAAC.zip
+      dest: /usr/local/YAAC
+      remote_src: yes
+      validate_certs: no
+
+  - name: Download and Unarchive latest YAAC plugin callsigndb.jar from KA2DDO
+    become: yes
+    unarchive:
+      src: https://www.ka2ddo.org/ka2ddo/callsigndb.jar
+      dest: /usr/local/YAAC/plugins
+      remote_src: yes
+      validate_certs: no
+
+  - name: Copy YAAC desktop file
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/YAAC.desktop"
+      dest: "/usr/local/share/applications/YAAC.desktop"

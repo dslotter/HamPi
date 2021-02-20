@@ -1,0 +1,144 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install VOACAPL
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    # To avoid race condition in VOACAPL pipeline build in v0.7.5
+    MAKEFLAGS: -j 1
+#    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent components for VOACAPL
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - build-essential
+      - gfortran
+      - python3-cartopy
+      - python3-scipy
+
+#
+# VOACAPL
+#
+
+  - name: Git clone latest VOACAPL sources
+    git:
+      repo: https://github.com/jawatson/voacapl
+      dest: /home/{{ ham_user }}/hamradio/voacapl
+
+  - name: Autoreconf VOACAPL
+    command: autoreconf -f -i
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/voacapl
+
+  - name: Configure VOACAPL
+    command: ./configure
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/voacapl
+
+  - name: Build VOACAPL
+    command: make all
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/voacapl
+
+  - name: Install VOACAPL
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/voacapl
+
+  - name: Create VOACAPL data files
+    command: makeitshfbc
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/voacapl
+
+  - name: Clean VOACAPL
+    command: make clean
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/voacapl
+
+  - name: Remove voacapl build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/voacapl
+      state: absent
+
+#
+# VOACAPL Utility - pythonprop
+#
+
+  - name: Install dependent python module matplotlib
+    become: yes
+    command: pip3 install matplotlib
+    args:
+      chdir: /home/{{ ham_user }}/hamradio
+
+  - name: Install dependent components for pythonprop
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - python3-cartopy
+      - yelp-tools
+
+  - name: Determine latest version of pythonprop on GitHub
+    shell: curl --silent "https://github.com/jawatson/pythonprop/releases" | grep -Po "/jawatson/pythonprop/tree/v[0-9]+.[0-9]+[a-zA-Z0-9\-]+" | head -n 1 | grep -Po "[0-9]+.[0-9]+[a-zA-Z0-9\-]+"
+    args:
+      warn: no
+    register: pythonprop_version
+
+  - name: Download and Unarchive pythonprop {{ pythonprop_version.stdout }}
+    unarchive:
+      src: "https://github.com/jawatson/pythonprop/archive/v{{ pythonprop_version.stdout }}.tar.gz"
+      dest: "/home/{{ ham_user }}/hamradio/"
+      remote_src: yes
+
+  - name: Autogen pythonprop {{ pythonprop_version.stdout }}
+    command: ./autogen.sh
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/pythonprop-{{ pythonprop_version.stdout }}
+
+  - name: Configure pythonprop {{ pythonprop_version.stdout }}
+    command: ./configure
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/pythonprop-{{ pythonprop_version.stdout }}
+
+  - name: Build pythonprop {{ pythonprop_version.stdout }}
+    command: make all
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/pythonprop-{{ pythonprop_version.stdout }}
+
+  - name: Install pythonprop {{ pythonprop_version.stdout }}
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/pythonprop-{{ pythonprop_version.stdout }}
+
+  - name: Clean pythonprop {{ pythonprop_version.stdout }}
+    command: make clean
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/pythonprop-{{ pythonprop_version.stdout }}
+
+  - name: Remove pythonprop build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/pythonprop-{{ pythonprop_version.stdout }}
+      state: absent
+
+  - name: Modify categories for voacapgui.desktop
+    become: yes
+    lineinfile:
+      path: /usr/local/share/applications/voacapgui.desktop
+      regexp: '^Categories=Science;HamRadio'
+      line: Categories=HamRadio Calculators

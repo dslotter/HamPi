@@ -1,0 +1,96 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install SoapyUHD
+  hosts: all
+  environment:
+    CXXFLAGS: "{{ UHD_CXXFLAGS }}"
+    CFLAGS: "{{ UHD_CFLAGS }}"
+    ASMFLAGS: "{{ UHD_ASMFLAGS }}"
+# Build-Time Tuning for Raspberry Pi 3:
+#    CXXFLAGS: "-O2 -march=armv7-a -mfloat-abi=hard -mfpu=neon -mtune=cortex-a53 -Wno-psabi"
+#    CFLAGS: "-O2 -march=armv7-a -mfloat-abi=hard -mfpu=neon -mtune=cortex-a53 -Wno-psabi"
+#    ASMFLAGS: "-O2 -march=armv7-a -mfloat-abi=hard -mfpu=neon -mtune=cortex-a53 -g"
+    CMAKE_BUILD_PARALLEL_LEVEL: 4
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - gr-osmosdr
+      - libfftw3-dev
+      - libusb-1.0-0-dev
+      - python3-mako
+      - python3-ruamel.yaml
+
+  - name: Download latest UHD sources
+    git:
+      repo: https://github.com/EttusResearch/uhd
+      dest: /home/{{ ham_user }}/hamradio/uhd
+
+  - name: Create directory uhd/host/build
+    file:
+      path: /home/{{ ham_user }}/hamradio/uhd/host/build
+      state: directory
+
+  - name: Build UHD CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/uhd/host/build
+
+  - name: Build UHD
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/uhd/host/build
+
+  - name: Install UHD
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/uhd/host/build
+
+  - name: Remove UHD build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/uhd
+      state: absent
+
+  - name: Download latest SoapyUHD sources
+    git:
+      repo: https://github.com/pothosware/SoapyUHD.git
+      dest: /home/{{ ham_user }}/hamradio/SoapyUHD
+
+  - name: Create directory SoapyUHD/build
+    file:
+      path: /home/{{ ham_user }}/hamradio/SoapyUHD/build
+      state: directory
+
+  - name: Build SoapyUHD CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/SoapyUHD/build
+
+  - name: Build SoapyUHD
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/SoapyUHD/build
+
+  - name: Install SoapyUHD
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/SoapyUHD/build
+
+  - name: Remove SoapyUHD build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/SoapyUHD
+      state: absent

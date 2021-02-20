@@ -1,0 +1,44 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Antenna Modeling Software
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Install Antenna Modeling Packages
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - antennavis
+      - gsmc
+      - nec2c
+      - splat
+      - xnec2c
+      - xnecview
+      - yagiuda
+
+  # GTK Smith Chart Calculator
+  - name: Modify categories for gsmc.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/gsmc.desktop
+      regexp: '^Categories=Education;HamRadio;'
+      line: Categories=HamRadio Calculators
+
+  - name: Modify categories for nec2c.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/nec2c.desktop
+      regexp: '^Categories=Network;HamRadio;X-HamRadio-Antennas'
+      line: Categories=HamRadio Antenna Analyzer
+
+  - name: Modify categories for xnec2c.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/xnec2c.desktop
+      regexp: '^Categories=Science;Math;NumericalAnalysis;'
+      line: Categories=HamRadio Antenna Analyzer

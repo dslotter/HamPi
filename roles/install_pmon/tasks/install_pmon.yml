@@ -1,0 +1,35 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install PMON
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Create hamradio directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/
+      state: directory
+
+  - name: Add SCS APT Repository
+    become: yes
+    shell: echo "deb https://www.scs-ptc.com/repo/packages/ buster non-free" > /etc/apt/sources.list.d/scs.list
+
+  - name: Add SCS GPG Key
+    become: yes
+    shell: wget -q -O - https://www.scs-ptc.com/repo/packages/scs.gpg.key | apt-key add -
+    args:
+      warn: no
+
+  - name: Update APT repo sources
+    become: yes
+    apt:
+      update_cache: yes
+
+  - name: Install PMON (ARM) - PACTOR Monitoring Utility for Linux
+    become: yes
+    apt:
+      name: pmon
+      state: present
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"

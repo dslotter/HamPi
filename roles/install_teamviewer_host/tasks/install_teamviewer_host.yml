@@ -1,0 +1,101 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install TeamViewer Host
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+#
+# Raspbian ARM
+#
+
+  - name: Install dependent libraries (ARM)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libdbus-1-3
+      - libqt5gui5
+      - libqt5widgets5
+      - libqt5qml5
+      - libqt5quick5
+      - libqt5webkit5
+      - libqt5x11extras5
+      - qml-module-qtquick2
+      - qml-module-qtquick-controls
+      - qml-module-qtquick-dialogs
+      - qml-module-qtquick-window2
+      - qml-module-qtquick-layouts
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+  - name: Download TeamViewer Host (ARM)
+    get_url:
+      url: https://download.teamviewer.com/download/linux/teamviewer-host_armhf.deb
+      dest: /home/{{ ham_user }}/hamradio/teamviewer-host_armhf.deb
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+  - name: Install TeamViewer Host (ARM)
+    become: yes
+    apt:
+      deb: /home/{{ ham_user }}/hamradio/teamviewer-host_armhf.deb
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+  - name: Setup TeamViewer Host (ARM)
+    become: yes
+    shell: /opt/teamviewer/tv_bin/script/teamviewer_setup install force
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+  - name: Remove TeamViewer installer (ARM)
+    file:
+      path: teamviewer-host_armhf.deb
+      state: absent
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+#
+# Raspbian x86
+#
+
+  - name: Install dependent libraries (x86)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libdbus-1-3
+      - libqt5gui5
+      - libqt5widgets5
+      - libqt5qml5
+      - libqt5quick5
+      - libqt5webkit5
+      - libqt5x11extras5
+      - qml-module-qtquick2
+      - qml-module-qtquick-controls
+      - qml-module-qtquick-dialogs
+      - qml-module-qtquick-window2
+      - qml-module-qtquick-layouts
+    when: ansible_architecture == "i386"
+
+  - name: Download and unarchive TeamViewer Host (x86)
+    unarchive:
+      src: https://download.teamviewer.com/download/linux/teamviewer_i386.tar.xz
+      dest: /usr/local
+      remote_src: yes
+    when: ansible_architecture == "i386"
+
+  - name: Install TeamViewer Host (x86)
+    shell: /usr/local/teamviewer/tv-setup install force
+    when: ansible_architecture == "i386"
+
+  - name: Remove TeamViewer installer (x86)
+    file:
+      path: teamviewer-host_i386.deb
+      state: absent
+    when: ansible_architecture == "i386"

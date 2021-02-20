@@ -1,0 +1,186 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Miscellaneous Software
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Install Telnet Package
+    become: yes
+    package:
+      name: telnet
+      state: present
+
+  - name: Install colrconv Package (convers client with sound and ncurses color support)
+    become: yes
+    package:
+      name: colrconv
+      state: present
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Install gcb Package (Utility to calculate long and short path to a location)
+    become: yes
+    package:
+      name: gcb
+      state: present
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Install fbb Package (Packet radio mailbox and utilities)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - fbb
+      - ax25mail-utils
+
+  - name: Install glfer Package (Program for reception and transmission of QRSS/DFCW signals)
+    become: yes
+    package:
+      name: glfer
+      state: present
+
+  - name: Modify categories for glfer.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/glfer.desktop
+      regexp: '^Categories=Utility;HamRadio'
+      line: Categories=HamRadio Morse Code
+
+  # Grig 0.8.1 in repo is latest available as of 2020-02-12
+  - name: Install grig Package (Graphical Rig Control based on Hamlib)
+    become: yes
+    package:
+      name: grig
+      state: present
+
+  - name: Modify categories for grig.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/grig.desktop
+      regexp: '^Categories=Audio;HamRadio;'
+      line: Categories=HamRadio
+
+  - name: Install gnuais Package (AIS receiver which uses the discriminator output of VHF receivers)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - gnuais
+      - gnuaisgui
+
+  - name: Install gnss-sdr Package (GLONASS satellite system Software Defined Receiver)
+    become: yes
+    package:
+      name: gnss-sdr
+      state: present
+
+  - name: Install acfax Package (Receive faxes using your radio and sound card)
+    become: yes
+    package:
+      name: acfax
+      state: present
+
+  - name: Install hamfax Package (Qt based shortwave fax)
+    become: yes
+    package:
+      name: hamfax
+      state: present
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Modify categories for hamfax.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/hamfax.desktop
+      regexp: '^Categories=AudioVideo;Audio;HamRadio;Qt'
+      line: Categories=HamRadio
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Install inspectrum Package (Tool for visualising captured radio signals)
+    become: yes
+    package:
+      name: inspectrum
+      state: present
+
+  - name: Create /usr/local/share/applications directory
+    become: yes
+    file:
+      path: /usr/local/share/applications
+      state: directory
+
+  - name: Create inspectrum.desktop in /usr/local/share/applications
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/inspectrum.desktop"
+      dest: "/usr/local/share/applications/inspectrum.desktop"
+
+  - name: Install wwl Package (Calculates distance and azimuth between two Maidenhead locators)
+    become: yes
+    package:
+      name: wwl
+      state: present
+
+  - name: Install wwl Package (Calculates distance and azimuth between two Maidenhead locators)
+    become: yes
+    package:
+      name: wwl
+      state: present
+
+  - name: Install xdx Package (DX-cluster TCP/IP client for amateur radio)
+    become: yes
+    package:
+      name: xdx
+      state: present
+
+  - name: Modify categories for Xdx.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/Xdx.desktop
+      regexp: '^Categories=Network;HamRadio;'
+      line: Categories=HamRadio
+
+  # Because there's really no other place for this to go (falls under misc)
+  - name: Create xplanet.desktop in /usr/local/share/applications
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/xplanet.desktop"
+      dest: "/usr/local/share/applications/xplanet.desktop"
+
+  - name: Install qrz_callsign_reader dependencies
+    become: yes
+    package:
+      name: python3-xmltodict
+      state: present
+
+  - name: Download qrz_callsign_reader executable by W3DJS
+    get_url:
+      url: https://raw.githubusercontent.com/dslotter/ham_radio_scripts/main/qrz_callsign_reader.py
+      dest: /home/{{ ham_user }}/bin/qrz_callsign_reader.py
+      mode: a+x
+
+  - name: Download update_fldigi_suite executable by W3DJS
+    get_url:
+      url: https://raw.githubusercontent.com/dslotter/ham_radio_scripts/main/update_fldigi_suite
+      dest: /home/{{ ham_user }}/bin/update_fldigi_suite
+      mode: a+x
+
+  - name: Download update_wsjtx_from_deb executable by W3DJS
+    get_url:
+      url: https://raw.githubusercontent.com/dslotter/ham_radio_scripts/main/update_wsjtx_from_deb
+      dest: /home/{{ ham_user }}/bin/update_wsjtx_from_deb
+      mode: a+x
+
+  - name: Download update_wsjtx_from_src executable by W3DJS
+    get_url:
+      url: https://raw.githubusercontent.com/dslotter/ham_radio_scripts/main/update_wsjtx_from_src
+      dest: /home/{{ ham_user }}/bin/update_wsjtx_from_src
+      mode: a+x
+
+  - name: Download upload_adif_log executable by W3DJS
+    get_url:
+      url: https://raw.githubusercontent.com/dslotter/ham_radio_scripts/main/upload_adif_log
+      dest: /home/{{ ham_user }}/bin/upload_adif_log
+      mode: a+x

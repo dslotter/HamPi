@@ -1,0 +1,135 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install PlutoSDR
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - gr-osmosdr
+      - libfftw3-dev
+      - libusb-1.0-0-dev
+      # For LibIIO:
+      - build-essential
+      - cmake
+      - bison
+      - flex
+      - libxml2-dev
+      - libcdk5-dev
+      - libaio-dev
+      - libserialport-dev
+      - libavahi-client-dev
+
+  - name: Download latest LibIIO sources
+    git:
+      repo: https://github.com/analogdevicesinc/libiio
+      dest: /home/{{ ham_user }}/hamradio/libiio
+
+  - name: Create directory libiio/build
+    file:
+      path: /home/{{ ham_user }}/hamradio/libiio/build
+      state: directory
+
+  - name: Build LibIIO CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/libiio/build
+
+  - name: Build LibIIO
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/libiio/build
+
+  - name: Install LibIIO
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/libiio/build
+
+  - name: Clean LibIIO
+    command: make clean
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/libiio/build
+
+  - name: Remove LibIIO build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/libiio
+      state: absent
+
+  - name: Download latest IIO AD9361 sources
+    git:
+      repo: https://github.com/analogdevicesinc/libad9361-iio
+      dest: /home/{{ ham_user }}/hamradio/libad9361-iio
+
+  - name: Create directory libad9361-iio/build
+    file:
+      path: /home/{{ ham_user }}/hamradio/libad9361-iio/build
+      state: directory
+
+  - name: Build IIO AD9361 CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/libad9361-iio/build
+
+  - name: Build IIO AD9361
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/libad9361-iio/build
+
+  - name: Install IIO AD9361
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/libad9361-iio/build
+
+  - name: Remove IIO AD9361 build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/libad9361-iio
+      state: absent
+
+  - name: Download latest SoapyPlutoSDR sources
+    git:
+      repo: https://github.com/pothosware/SoapyPlutoSDR.git
+      dest: /home/{{ ham_user }}/hamradio/SoapyPlutoSDR
+
+  - name: Create directory SoapyPlutoSDR/build
+    file:
+      path: /home/{{ ham_user }}/hamradio/SoapyPlutoSDR/build
+      state: directory
+
+  - name: Build SoapyPlutoSDR CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/SoapyPlutoSDR/build
+
+  - name: Build SoapyPlutoSDR
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/SoapyPlutoSDR/build
+
+  - name: Install SoapyPlutoSDR
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/SoapyPlutoSDR/build
+
+  - name: Remove SoapyPlutoSDR build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/SoapyPlutoSDR
+      state: absent

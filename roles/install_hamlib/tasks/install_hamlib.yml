@@ -1,0 +1,105 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install hamlib
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+    - name: Create directory hamradio
+      file:
+        path: /home/{{ ham_user }}/hamradio
+        state: directory
+
+    - name: Create directory for library
+      file:
+        path: /home/{{ ham_user }}/hamradio/hamlib-{{ hamlib_version }}
+        state: directory
+
+    - name: Install dependent libraries
+      become: yes
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - build-essential
+        - libfltk1.3-dev
+        - libsamplerate0-dev
+        - portaudio19-dev
+        - libsndfile1-dev
+        - libxft-dev
+        - libxinerama-dev
+        - libxcursor-dev
+        - libpulse-dev
+        - pavucontrol
+        - swig
+        - libusb-1.0-0-dev
+        - libreadline-dev
+        - libxml2-dev
+        - libgd-dev
+        - python-dev
+        - git
+
+#    - name: Download and Unarchive Hamlib {{ hamlib_version }}
+#      unarchive:
+#        src: "https://downloads.sourceforge.net/project/hamlib/hamlib/{{ hamlib_version }}/hamlib-{{ hamlib_version }}.tar.gz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fhamlib%2Ffiles%2Fhamlib%2F{{ hamlib_version }}%2Fhamlib-{{ hamlib_version }}.tar.gz%2Fdownload%3Fuse_mirror%3Dnewcontinuum&ts=1578415351"
+#        #        src: "https://downloads.sourceforge.net/project/hamlib/hamlib/{{ hamlib_version }}/hamlib-{{ hamlib_version }}.tar.gz"
+#        dest: "/home/{{ ham_user }}/hamradio/"
+#        remote_src: yes
+#        validate_certs: no
+
+    - name: Git clone latest Hamlib {{ hamlib_version }} sources
+      git:
+        repo: https://github.com/Hamlib/Hamlib.git
+        dest: /home/{{ ham_user }}/hamradio/hamlib
+
+    - name: Bootstrap Hamlib {{ hamlib_version }}
+      command: ./bootstrap
+      args:
+        chdir: /home/{{ ham_user }}/hamradio/hamlib
+
+    - name: Configure Hamlib {{ hamlib_version }}
+      command: ./configure --with-python-binding --with-xml-support
+      args:
+        chdir: /home/{{ ham_user }}/hamradio/hamlib
+
+    - name: Build Hamlib {{ hamlib_version }}
+      command: make all
+      args:
+        chdir: /home/{{ ham_user }}/hamradio/hamlib
+
+    - name: Install Hamlib {{ hamlib_version }}
+      become: yes
+      command: make install
+      args:
+        chdir: /home/{{ ham_user }}/hamradio/hamlib
+
+    - name: Build Hamlib {{ hamlib_version }} Python bindings
+      command: make
+      args:
+        chdir: /home/{{ ham_user }}/hamradio/hamlib/bindings
+
+    - name: Install Hamlib {{ hamlib_version }} Python bindings
+      become: yes
+      command: make install
+      args:
+        chdir: /home/{{ ham_user }}/hamradio/hamlib/bindings
+
+    - name: Configure dynamic linker run-time bindings
+      become: yes
+      command: ldconfig
+
+    - name: Remove Hamlib {{ hamlib_version }} build directory
+      file:
+        path: /home/{{ ham_user }}/hamradio/hamlib
+        state: absent
+
+    - name: Remove Hamlib {{ hamlib_version }} directory
+      file:
+        path: /home/{{ ham_user }}/hamradio/hamlib-{{ hamlib_version }}
+        state: absent

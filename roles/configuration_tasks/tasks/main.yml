@@ -1,0 +1,311 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+- name: add ham_user
+  ansible.builtin.user:
+    name: "{{ ham_user }}"
+    create_home: True
+    comment: hampc user
+    groups: dialout,plugdev
+
+- name: install needed packages
+  apt:
+    pkg:
+    - curl
+    - build-essential
+    - autoconf
+
+- name: Change hostname to hampi (for current session)
+  become: yes
+  command: hostname -b hampi
+  when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+- name: Change hostname to hampc (for current session)
+  become: yes
+  command: hostname -b hampc
+  when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+- name: Change hostname to hampi (permanently)
+  become: yes
+  copy:
+    src: "files/etc/hostname_hampi"
+    dest: "/etc/hostname"
+  when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+- name: Change hostname to hampc (permanently)
+  become: yes
+  copy:
+    src: "files/etc/hostname_hampc"
+    dest: "/etc/hostname"
+  when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+- name: Change hostname to hampi (for hosts file)
+  become: yes
+  copy:
+    src: "files/etc/hosts_hampi"
+    dest: "/etc/hosts"
+  when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+- name: Change hostname to hampi (for hosts file)
+  become: yes
+  copy:
+    src: "files/etc/hosts_hampc"
+    dest: "/etc/hosts"
+  when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+- name: Store a basic version file in public location
+  become: yes
+  copy:
+    src: "files/etc/hampi-release"
+    dest: "/etc/hampi-release"
+  when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+- name: Store a basic version file in public location
+  become: yes
+  copy:
+    src: "files/etc/hampc-release"
+    dest: "/etc/hampc-release"
+  when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+- name: Check that the /boot/cmdline.txt exists
+  stat:
+    path: /boot/cmdline.txt
+  register: cmdline_stat_result
+
+- name: Enable resizing of (micro)SD card
+  become: yes
+  command: sed -i 's/ quiet splash plymouth.ignore-serial-consoles$/ quiet init=\/usr\/lib\/raspi-config\/init_resize.sh splash plymouth.ignore-serial-consoles/' /boot/cmdline.txt
+  args:
+    warn: no
+  when: cmdline_stat_result.stat.exists
+
+- name: Remove unwanted software packages
+  become: yes
+  package:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - wolfram-engine
+    - wolframscript
+    - bluej
+    - greenfoot-unbundled
+    - minecraft-pi
+
+# This allows apt-add-repository command to be added
+- name: Install software-properties-common Packages
+  become: yes
+  package:
+    name: software-properties-common
+    state: present
+
+- name: Install powermgmt-base Package for unattended-upgrades
+  become: yes
+  package:
+    name: powermgmt-base
+    state: present
+
+- name: Enable mail notifications for unattended-upgrades
+  become: yes
+  lineinfile:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: '^\/\/Unattended-Upgrade::Mail \"\";'
+    line: Unattended-Upgrade::Mail "pi";
+
+- name: Add the user account to group of 'dialout'
+  become: yes
+  user:
+    name: "{{ ham_user }}"
+    groups: dialout
+    append: yes
+
+- name: Add the user account to group of 'plugdev'
+  become: yes
+  user:
+    name: "{{ ham_user }}"
+    groups: plugdev
+    append: yes
+
+# Only apply these next two steps to RPi3 and RPi4
+# Note: backup: yes cannot be used on /boot filesystem as
+# it creates an invalid filename pattern which causes this
+# to fail
+- name: Configure Pi to use 64-bit kernel
+  become: yes
+  blockinfile:
+    dest: /boot/config.txt
+    block: |
+      arm_64bit=1
+  when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+- name: Update Pi to use 64-bit Kernel
+  become: yes
+  command: echo "y" | rpi-update
+  when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+- name: Enable Pi VNC Server (32 bit ARM)
+  become: yes
+  file:
+    dest: /etc/systemd/system/multi-user.target.wants/vncserver-x11-serviced.service
+    src: /usr/lib/systemd/system/vncserver-x11-serviced.service
+    state: link
+  when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+  ignore_errors: yes
+
+- name: Start Pi VNC Server (32 bit ARM)
+  become: yes
+  command: systemctl start vncserver-x11-serviced
+  when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+  ignore_errors: yes
+
+- name: Install Pi VNC Server (64 bit ARM)
+  become: yes
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - tightvncserver
+  when: ansible_architecture == "aarch64"
+
+- name: Create /etc/xdg/pcmanfm/LXDE-pi directory for Raspberry Pi OS
+  become: yes
+  file:
+    path: /etc/xdg/pcmanfm/LXDE-pi
+    state: directory
+  when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+- name: Create /etc/sudoers.d/010_hampc-nopasswd file for Xubuntu
+  become: yes
+  copy:
+    content: ""
+    dest: /etc/sudoers.d/010_hampc-nopasswd
+    group: root
+    owner: root
+    mode: 0440
+  when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+- name: Enable passwordless sudo for HamPC
+  become: yes
+  blockinfile:
+    dest: /etc/sudoers.d/010_hampc-nopasswd
+    block: |
+      hampc ALL=(ALL) NOPASSWD: ALL
+  when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+- name: Create HamPi desktop config 0 for Raspberry Pi OS in /etc/xdg/pcmanfm/LXDE-pi
+  become: yes
+  copy:
+    src: "files/etc/xdg/pcmanfm/LXDE-pi/desktop-items-0.conf"
+    dest: "/etc/xdg/pcmanfm/LXDE-pi/desktop-items-0.conf"
+  when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+- name: Create HamPi desktop config 1 for Raspberry Pi OS in /etc/xdg/pcmanfm/LXDE-pi
+  become: yes
+  copy:
+    src: "files/etc/xdg/pcmanfm/LXDE-pi/desktop-items-1.conf"
+    dest: "/etc/xdg/pcmanfm/LXDE-pi/desktop-items-1.conf"
+  when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+- name: Create HamPi desktop config 1 for Xubuntu in /etc/xdg/pcmanfm/LXDE-pi
+  become: yes
+  copy:
+    src: "files/etc/xdg/xdg-xubuntu/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml"
+    dest: "/etc/xdg/xdg-xubuntu/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml"
+  when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+- name: Create /home/{{ ham_user }}/.config/pcmanfm/LXDE-pi directory
+  file:
+    path: "/home/{{ ham_user }}/.config/pcmanfm/LXDE-pi"
+    state: directory
+  when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+- name: Create HamPi desktop config in /home/{{ ham_user }}/.config/pcmanfm/LXDE-pi
+  copy:
+    src: "files/home/{{ ham_user }}/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
+    dest: "/home/{{ ham_user }}/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
+  when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+- name: Create /etc/lightdm
+  become: yes
+  file:
+    path: /etc/lightdm
+    state: directory
+
+- name: Create HamPi greeter config in /etc/lightdm for Raspberry Pi OS
+  become: yes
+  copy:
+    src: "files/etc/lightdm/pi-greeter.conf"
+    dest: "/etc/lightdm/pi-greeter.conf"
+  when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+- name: Create HamPi greeter config in /etc/lightdm for Xubuntu
+  become: yes
+  copy:
+    src: "files/etc/lightdm/lightdm-gtk-greeter.conf"
+    dest: "/etc/lightdm/lightdm-gtk-greeter.conf"
+  when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+- name: Create /home/{{ ham_user }}/Desktop directory
+  file:
+    path: "/home/{{ ham_user }}/Desktop"
+    state: directory
+
+- name: Create HamPi README in /home/{{ ham_user }}/Desktop
+  copy:
+    src: "files/home/{{ ham_user }}/Desktop/HAMPI README.docx"
+    dest: "/home/{{ ham_user }}/Desktop/HAMPI README.docx"
+  when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+- name: Create HamPC README in /home/{{ ham_user }}/Desktop
+  copy:
+    src: "files/home/{{ ham_user }}/Desktop/HAMPC README.docx"
+    dest: "/home/{{ ham_user }}/Desktop/HAMPC README.docx"
+  when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+- name: Create HamPi LICENSE in /home/{{ ham_user }}/Desktop
+  copy:
+    src: "files/home/{{ ham_user }}/Desktop/HAMPI LICENSE.TXT"
+    dest: "/home/{{ ham_user }}/Desktop/HAMPI LICENSE.TXT"
+  when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+- name: Create HamPC LICENSE in /home/{{ ham_user }}/Desktop
+  copy:
+    src: "files/home/{{ ham_user }}/Desktop/HAMPC LICENSE.TXT"
+    dest: "/home/{{ ham_user }}/Desktop/HAMPC LICENSE.TXT"
+  when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+- name: Create GIVE BACK in /home/{{ ham_user }}/Desktop
+  copy:
+    src: "files/home/{{ ham_user }}/Desktop/GIVE BACK.PDF"
+    dest: "/home/{{ ham_user }}/Desktop/GIVE BACK.PDF"
+
+- name: Insert .bash_local configuration
+  blockinfile:
+    dest: "/home/{{ ham_user }}/.bash_local"
+    create: yes
+    block: |
+      # BUILD OPTIONS
+      export MAKEFLAGS="-j `grep processor /proc/cpuinfo | wc -l`"
+      export CXXFLAGS='-O2 -march=native -mtune=native'
+      export CFLAGS='-O2 -march=native -mtune=native'
+      LIBRARY_PATH='/usr/local/lib'
+      INCLUDE_PATH='/usr/local/include'
+      # For using XTRX and SoapySDR with SDRAngel:
+      export LD_LIBRARY_PATH=/usr/local/lib:/opt/install/xtrx-images/lib:$LD_LIBARY_PATH
+
+      # TO PERMIT LAUNCHING X-WINDOWS APPS FROM TERMINAL
+      export DISPLAY=:0
+
+      # FIX WSJT-X POPUP BAND/FREQUENCY MENU DISPLAY
+      export QT_QPA_PLATFORMTHEME=cleanlooks
+
+      # QRZ.COM AUTHENTICATION FOR WSJTX_TO_N3FJP LOG ADAPTER
+      export QRZ_USERNAME=FILLIN
+      export QRZ_PASSWORD=FILLIN
+
+- name: Insert .bashrc configuration
+  blockinfile:
+    dest: "/home/{{ ham_user }}/.bashrc"
+    block: |
+      if [ -f ~/.bash_local ]; then
+          . ~/.bash_local
+      fi

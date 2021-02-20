@@ -1,0 +1,48 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install SoapySDR
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Download latest SoapySDR sources
+    git:
+      repo: https://github.com/pothosware/SoapySDR.git
+      dest: /home/{{ ham_user }}/hamradio/SoapySDR
+
+  - name: Create directory SoapySDR/build
+    file:
+      path: /home/{{ ham_user }}/hamradio/SoapySDR/build
+      state: directory
+
+  - name: Build SoapySDR CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/SoapySDR/build
+
+  - name: Build SoapySDR
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/SoapySDR/build
+
+  - name: Install SoapySDR
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/SoapySDR/build
+
+  - name: Remove SoapySDR build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/SoapySDR
+      state: absent

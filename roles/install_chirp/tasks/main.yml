@@ -1,0 +1,73 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Chirp Software
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio/
+      state: directory
+
+  - name: Install Chirp prerequisite packages
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - python-libxml2
+      - python-gtk2
+      - python-serial
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Install Chirp prerequisite packages
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - python-libxml2
+      - python-wxgtk3.0
+      - python3-serial
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Install dependent Python component python-gtk for Chirp (Xubuntu)
+    become: yes
+    apt:
+      deb: http://archive.ubuntu.com/ubuntu/pool/universe/p/pygtk/python-gtk2_2.24.0-5.1ubuntu2_amd64.deb
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Determine latest version of Chirp on web
+    shell: curl --silent "https://trac.chirp.danplanet.com/chirp_daily/LATEST/" | grep -Po "chirp-daily-[0-9]+.tar.gz" | uniq | egrep -o "[0-9]+"
+    args:
+      warn: no
+    register: download_date
+
+  - name: Download and Unarchive Chirp {{ download_date.stdout }}
+    unarchive:
+      src: "https://trac.chirp.danplanet.com/chirp_daily/LATEST/chirp-daily-{{ download_date.stdout }}.tar.gz"
+      dest: /home/{{ ham_user }}/hamradio/
+      remote_src: yes
+      validate_certs: no
+
+  - name: Install Chirp {{ download_date.stdout }}
+    become: yes
+    command: python setup.py install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/chirp-daily-{{ download_date.stdout }}
+
+  - name: Modify categories for chirp.desktop
+    become: yes
+    lineinfile:
+      path: /usr/local/share/applications/chirp.desktop
+      regexp: '^Categories=Hamradio;Programming;Handheld;Radio;Amateur;Programmer'
+      line: Categories=HamRadio
+
+  - name: Remove Chirp {{ download_date.stdout }} build directory
+    become: yes
+    file:
+      path: /home/{{ ham_user }}/hamradio/chirp-daily-{{ download_date.stdout }}
+      state: absent

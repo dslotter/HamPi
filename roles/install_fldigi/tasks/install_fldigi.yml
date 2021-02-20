@@ -1,0 +1,88 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install FLDigi
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+    - name: Create directory hamradio
+      file:
+        path: /home/{{ ham_user }}/hamradio
+        state: directory
+
+    - name: Install dependent libraries
+      become: yes
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - build-essential
+        - libfltk1.3-dev
+        - libsamplerate0-dev
+        - portaudio19-dev
+        - libsndfile1-dev
+#        - libjpeg9-dev
+        - libxft-dev
+        - libxinerama-dev
+        - libxcursor-dev
+        - libusb-1.0-0-dev
+        - libpulse-dev
+        - pavucontrol
+
+    - name: Determine latest version of FLDigi on web
+      shell: curl --silent "http://www.w1hkj.com/files/fldigi/" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq | tail -n 1
+      args:
+        warn: no
+      register: download_date
+
+    - name: Download and Unarchive FLDigi {{ download_date.stdout }}
+      unarchive:
+        src: "http://www.w1hkj.com/files/fldigi/fldigi-{{ download_date.stdout }}.tar.gz"
+        dest: "/home/{{ ham_user }}/hamradio/"
+        remote_src: yes
+
+    - name: Configure FlDigi {{ download_date.stdout }}
+      command: ./configure
+      args:
+        chdir: /home/{{ ham_user }}/hamradio/fldigi-{{ download_date.stdout }}
+
+    - name: Build FlDigi {{ download_date.stdout }}
+      command: make all
+      args:
+        chdir: /home/{{ ham_user }}/hamradio/fldigi-{{ download_date.stdout }}
+
+    - name: Install FlDigi {{ download_date.stdout }}
+      become: yes
+      command: make install
+      args:
+        chdir: /home/{{ ham_user }}/hamradio/fldigi-{{ download_date.stdout }}
+
+    - name: Modify categories for flarq.desktop
+      become: yes
+      lineinfile:
+        path: /usr/local/share/applications/flarq.desktop
+        regexp: '^Categories=Network;HamRadio;'
+        line: Categories=HamRadio Fldigi
+
+    - name: Modify categories for fldigi.desktop
+      become: yes
+      lineinfile:
+        path: /usr/local/share/applications/fldigi.desktop
+        regexp: '^Categories=Network;HamRadio;'
+        line: Categories=HamRadio Fldigi
+
+    - name: Clean FlDigi {{ download_date.stdout }}
+      command: make clean
+      args:
+        chdir: /home/{{ ham_user }}/hamradio/fldigi-{{ download_date.stdout }}
+
+    - name: Remove FlDigi {{ download_date.stdout }} build directory
+      file:
+        path: /home/{{ ham_user }}/hamradio/fldigi-{{ download_date.stdout }}
+        state: absent

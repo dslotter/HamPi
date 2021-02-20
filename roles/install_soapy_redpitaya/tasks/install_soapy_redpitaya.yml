@@ -1,0 +1,58 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install SoapyRedPitaya
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - gr-osmosdr
+      - libfftw3-dev
+      - libusb-1.0-0-dev
+
+  - name: Download latest SoapyRedPitaya sources
+    git:
+      repo: https://github.com/pothosware/SoapyRedPitaya
+      dest: /home/{{ ham_user }}/hamradio/SoapyRedPitaya
+
+  - name: Create directory SoapyRedPitaya/build
+    file:
+      path: /home/{{ ham_user }}/hamradio/SoapyRedPitaya/build
+      state: directory
+
+  - name: Build SoapyRedPitaya CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/SoapyRedPitaya/build
+
+  - name: Build SoapyRedPitaya
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/SoapyRedPitaya/build
+
+  - name: Install SoapyRedPitaya
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/SoapyRedPitaya/build
+
+  - name: Remove SoapyRedPitaya build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/SoapyRedPitaya
+      state: absent

@@ -1,0 +1,119 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install ax.25
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent libraries for ax.25
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - zlib1g
+      - zlib1g-dev
+      - libncurses-dev
+
+  - name: Install dependent libraries for ax.25 (AMD64)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libncursesw5-dev
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+  - name: Download latest ax.25 sources by VE7FET
+    git:
+      repo: https://github.com/ve7fet/linuxax25.git
+      dest: /home/{{ ham_user }}/hamradio/linuxax25
+
+#
+# ax25-lib
+#
+
+  - name: Autoreconf ax.25 lib
+    command: autoreconf --install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/linuxax25/libax25/
+
+  - name: Configure ax.25 lib
+    command: ./configure
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/linuxax25/libax25/
+
+  - name: Build ax.25 lib
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/linuxax25/libax25/
+
+  - name: Install ax.25 lib
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/linuxax25/libax25/
+
+#
+# ax25-apps
+#
+  - name: Autoreconf ax.25 apps
+    command: autoreconf --install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/linuxax25/ax25apps/
+
+  - name: Configure ax.25 apps
+    command: ./configure
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/linuxax25/ax25apps/
+
+  - name: Build ax.25 apps
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/linuxax25/ax25apps/
+
+  - name: Install ax.25 apps
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/linuxax25/ax25apps/
+
+#
+# ax25-tools
+#
+  - name: Autoreconf ax.25 tools
+    command: autoreconf --install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/linuxax25/ax25tools/
+
+  - name: Configure ax.25 tools
+    command: ./configure
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/linuxax25/ax25tools/
+
+  - name: Build ax.25 tools
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/linuxax25/ax25tools/
+
+  - name: Install ax.25 tools
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/linuxax25/ax25tools/
+
+  - name: Remove ax.25 build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/linuxax25
+      state: absent

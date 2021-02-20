@@ -1,0 +1,157 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install WSJT-X
+  hosts: all
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio/
+      state: directory
+
+  - name: Install dependent libraries (Common)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libqt5multimedia5
+      - libqt5multimedia5-plugins
+      - libqt5serialport5
+
+  - name: Create directory for documentation
+    become: yes
+    file:
+      path: /usr/share/doc/wsjt-x
+      state: directory
+
+  - name: Download WSJT-X {{ wsjtx_version }} Documentation
+    become: yes
+    get_url:
+      url: https://physics.princeton.edu/pulsar/K1JT/wsjtx-doc/wsjtx-main-{{ wsjtx_version }}_en%20%28USLetter%29.pdf
+      dest: /usr/share/doc/wsjt-x/wsjtx-main-{{ wsjtx_version }}_en%20%28USLetter%29.pdf
+      validate_certs: no
+
+#
+# Raspbian ARM
+#
+
+  - name: Install dependent libraries (ARM32)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libgfortran3
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Download WSJT-X {{ wsjtx_version }} with check (md5) (ARM)
+    get_url:
+      url: https://physics.princeton.edu/pulsar/K1JT/wsjtx_{{ wsjtx_version }}_armhf.deb
+      dest: /home/{{ ham_user }}/hamradio/wsjtx_{{ wsjtx_version }}_armhf.deb
+      validate_certs: no
+      checksum: md5:{{ wsjtx_222_md5sum_armf }}
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+  - name: Install WSJT-X {{ wsjtx_version }} (ARM)
+    become: yes
+    apt:
+      deb: /home/{{ ham_user }}/hamradio/wsjtx_{{ wsjtx_version }}_armhf.deb
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+  - name: Remove WSJT-X {{ wsjtx_version }} installer (ARM)
+    file:
+      path: /home/{{ ham_user }}/hamradio/wsjtx_{{ wsjtx_version }}_armhf.deb
+      state: absent
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+#
+# Raspbian x86
+#
+
+  - name: Install dependent libraries (x86)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libc6:i386
+    when: ansible_architecture == "x86_64" or ansible_architecture == "i386" or ansible_architecture == "amd64"
+
+  - name: Download WSJT-X {{ wsjtx_version }} with check (md5) (x86)
+    get_url:
+      url: https://physics.princeton.edu/pulsar/K1JT/wsjtx_{{ wsjtx_version }}_i386.deb
+      dest: /home/{{ ham_user }}/hamradio/wsjtx_{{ wsjtx_version }}_i386.deb
+      validate_certs: no
+      checksum: md5:{{ wsjtx_222_md5sum_i386 }}
+    when: ansible_architecture == "i386"
+
+  - name: Install WSJT-X {{ wsjtx_version }} (x86)
+    become: yes
+    apt:
+      deb: /home/{{ ham_user }}/hamradio/wsjtx_{{ wsjtx_version }}_i386.deb
+    when: ansible_architecture == "i386"
+
+  - name: Remove WSJT-X {{ wsjtx_version }} installer (x86)
+    file:
+      path: /home/{{ ham_user }}/hamradio/wsjtx_{{ wsjtx_version }}_i386.deb
+      state: absent
+    when: ansible_architecture == "i386"
+
+#
+# x86_64
+#
+
+  - name: Install dependent libraries (x86_64)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libgfortran4
+      - libreadline8
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+  - name: Download WSJT-X {{ wsjtx_version }} with check (md5) (x86_64)
+    get_url:
+      url: https://physics.princeton.edu/pulsar/K1JT/wsjtx_{{ wsjtx_version }}_amd64.deb
+      dest: /home/{{ ham_user }}/hamradio/wsjtx_{{ wsjtx_version }}_amd64.deb
+      validate_certs: no
+      checksum: md5:{{ wsjtx_222_md5sum_amd64 }}
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+  # Install WSJT-X the hard way because we're having issues
+  # getting apt to ignore "missing" dependencies
+  - name: Install WSJT-X {{ wsjtx_version }} (x86_64)
+    become: yes
+    command: dpkg -i --ignore-depends\=libgfortran3,libreadline7 ./wsjtx_{{ wsjtx_version }}_amd64.deb
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+  - name: Remove WSJT-X {{ wsjtx_version }} installer (x86_64)
+    file:
+      path: /home/{{ ham_user }}/hamradio/wsjtx_{{ wsjtx_version }}_amd64.deb
+      state: absent
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+
+#
+# Common
+#
+
+  - name: Modify categories for message_aggregator.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/message_aggregator.desktop
+      regexp: '^Categories=AudioVideo;Audio;HamRadio;'
+      line: Categories=HamRadio Weak Signal
+
+  - name: Modify categories for wsjtx.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/wsjtx.desktop
+      regexp: '^Categories=AudioVideo;Audio;HamRadio;'
+      line: Categories=HamRadio Weak Signal

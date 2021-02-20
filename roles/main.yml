@@ -1,0 +1,860 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+---
+
+- name: HamPi / HamPC v1.2rc1 (Dec 2020) Playbook by W3DJS
+  hosts: all
+  become: True
+  gather_facts: True
+  #hosts: nuc
+  # hosts: vm
+  # hosts: hardware
+  pre_tasks:
+    - name: Verify Ansible meets HamPi version requirements.
+      assert:
+        that: "ansible_version.full is version_compare('2.8', '>=')"
+        msg: >
+          "You must update Ansible to at least 2.9 to install this version of HamPi by W3DJS."
+
+- name: Initial Tasks
+  block:
+  - name: Include needed global variables
+    include_vars:
+      file: ../default/main.yml
+
+  - name: Include needed variables for Raspberry Pi OS
+    include_vars:
+      file: ../default/raspbianos.yml
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Include needed variables for Xubuntu
+    include_vars:
+      file: ../default/xubuntu.yml
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+
+- name: Configuration Tasks
+  block:
+  - name: Change hostname to hampi (for current session)
+    command: hostname -b hampi
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Change hostname to hampc (for current session)
+    command: hostname -b hampc
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Change hostname to hampi (permanently)
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/hostname_hampi"
+      dest: "/etc/hostname"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Change hostname to hampc (permanently)
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/hostname_hampc"
+      dest: "/etc/hostname"
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Change hostname to hampi (for hosts file)
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/hosts_hampi"
+      dest: "/etc/hosts"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Change hostname to hampi (for hosts file)
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/hosts_hampc"
+      dest: "/etc/hosts"
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Store a basic version file in public location
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/hampi-release"
+      dest: "/etc/hampi-release"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Store a basic version file in public location
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/hampc-release"
+      dest: "/etc/hampc-release"
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Check that the /boot/cmdline.txt exists
+    stat:
+      path: /boot/cmdline.txt
+    register: cmdline_stat_result
+
+  - name: Enable resizing of (micro)SD card
+    command: sed -i 's/ quiet splash plymouth.ignore-serial-consoles$/ quiet init=\/usr\/lib\/raspi-config\/init_resize.sh splash plymouth.ignore-serial-consoles/' /boot/cmdline.txt
+    args:
+      warn: no
+    when: cmdline_stat_result.stat.exists
+
+  - name: Remove unwanted software packages
+    package:
+      name: "{{ item }}"
+      state: absent
+    with_items:
+      - wolfram-engine
+      - wolframscript
+      - bluej
+      - greenfoot-unbundled
+      - minecraft-pi
+
+  # This allows apt-add-repository command to be added
+  - name: Install software-properties-common Packages
+    package:
+      name: software-properties-common
+      state: present
+
+  - name: Install powermgmt-base Package for unattended-upgrades
+    package:
+      name: powermgmt-base
+      state: present
+
+  - name: Enable mail notifications for unattended-upgrades
+    lineinfile:
+      path: /etc/apt/apt.conf.d/50unattended-upgrades
+      regexp: '^\/\/Unattended-Upgrade::Mail \"\";'
+      line: Unattended-Upgrade::Mail "pi";
+
+  - name: Add the user account to group of 'dialout'
+    user:
+      name: "{{ ham_user }}"
+      groups: dialout
+      append: yes
+
+  - name: Add the user account to group of 'plugdev'
+    user:
+      name: "{{ ham_user }}"
+      groups: plugdev
+      append: yes
+
+  # Only apply these next two steps to RPi3 and RPi4
+  # Note: backup: yes cannot be used on /boot filesystem as
+  # it creates an invalid filename pattern which causes this
+  # to fail
+  - name: Configure Pi to use 64-bit kernel
+    blockinfile:
+      dest: /boot/config.txt
+      block: |
+        arm_64bit=1
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Update Pi to use 64-bit Kernel
+    command: echo "y" | rpi-update
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Enable Pi VNC Server (32 bit ARM)
+    file:
+      dest: /etc/systemd/system/multi-user.target.wants/vncserver-x11-serviced.service
+      src: /usr/lib/systemd/system/vncserver-x11-serviced.service
+      state: link
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    ignore_errors: yes
+
+  - name: Start Pi VNC Server (32 bit ARM)
+    command: systemctl start vncserver-x11-serviced
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    ignore_errors: yes
+
+  - name: Install Pi VNC Server (64 bit ARM)
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - tightvncserver
+    when: ansible_architecture == "aarch64"
+
+  - name: Create /etc/xdg/pcmanfm/LXDE-pi directory for Raspberry Pi OS
+    file:
+      path: /etc/xdg/pcmanfm/LXDE-pi
+      state: directory
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Create /etc/sudoers.d/010_hampc-nopasswd file for Xubuntu
+    copy:
+      content: ""
+      dest: /etc/sudoers.d/010_hampc-nopasswd
+      group: root
+      owner: root
+      mode: 0440
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Enable passwordless sudo for HamPC
+    blockinfile:
+      dest: /etc/sudoers.d/010_hampc-nopasswd
+      block: |
+        hampc ALL=(ALL) NOPASSWD: ALL
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Create HamPi desktop config 0 for Raspberry Pi OS in /etc/xdg/pcmanfm/LXDE-pi
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/xdg/pcmanfm/LXDE-pi/desktop-items-0.conf"
+      dest: "/etc/xdg/pcmanfm/LXDE-pi/desktop-items-0.conf"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Create HamPi desktop config 1 for Raspberry Pi OS in /etc/xdg/pcmanfm/LXDE-pi
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/xdg/pcmanfm/LXDE-pi/desktop-items-1.conf"
+      dest: "/etc/xdg/pcmanfm/LXDE-pi/desktop-items-1.conf"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Create HamPi desktop config 1 for Xubuntu in /etc/xdg/pcmanfm/LXDE-pi
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/xdg/xdg-xubuntu/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml"
+      dest: "/etc/xdg/xdg-xubuntu/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml"
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Create /home/{{ ham_user }}/.config/pcmanfm/LXDE-pi directory
+    file:
+      path: "/home/{{ ham_user }}/.config/pcmanfm/LXDE-pi"
+      state: directory
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Create HamPi desktop config in /home/{{ ham_user }}/.config/pcmanfm/LXDE-pi
+    copy:
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
+      dest: "/home/{{ ham_user }}/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Create /etc/lightdm
+    file:
+      path: /etc/lightdm
+      state: directory
+
+  - name: Create HamPi greeter config in /etc/lightdm for Raspberry Pi OS
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/lightdm/pi-greeter.conf"
+      dest: "/etc/lightdm/pi-greeter.conf"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Create HamPi greeter config in /etc/lightdm for Xubuntu
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/lightdm/lightdm-gtk-greeter.conf"
+      dest: "/etc/lightdm/lightdm-gtk-greeter.conf"
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Create /home/{{ ham_user }}/Desktop directory
+    file:
+      path: "/home/{{ ham_user }}/Desktop"
+      state: directory
+
+  - name: Create HamPi README in /home/{{ ham_user }}/Desktop
+    copy:
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/HAMPI README.docx"
+      dest: "/home/{{ ham_user }}/Desktop/HAMPI README.docx"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Create HamPC README in /home/{{ ham_user }}/Desktop
+    copy:
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/HAMPC README.docx"
+      dest: "/home/{{ ham_user }}/Desktop/HAMPC README.docx"
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Create HamPi LICENSE in /home/{{ ham_user }}/Desktop
+    copy:
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/HAMPI LICENSE.TXT"
+      dest: "/home/{{ ham_user }}/Desktop/HAMPI LICENSE.TXT"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Create HamPC LICENSE in /home/{{ ham_user }}/Desktop
+    copy:
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/HAMPC LICENSE.TXT"
+      dest: "/home/{{ ham_user }}/Desktop/HAMPC LICENSE.TXT"
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Create GIVE BACK in /home/{{ ham_user }}/Desktop
+    copy:
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/GIVE BACK.PDF"
+      dest: "/home/{{ ham_user }}/Desktop/GIVE BACK.PDF"
+
+  - name: Insert .bash_local configuration
+    blockinfile:
+      dest: "/home/{{ ham_user }}/.bash_local"
+      create: yes
+      block: |
+        # BUILD OPTIONS
+        export MAKEFLAGS="-j `grep processor /proc/cpuinfo | wc -l`"
+        export CXXFLAGS='-O2 -march=native -mtune=native'
+        export CFLAGS='-O2 -march=native -mtune=native'
+        LIBRARY_PATH='/usr/local/lib'
+        INCLUDE_PATH='/usr/local/include'
+        # For using XTRX and SoapySDR with SDRAngel:
+        export LD_LIBRARY_PATH=/usr/local/lib:/opt/install/xtrx-images/lib:$LD_LIBARY_PATH
+        # TO PERMIT LAUNCHING X-WINDOWS APPS FROM TERMINAL
+        export DISPLAY=:0
+        # FIX WSJT-X POPUP BAND/FREQUENCY MENU DISPLAY
+        export QT_QPA_PLATFORMTHEME=cleanlooks
+        # QRZ.COM AUTHENTICATION FOR WSJTX_TO_N3FJP LOG ADAPTER
+        export QRZ_USERNAME=FILLIN
+        export QRZ_PASSWORD=FILLIN
+  - name: Insert .bashrc configuration
+    blockinfile:
+      dest: "/home/{{ ham_user }}/.bashrc"
+      block: |
+        if [ -f ~/.bash_local ]; then
+            . ~/.bash_local
+        fi
+  
+  - name: Install_Menus
+    block:
+       # In recent versions of Debian, extra-xdg-menus
+  # package supersedes the hamradiomenus package.
+    - name: Install HamRadio menus
+      become: yes
+      package:
+        name: extra-xdg-menus
+        state: present
+
+    - name: Use our own HamRadio icon for the menu
+      become: yes
+      lineinfile:
+        path: /usr/share/desktop-directories/HamRadio.directory
+        regexp: '^Icon=CQ.png'
+        line: Icon=ham-radio-icon-25
+
+    - name: Create /usr/local/share/icons/gnome/16x16/categories directory
+      become: yes
+      file:
+        path: /usr/local/share/icons/gnome/16x16/categories
+        state: directory
+
+    - name: Create /usr/local/share/icons/gnome/32x32/categories directory
+      become: yes
+      file:
+        path: /usr/local/share/icons/gnome/32x32/categories
+        state: directory
+
+    - name: Create /usr/local/share/icons/gnome/256x256/categories directory
+      become: yes
+      file:
+        path: /usr/local/share/icons/gnome/256x256/categories
+        state: directory
+
+    - name: Create icons directory for 512x512
+      become: yes
+      file:
+        path: /usr/local/share/icons/gnome/512x512/categories
+        state: directory
+
+    - name: Create /usr/share/icons/gnome/512x512 directory
+      become: yes
+      file:
+        path: /usr/share/icons/gnome/512x512
+        state: directory
+
+    - name: Create HamRadio icon 16x16 in /usr/local/share/icons
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/icons/16x16/categories/ham-radio-icon-25.png"
+        dest: "/usr/local/share/icons/gnome/16x16/categories/ham-radio-icon-25.png"
+
+    - name: Create HamRadio icon 32x32 in /usr/local/share/icons
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/icons/32x32/categories/ham-radio-icon-25.png"
+        dest: "/usr/local/share/icons/gnome/32x32/categories/ham-radio-icon-25.png"
+
+    - name: Create HamRadio icon 256x256 in /usr/local/share/icons
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/icons/256x256/categories/ham-radio-icon-25.png"
+        dest: "/usr/local/share/icons/gnome/256x256/categories/ham-radio-icon-25.png"
+
+    - name: Create HamRadio icon 512x512 in /usr/local/share/icons
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/icons/512x512/categories/ham-radio-icon-25.png"
+        dest: "/usr/local/share/icons/gnome/512x512/categories/ham-radio-icon-25.png"
+
+    - name: Create HamRadio icon 512x512 in /usr/share/icons/gnome/512x512/
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/icons/512x512/categories/ham-radio-icon-25.png"
+        dest: "/usr/share/icons/gnome/512x512/ham-radio-icon-25.png"
+
+    - name: Create /usr/share/icons/hicolor/128x128 directory
+      become: yes
+      file:
+        path: /usr/share/icons/hicolor/128x128
+        state: directory
+
+    - name: Create HamRadio icon 512x512 in /usr/share/icons/hicolor/128x128
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/icons/512x512/categories/ham-radio-icon-25.png"
+        dest: "/usr/share/icons/hicolor/128x128/ham-radio-icon-25.png"
+
+    - name: Create HamRadio icon 512x512 in /usr/share/icons
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/icons/512x512/categories/ham-radio-icon-25.png"
+        dest: "/usr/share/icons/ham-radio-icon-25.png"
+
+    - name: Create hamradio.menu in /usr/share/extra-xdg-menus
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/extra-xdg-menus/hamradio.menu"
+        dest: "/usr/share/extra-xdg-menus/hamradio.menu"
+
+    - name: Create HamRadio.directory in /usr/share/desktop-directories
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/desktop-directories/HamRadio.directory"
+        dest: "/usr/share/desktop-directories/HamRadio.directory"
+
+    - name: Create HamRadioAntennaAnalyzer.directory in /usr/share/desktop-directories
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/desktop-directories/HamRadioAntennaAnalyzer.directory"
+        dest: "/usr/share/desktop-directories/HamRadioAntennaAnalyzer.directory"
+
+    - name: Create HamRadioAPRS.directory in /usr/share/desktop-directories
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/desktop-directories/HamRadioAPRS.directory"
+        dest: "/usr/share/desktop-directories/HamRadioAPRS.directory"
+
+    - name: Create HamRadioCalculators.directory in /usr/share/desktop-directories
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/desktop-directories/HamRadioCalculators.directory"
+        dest: "/usr/share/desktop-directories/HamRadioCalculators.directory"
+
+    - name: Create HamRadioD-RATS.directory in /usr/share/desktop-directories
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/desktop-directories/HamRadioD-RATS.directory"
+        dest: "/usr/share/desktop-directories/HamRadioD-RATS.directory"
+
+    - name: Create HamRadioFldigi.directory in /usr/share/desktop-directories
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/desktop-directories/HamRadioFldigi.directory"
+        dest: "/usr/share/desktop-directories/HamRadioFldigi.directory"
+
+    - name: Create HamRadioLogging.directory in /usr/share/desktop-directories
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/desktop-directories/HamRadioLogging.directory"
+        dest: "/usr/share/desktop-directories/HamRadioLogging.directory"
+
+    - name: Create HamRadioMorseCode.directory in /usr/share/desktop-directories
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/desktop-directories/HamRadioMorseCode.directory"
+        dest: "/usr/share/desktop-directories/HamRadioMorseCode.directory"
+
+    - name: Create HamRadioPSK.directory in /usr/share/desktop-directories
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/desktop-directories/HamRadioPSK.directory"
+        dest: "/usr/share/desktop-directories/HamRadioPSK.directory"
+
+    - name: Create HamRadioSDR.directory in /usr/share/desktop-directories
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/desktop-directories/HamRadioSDR.directory"
+        dest: "/usr/share/desktop-directories/HamRadioSDR.directory"
+
+    - name: Create HamRadioTraining.directory in /usr/share/desktop-directories
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/desktop-directories/HamRadioTraining.directory"
+        dest: "/usr/share/desktop-directories/HamRadioTraining.directory"
+
+    - name: Create HamRadioWeakSignal.directory in /usr/share/desktop-directories
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/desktop-directories/HamRadioWeakSignal.directory"
+        dest: "/usr/share/desktop-directories/HamRadioWeakSignal.directory"
+  when:
+  - install_menu | bool
+
+  - name: Installing wallpapers
+    block:
+    - name: Create {{ wallpaper_prefix }} directory
+      become: yes
+      file:
+        path: "{{ wallpaper_prefix }}"
+        state: directory
+
+    - name: Create HamPi desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/HamPi Desktop Wallpaper.png"
+        dest: "{{ wallpaper_prefix }}/HamPi Desktop Wallpaper.png"
+      when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+    - name: Create HamPC desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/HamPC Desktop Wallpaper.png"
+        dest: "{{ wallpaper_prefix }}/HamPC Desktop Wallpaper.png"
+      when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/2300H_1600x1200_AM.jpg"
+        dest: "{{ wallpaper_prefix }}/2300H_1600x1200_AM.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/7300_Wallpaper_1600x1200.jpg"
+        dest: "{{ wallpaper_prefix }}/7300_Wallpaper_1600x1200.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/7610_Wallpaper_1600x1200.jpg"
+        dest: "{{ wallpaper_prefix }}/7610_Wallpaper_1600x1200.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/7800_1600x1200.jpg"
+        dest: "{{ wallpaper_prefix }}/7800_1600x1200.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/AMSATALTLOGO.png"
+        dest: "{{ wallpaper_prefix }}/AMSATALTLOGO.png"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/ARES.png"
+        dest: "{{ wallpaper_prefix }}/ARES.png"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/ARISS pic 1.jpg"
+        dest: "{{ wallpaper_prefix }}/ARISS pic 1.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/ARRL We Do That.jpg"
+        dest: "{{ wallpaper_prefix }}/ARRL We Do That.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/Amateur Radio World Map and DXCC Country List.jpg"
+        dest: "{{ wallpaper_prefix }}/Amateur Radio World Map and DXCC Country List.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/Antennas Major Design Types.jpg"
+        dest: "{{ wallpaper_prefix }}/Antennas Major Design Types.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/Band_Chart_Image_for_ARRL_Web.jpg"
+        dest: "{{ wallpaper_prefix }}/Band_Chart_Image_for_ARRL_Web.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/Callsign Prefix List International.jpg"
+        dest: "{{ wallpaper_prefix }}/Callsign Prefix List International.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/DSTAR2_1600x1200_AM.jpg"
+        dest: "{{ wallpaper_prefix }}/DSTAR2_1600x1200_AM.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/DSTAR_Wallpaper_1600x1200.jpg"
+        dest: "{{ wallpaper_prefix }}/DSTAR_Wallpaper_1600x1200.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/Elecraft K3s Transceiver.jpg"
+        dest: "{{ wallpaper_prefix }}/Elecraft K3s Transceiver.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/FTDX 9000.jpg"
+        dest: "{{ wallpaper_prefix }}/FTDX 9000.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/ICOM IC-9100.jpg"
+        dest: "{{ wallpaper_prefix }}/ICOM IC-9100.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/ID31APlus_1600x1200.jpg"
+        dest: "{{ wallpaper_prefix }}/ID31APlus_1600x1200.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/InTheCommunity_Wallpaper_1600x1200.jpg"
+        dest: "{{ wallpaper_prefix }}/InTheCommunity_Wallpaper_1600x1200.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/Kenwood TS-2000.jpg"
+        dest: "{{ wallpaper_prefix }}/Kenwood TS-2000.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/Kenwood TS-590.jpg"
+        dest: "{{ wallpaper_prefix }}/Kenwood TS-590.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/Moonbounce.jpg"
+        dest: "{{ wallpaper_prefix }}/Moonbounce.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/R30_Wallpaper_1600x1200.jpg"
+        dest: "{{ wallpaper_prefix }}/R30_Wallpaper_1600x1200.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/Space Antenna.jpg"
+        dest: "{{ wallpaper_prefix }}/Space Antenna.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/Van mobile radio.jpg"
+        dest: "{{ wallpaper_prefix }}/Van mobile radio.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/Very Large Array.jpg"
+        dest: "{{ wallpaper_prefix }}/Very Large Array.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/W100AW.jpg"
+        dest: "{{ wallpaper_prefix }}/W100AW.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/W1AW_Fall.jpg"
+        dest: "{{ wallpaper_prefix }}/W1AW_Fall.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/When all else fails - amateur radio.jpg"
+        dest: "{{ wallpaper_prefix }}/When all else fails - amateur radio.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/World CQ Zones.gif"
+        dest: "{{ wallpaper_prefix }}/World CQ Zones.gif"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/Worlds Largest Radio Telescope.jpg"
+        dest: "{{ wallpaper_prefix }}/Worlds Largest Radio Telescope.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/baofeng.jpg"
+        dest: "{{ wallpaper_prefix }}/baofeng.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/cubesat2.jpg"
+        dest: "{{ wallpaper_prefix }}/cubesat2.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/dstar_1600x1200.jpg"
+        dest: "{{ wallpaper_prefix }}/dstar_1600x1200.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/hf_1600x1200.jpg"
+        dest: "{{ wallpaper_prefix }}/hf_1600x1200.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/j-38 key.jpg"
+        dest: "{{ wallpaper_prefix }}/j-38 key.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/morse-code.jpg"
+        dest: "{{ wallpaper_prefix }}/morse-code.jpg"
+
+    - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+      become: yes
+      copy:
+        src: "{{ playbook_dir }}/../files/usr/share/wallpapers/r8600_Wallpaper_1600x1200.jpg"
+        dest: "{{ wallpaper_prefix }}/r8600_Wallpaper_1600x1200.jpg"
+  when: install_wallpaper | bool
+
+
+
+
+- import_playbook: install_wallpaper.yml
+- import_playbook: upgrade_debian_packages.yml
+- import_playbook: install_bookmarks.yml
+- import_playbook: install_cmake.yml
+- import_playbook: install_wxwidgets.yml
+# ^^^ This part takes about 1 hour to build on a RPi 4 ^^^
+
+#
+# Support both conventional and software-defined radios
+#
+- import_playbook: install_hamlib.yml
+- import_playbook: include_DRAWS_support.yml
+- import_playbook: install_ambeserver.yml
+- import_playbook: install_airspy.yml
+- import_playbook: install_airspyhf.yml
+- import_playbook: install_soapy_sdr.yml
+- import_playbook: install_soapy_audio.yml
+- import_playbook: install_soapy_multi.yml
+- import_playbook: install_soapy_netsdr.yml
+- import_playbook: install_soapy_remote.yml
+- import_playbook: install_soapy_airspy.yml
+- import_playbook: install_soapy_airspyhf.yml
+- import_playbook: install_soapy_bladeRF.yml
+- import_playbook: install_soapy_fcdpp.yml
+- import_playbook: install_soapy_hackrf.yml
+- import_playbook: install_soapy_osmo.yml
+- import_playbook: install_soapy_plutosdr.yml
+- import_playbook: install_soapy_redpitaya.yml
+- import_playbook: install_soapy_rtlsdr.yml
+# Fails to build under aarch64:
+- import_playbook: install_soapy_sdrplay.yml
+# Fails to build under aarch64:
+- import_playbook: install_soapy_volkconverters.yml
+# ^^^ This part takes about 1 hour, 15 minutes to build on a RPi 4 ^^^
+
+- import_playbook: install_soapy_uhd.yml
+# ^^^ UHD / SoapyUHD takes about 45 minutes to build on a RPi 4 ^^^
+
+#
+# FLDigi Suite
+#
+- import_playbook: install_flxmlrpc.yml
+- import_playbook: install_flrig.yml
+- import_playbook: install_fldigi.yml
+- import_playbook: install_flaa.yml
+- import_playbook: install_flamp.yml
+- import_playbook: install_flcluster.yml
+- import_playbook: install_fllog.yml
+- import_playbook: install_flmsg.yml
+- import_playbook: install_flnet.yml
+- import_playbook: install_flpost.yml
+- import_playbook: install_flwkey.yml
+- import_playbook: install_flwrap.yml
+- import_playbook: install_pi34statsmonitor.yml
+# ^^^ This part takes about 20 minutes to build on a RPi 4 ^^^
+
+#
+# Ham Radio Applications
+#
+- import_playbook: install_adifmerg.yml
+- import_playbook: install_antenna_modeling_apps.yml
+- import_playbook: install_aprs_apps.yml
+- import_playbook: install_d-rats_maurizioandreotti.yml
+- import_playbook: install_echolink_apps.yml
+- import_playbook: install_ham_training_apps.yml
+- import_playbook: install_logging_apps.yml
+- import_playbook: install_lopora.yml
+- import_playbook: install_morsecode_apps.yml
+- import_playbook: install_satellite_tracking.yml
+# Fails to build under aarch64:
+- import_playbook: install_wsjtx.yml
+# Fails to build under aarch64:
+- import_playbook: install_js8call.yml
+- import_playbook: install_js8callutilities.yml
+# Fails to build under aarch64:
+- import_playbook: install_jtdx.yml
+- import_playbook: download_country_files.yml
+- import_playbook: install_gridtracker.yml
+- import_playbook: install_digital_apps.yml
+- import_playbook: install_miscellaneous_apps.yml
+- import_playbook: install_ax25.yml
+- import_playbook: install_linpac.yml
+- import_playbook: install_bluedv.yml
+- import_playbook: install_chirp.yml
+- import_playbook: install_pat.yml
+- import_playbook: install_ardop_utils.yml
+- import_playbook: install_HamClock_by_WB0OEW.yml
+- import_playbook: install_qsstv.yml
+- import_playbook: install_quisk.yml
+- import_playbook: install_pmon.yml
+- import_playbook: install_pybombs.yml
+- import_playbook: install_tqsl.yml
+- import_playbook: install_boinc.yml
+- import_playbook: install_qslware.yml
+- import_playbook: install_twclock.yml
+- import_playbook: install_twhamqth.yml
+- import_playbook: install_wxtoimg.yml
+- import_playbook: install_freedv.yml
+- import_playbook: install_dump1090.yml
+- import_playbook: install_acarsdec.yml
+# Fails to build under aarch64:
+- import_playbook: install_voacapl.yml
+- import_playbook: install_openwebrx.yml
+- import_playbook: install_tapr_wspr.yml
+- import_playbook: install_dxspider.yml
+# OpenDV git repository has some issues, but
+# some of them have been worked around.
+- import_playbook: install_opendv.yml
+- import_playbook: install_rpitx.yml
+- import_playbook: install_leansdr.yml
+- import_playbook: install_cygnusRFI.yml
+- import_playbook: install_uhrr.yml
+
+# Install SDR GUI apps after all pre-requisite SDR drivers are installed
+- import_playbook: install_cutesdr.yml
+- import_playbook: install_gqrx.yml
+- import_playbook: install_lysdr.yml
+- import_playbook: install_cubicsdr.yml
+- import_playbook: install_sdrangel.yml
+# ^^^ SDRAngel takes about 55 minutes to build on a RPi 4 and 42 minutes on a x86_64 ^^^
+
+# Final tasks
+- import_playbook: finish_tasks.yml
+
+#- import_playbook: terminate_ansible_early.yml
+
+#Hold- import_playbook: install_teamviewer_host.yml
+
+# Enable when they finally support Raspberry Pi
+#Hold- import_playbook: install_sparksdr.yml

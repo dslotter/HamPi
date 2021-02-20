@@ -1,0 +1,104 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install gqrx
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent libraries for GQRX (Common)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - cmake
+      - qt5-default
+      - libqt5svg5-dev
+      - gnuradio-dev
+      - libpulse-dev
+      - pavucontrol
+
+  - name: Install dependent libraries for GQRX (Raspberry Pi)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libgnuradio-osmosdr0.1.4
+      - libgnuradio-iqbalance3.7.11
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Install dependent libraries for GQRX (Xubuntu)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libgnuradio-osmosdr0.2.0
+      - libgnuradio-iqbalance3.8.0
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Download GQRX sources
+    git:
+      repo: https://github.com/csete/gqrx.git
+      dest: /home/{{ ham_user }}/hamradio/gqrx-source
+
+  - name: Create directory gqrx-source/build
+    file:
+      path: /home/{{ ham_user }}/hamradio/gqrx-source/build
+      state: directory
+
+  - name: Build GQRX CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/gqrx-source/build
+
+  - name: Build GQRX
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/gqrx-source/build
+
+  - name: Install GQRX
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/gqrx-source/build
+
+  - name: Modify categories for gqrx.desktop
+    become: yes
+    lineinfile:
+      path: /home/{{ ham_user }}/hamradio/gqrx-source/gqrx.desktop
+      regexp: '^Categories=Network;HamRadio;'
+      line: Categories=HamRadio SDR
+
+  - name: Install GQRX desktop
+    become: yes
+    command: cp gqrx.desktop /usr/local/share/applications/gqrx.desktop
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/gqrx-source
+
+  - name: Remove GQRX build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/gqrx-source
+      state: absent
+
+  # gnuradio-grc.desktop is from the gnuradio dpkg but it
+  # isn't installed directly. Instead it is installed as a
+  # dependency of gnuradio-dev which is installed above.
+  - name: Modify categories for gnuradio-grc.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/gnuradio-grc.desktop
+      regexp: '^Categories=Development;HamRadio;Science;'
+      line: Categories=HamRadio

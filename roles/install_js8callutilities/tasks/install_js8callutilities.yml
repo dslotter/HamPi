@@ -1,0 +1,43 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install JS8CallUtilities
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent components
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - python3
+      - python3-pip
+
+  - name: Install Python packages for JS8CallUtilities
+    become: yes
+    shell: pip3 install maidenhead gps pyserial configparser
+
+  - name: Download latest JS8CallUtilities sources
+    become: yes
+    git:
+      repo: https://github.com/m0iax/JS8CallUtilities_V2
+      dest: /usr/local/JS8CallUtilities_V2
+
+  - name: Set JS8CallUtilities dir to owned by pi user
+    become: yes
+    file:
+      path: /usr/local/JS8CallUtilities_V2
+      owner: "{{ ham_user }}"
+      group: "{{ ham_user }}"

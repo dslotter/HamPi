@@ -1,0 +1,13 @@
+---
+- name: HamPi / HamPC v1.2rc1 (Dec 2020) Playbook by W3DJS
+  hosts: all
+  become: True
+  gather_facts: True
+  pre_tasks:
+    - include_vars: x86_vars.yml
+      when: ansible_architecture == "x86_64"
+    - include_vars : x86_vars.yml 
+      when: ansible_architecture == "armhf"
+  roles:
+   - configuration_tasks
+   

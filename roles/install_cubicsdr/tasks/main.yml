@@ -1,0 +1,159 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install CubicSDR Software
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - build-essential
+      - automake
+      - libliquid-dev
+      - libpulse-dev
+      - libgtk-3-dev
+      - freeglut3
+      - freeglut3-dev
+
+#
+# Build and install rtaudio (CMake 3.10 is a pre-requisite for building RtAudio)
+#
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libjack0
+      - libjack-dev
+      - libpulse-dev
+      - libasound2-dev
+      - libfftw3-dev
+
+  - name: Download latest RtAudio sources
+    git:
+      repo: https://github.com/thestk/rtaudio.git
+      dest: /home/{{ ham_user }}/hamradio/rtaudio
+
+  - name: Create directory rtaudio/build
+    file:
+      path: /home/{{ ham_user }}/hamradio/rtaudio/build
+      state: directory
+
+  - name: Build rtaudio CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/rtaudio/build
+
+  - name: Build RtAudio
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/rtaudio/build
+
+  - name: Install RtAudio
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/rtaudio/build
+
+  - name: Remove rtaudio build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/rtaudio
+      state: absent
+
+#
+# Build and install liquid-dsp
+#
+
+  - name: Git clone latest liquid-dsp sources
+    git:
+      repo: https://github.com/jgaeddert/liquid-dsp
+      dest: /home/{{ ham_user }}/hamradio/liquid-dsp
+
+  - name: Bootstrap liquid-dsp
+    command: ./bootstrap.sh
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/liquid-dsp
+
+  - name: Configure liquid-dsp
+    shell: CFLAGS="-march=native -O3" ./configure --enable-fftoverride
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/liquid-dsp
+
+  - name: Make liquid-dsp
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/liquid-dsp
+
+  - name: Install liquid-dsp
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/liquid-dsp
+
+  - name: Configure dynamic linker run-time bindings
+    become: yes
+    command: ldconfig
+
+  - name: Remove liquid-dsp build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/liquid-dsp
+      state: absent
+
+#
+# Build and install CubicSDR
+#
+
+  - name: Git clone latest CubicSDR sources
+    git:
+      repo: https://github.com/cjcliffe/CubicSDR.git
+      dest: /home/{{ ham_user }}/hamradio/CubicSDR
+
+  - name: Create directory CubicSDR/build
+    file:
+      path: /home/{{ ham_user }}/hamradio/CubicSDR/build
+      state: directory
+
+  - name: Build CubicSDR CMakeFiles
+    command: cmake ../ -DCMAKE_BUILD_TYPE=Release -DUSE_HAMLIB=1 -DwxWidgets_CONFIG_EXECUTABLE=~/hamradio/wxWidgets-staticlib/bin/wx-config
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/CubicSDR/build
+
+  - name: Build CubicSDR
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/CubicSDR/build
+
+  - name: Install CubicSDR
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/CubicSDR/build
+
+  - name: Modify categories for CubicSDR.desktop
+    become: yes
+    lineinfile:
+      path: /usr/local/share/applications/CubicSDR.desktop
+      regexp: '^Categories=Science;HamRadio;DataVisualization;'
+      line: Categories=HamRadio SDR
+
+  - name: Remove CubicSDR build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/CubicSDR
+      state: absent

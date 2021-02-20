@@ -1,0 +1,31 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Satellite Tracking Software
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Install Satellite Tracking Package
+    become: yes
+    package:
+      name: gpredict
+      state: present
+
+  - name: Modify categories for gpredict.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/gpredict.desktop
+      regexp: '^Categories=HamRadio;Science;Astronomy;Education;Network;'
+      line: Categories=HamRadio
+
+  - name: Install Satellite Tracking Packages (ARM)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - predict
+      - predict-gsat
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"

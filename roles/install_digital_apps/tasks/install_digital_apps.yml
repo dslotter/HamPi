@@ -1,0 +1,53 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Digital Software
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Install linpsk Package (Operate PSK31/RTTY modes with X GUI)
+    become: yes
+    package:
+      name: linpsk
+      state: present
+
+  - name: Modify categories for linpsk.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/linpsk.desktop
+      regexp: '^Categories=Network;HamRadio'
+      line: Categories=HamRadio PSK
+
+  - name: Install multimon Package (Linux Radio Transmission Decoder)
+    become: yes
+    package:
+      name: multimon
+      state: present
+
+  - name: Install psk31lx Package (PSK31 terminal application with text-based user interface)
+    become: yes
+    package:
+      name: psk31lx
+      state: present
+
+  - name: Modify categories for psk31lx.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/psk31lx.desktop
+      regexp: '^Categories=HamRadio;ConsoleOnly;Audio;AudioVideo'
+      line: Categories=HamRadio PSK
+
+  - name: Install twpsk Package (Soundcard-based X program for operating PSK31)
+    become: yes
+    package:
+      name: twpsk
+      state: present
+
+  - name: Modify categories for twpsk.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/twpsk.desktop
+      regexp: '^Categories=Network;HamRadio'
+      line: Categories=HamRadio PSK

@@ -1,0 +1,66 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install flcluster
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+    - name: Create directory hamradio
+      file:
+        path: /home/{{ ham_user }}/hamradio/
+        state: directory
+
+    - name: Install dependent libraries
+      become: yes
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - build-essential
+        - libfltk1.3-dev
+
+    - name: Determine latest version of flcluster on web
+      shell: curl --silent "http://www.w1hkj.com/files/flcluster/" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq | tail -n 1
+      args:
+        warn: no
+      register: download_date
+
+    - name: Download and Unarchive flcluster {{ download_date.stdout }}
+      unarchive:
+        src: "http://www.w1hkj.com/files/flcluster/flcluster-{{ download_date.stdout }}.tar.gz"
+        dest: /home/{{ ham_user }}/hamradio/
+        remote_src: yes
+
+    - name: Configure flcluster {{ download_date.stdout }}
+      command: ./configure
+      args:
+        chdir: /home/{{ ham_user }}/hamradio/flcluster-{{ download_date.stdout }}
+
+    - name: Build flcluster {{ download_date.stdout }}
+      command: make all
+      args:
+        chdir: /home/{{ ham_user }}/hamradio/flcluster-{{ download_date.stdout }}
+
+    - name: Install flcluster {{ download_date.stdout }}
+      become: yes
+      command: make install
+      args:
+        chdir: /home/{{ ham_user }}/hamradio/flcluster-{{ download_date.stdout }}
+
+    - name: Modify categories for flcluster.desktop
+      become: yes
+      lineinfile:
+        path: /usr/local/share/applications/flcluster.desktop
+        regexp: '^Categories=Network;HamRadio;'
+        line: Categories=HamRadio Fldigi
+
+    - name: Remove flcluster {{ download_date.stdout }} build directory
+      file:
+        path: /home/{{ ham_user }}/hamradio/flcluster-{{ download_date.stdout }}
+        state: absent

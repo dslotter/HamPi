@@ -1,0 +1,43 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install OpenWebRx
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Git clone latest OpenWebRx sources
+    git:
+      repo: https://github.com/ha7ilm/openwebrx.git
+      dest: /home/{{ ham_user }}/hamradio/openwebrx
+
+  - name: Git clone latest csdr sources
+    git:
+      repo: https://github.com/ha7ilm/csdr.git
+      dest: /home/{{ ham_user }}/hamradio/csdr
+
+  - name: Build csdr
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/csdr
+
+  - name: Install csdr
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/csdr
+
+  - name: Remove csdr build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/csdr
+      state: absent

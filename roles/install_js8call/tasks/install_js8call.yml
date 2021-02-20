@@ -1,0 +1,149 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install JS8Call
+  hosts: all
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent libraries (Common)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libqt5multimedia5
+      - libqt5multimedia5-plugins
+      - libqt5serialport5
+
+  - name: Install dependent libraries (ARM32)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libgfortran3
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+#
+# Raspbian ARM
+#
+
+  - name: Determine latest version of JS8Call (ARM) on web
+    shell: curl --silent "http://files.js8call.com/latest.html" | grep -Po "http://files.js8call.com/.*/js8call_.*_armhf.deb" | uniq | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq
+    args:
+      warn: no
+    register: download_date
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+  - name: Download JS8Call (ARM) {{ download_date.stdout }}
+    get_url:
+      url: http://files.js8call.com/{{ download_date.stdout }}/js8call_{{ download_date.stdout }}_armhf.deb
+      dest: /home/{{ ham_user }}/hamradio/js8call_{{ download_date.stdout }}_armhf.deb
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+  - name: Install JS8Call (ARM) {{ download_date.stdout }}
+    become: yes
+    apt:
+      deb: /home/{{ ham_user }}/hamradio/js8call_{{ download_date.stdout }}_armhf.deb
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+  - name: Remove JS8Call installer (ARM) {{ download_date.stdout }}
+    file:
+      path: /home/{{ ham_user }}/hamradio/js8call_{{ download_date.stdout }}_armhf.deb
+      state: absent
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+#
+# Raspbian x86
+#
+
+  - name: Install dependent libraries (x86)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libc6:i386
+    when: ansible_architecture == "i386"
+
+  - name: Determine latest version of JS8Call (x86) on web
+    shell: curl --silent "http://files.js8call.com/latest.html" | grep -Po "http://files.js8call.com/.*/js8call_.*_i386.deb" | uniq | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq
+    args:
+      warn: no
+    register: download_date
+    when: ansible_architecture == "i386"
+
+  - name: Download JS8Call (x86) {{ download_date.stdout }}
+    get_url:
+      url: http://files.js8call.com/{{ download_date.stdout }}/js8call_{{ download_date.stdout }}_i386.deb
+      dest: /home/{{ ham_user }}/hamradio/js8call_{{ download_date.stdout }}_i386.deb
+    when: ansible_architecture == "i386"
+
+  - name: Install JS8Call (x86) {{ download_date.stdout }}
+    become: yes
+    apt:
+      deb: /home/{{ ham_user }}/hamradio/js8call_{{ download_date.stdout }}_i386.deb
+    when: ansible_architecture == "i386"
+
+  - name: Remove JS8Call installer (x86) {{ download_date.stdout }}
+    file:
+      path: /home/{{ ham_user }}/hamradio/js8call_{{ download_date.stdout }}_i386.deb
+      state: absent
+    when: ansible_architecture == "i386"
+
+
+#
+# AMD64
+#
+
+  - name: Install dependent libraries (AMD64)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libgfortran5
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+  - name: Determine latest version of JS8Call (AMD64) on web
+    shell: curl --silent "http://files.js8call.com/latest.html" | grep -Po "http://files.js8call.com/.*/js8call_.*_amd64.deb" | uniq | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq
+    args:
+      warn: no
+    register: download_date
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+  - name: Download JS8Call (AMD64) {{ download_date.stdout }}
+    get_url:
+      url: http://files.js8call.com/{{ download_date.stdout }}/js8call_{{ download_date.stdout }}_18.04_amd64.deb
+      dest: /home/{{ ham_user }}/hamradio/js8call_{{ download_date.stdout }}_18.04_amd64.deb
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+  - name: Install JS8Call (AMD64) {{ download_date.stdout }}
+    become: yes
+    apt:
+      deb: /home/{{ ham_user }}/hamradio/js8call_{{ download_date.stdout }}_18.04_amd64.deb
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+  - name: Remove JS8Call installer (AMD64) {{ download_date.stdout }}
+    file:
+      path: /home/{{ ham_user }}/hamradio/js8call_{{ download_date.stdout }}_18.04_amd64.deb
+      state: absent
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+
+#
+# Common
+#
+
+  - name: Modify categories for js8call.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/js8call.desktop
+      regexp: '^Categories=AudioVideo;Audio;HamRadio;'
+      line: Categories=HamRadio Weak Signal

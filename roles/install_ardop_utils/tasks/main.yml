@@ -1,0 +1,64 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install ARDOP support
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Install dependent components for ARDOP support
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - evince
+
+  - name: Create ARDOP directory
+    file:
+      path: /home/{{ ham_user }}/ardop
+      state: directory
+
+  - name: Download FindARDOP script
+    become: yes
+    get_url:
+      url: https://raw.githubusercontent.com/km4ack/pi-scripts/master/ardop/findardop
+      dest: /usr/local/bin/findardop
+      mode: a+x
+
+  - name: Download ICOM Grid Map
+    get_url:
+      url: https://github.com/km4ack/pi-scripts/raw/master/ardop/grid-map.pdf
+      dest: /home/{{ ham_user }}/ardop/grid-map.pdf
+
+  - name: Ensure a job that runs at 1:30 exists (but is disabled). Creates an entry like "30 1 * * /home/{{ ham_user }}/ardop/getardoplist > /dev/null"
+    cron:
+      name: "Download ARDOP List from WinLink.org at 01:30 AM"
+      minute: "30"
+      hour: "1"
+      job: "/home/{{ ham_user }}/ardop/getardoplist > /dev/null"
+      state: present
+      disabled: yes
+
+#
+# Raspbian ARM
+#
+  - name: Download Pi ARDOP GUI (ARM)
+    become: yes
+    get_url:
+      url: https://www.cantab.net/users/john.wiseman/Downloads/Beta/piARDOP_GUI
+      dest: /usr/local/bin/piARDOP_GUI
+      mode: a+x
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+#
+# Raspbian x86
+#
+  - name: Download ARDOP GUI (x86)
+    become: yes
+    get_url:
+      url: https://www.cantab.net/users/john.wiseman/Downloads/Beta/ARDOP_GUI
+      dest: /usr/local/bin/ARDOP_GUI
+      mode: a+x
+    when: ansible_architecture == "i386"

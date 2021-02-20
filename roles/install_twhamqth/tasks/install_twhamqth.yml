@@ -1,0 +1,56 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install TwHamQTH Software
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  vars:
+    twhamqth_version: 2.1
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libmotif-dev
+      - libcurl4-openssl-dev
+
+  - name: Download and Unarchive TwHamQTH {{ twhamqth_version }}
+    become: yes
+    unarchive:
+      src: http://wa0eir.bcts.info/src/twhamqth-{{ twhamqth_version }}.src.tar.gz
+      dest: /home/{{ ham_user }}/hamradio
+      remote_src: yes
+
+  - name: Configure TwHamQTH {{ twhamqth_version }}
+    command: ./configure
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/twhamqth-{{ twhamqth_version }}
+
+  - name: Build TwHamQTH {{ twhamqth_version }}
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/twhamqth-{{ twhamqth_version }}
+
+  - name: Install TwHamQTH {{ twhamqth_version }}
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/twhamqth-{{ twhamqth_version }}
+
+  - name: Remove TwHamQTH {{ twhamqth_version }} build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/twhamqth-{{ twhamqth_version }}
+      state: absent

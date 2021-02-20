@@ -1,0 +1,179 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Ham Radio Menu Tasks
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  # In recent versions of Debian, extra-xdg-menus
+  # package supersedes the hamradiomenus package.
+  - name: Install HamRadio menus
+    become: yes
+    package:
+      name: extra-xdg-menus
+      state: present
+
+  - name: Use our own HamRadio icon for the menu
+    become: yes
+    lineinfile:
+      path: /usr/share/desktop-directories/HamRadio.directory
+      regexp: '^Icon=CQ.png'
+      line: Icon=ham-radio-icon-25
+
+  - name: Create /usr/local/share/icons/gnome/16x16/categories directory
+    become: yes
+    file:
+      path: /usr/local/share/icons/gnome/16x16/categories
+      state: directory
+
+  - name: Create /usr/local/share/icons/gnome/32x32/categories directory
+    become: yes
+    file:
+      path: /usr/local/share/icons/gnome/32x32/categories
+      state: directory
+
+  - name: Create /usr/local/share/icons/gnome/256x256/categories directory
+    become: yes
+    file:
+      path: /usr/local/share/icons/gnome/256x256/categories
+      state: directory
+
+  - name: Create icons directory for 512x512
+    become: yes
+    file:
+      path: /usr/local/share/icons/gnome/512x512/categories
+      state: directory
+
+  - name: Create /usr/share/icons/gnome/512x512 directory
+    become: yes
+    file:
+      path: /usr/share/icons/gnome/512x512
+      state: directory
+
+  - name: Create HamRadio icon 16x16 in /usr/local/share/icons
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/icons/16x16/categories/ham-radio-icon-25.png"
+      dest: "/usr/local/share/icons/gnome/16x16/categories/ham-radio-icon-25.png"
+
+  - name: Create HamRadio icon 32x32 in /usr/local/share/icons
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/icons/32x32/categories/ham-radio-icon-25.png"
+      dest: "/usr/local/share/icons/gnome/32x32/categories/ham-radio-icon-25.png"
+
+  - name: Create HamRadio icon 256x256 in /usr/local/share/icons
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/icons/256x256/categories/ham-radio-icon-25.png"
+      dest: "/usr/local/share/icons/gnome/256x256/categories/ham-radio-icon-25.png"
+
+  - name: Create HamRadio icon 512x512 in /usr/local/share/icons
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/icons/512x512/categories/ham-radio-icon-25.png"
+      dest: "/usr/local/share/icons/gnome/512x512/categories/ham-radio-icon-25.png"
+
+  - name: Create HamRadio icon 512x512 in /usr/share/icons/gnome/512x512/
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/icons/512x512/categories/ham-radio-icon-25.png"
+      dest: "/usr/share/icons/gnome/512x512/ham-radio-icon-25.png"
+
+  - name: Create /usr/share/icons/hicolor/128x128 directory
+    become: yes
+    file:
+      path: /usr/share/icons/hicolor/128x128
+      state: directory
+
+  - name: Create HamRadio icon 512x512 in /usr/share/icons/hicolor/128x128
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/icons/512x512/categories/ham-radio-icon-25.png"
+      dest: "/usr/share/icons/hicolor/128x128/ham-radio-icon-25.png"
+
+  - name: Create HamRadio icon 512x512 in /usr/share/icons
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/icons/512x512/categories/ham-radio-icon-25.png"
+      dest: "/usr/share/icons/ham-radio-icon-25.png"
+
+  - name: Create hamradio.menu in /usr/share/extra-xdg-menus
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/extra-xdg-menus/hamradio.menu"
+      dest: "/usr/share/extra-xdg-menus/hamradio.menu"
+
+  - name: Create HamRadio.directory in /usr/share/desktop-directories
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/desktop-directories/HamRadio.directory"
+      dest: "/usr/share/desktop-directories/HamRadio.directory"
+
+  - name: Create HamRadioAntennaAnalyzer.directory in /usr/share/desktop-directories
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/desktop-directories/HamRadioAntennaAnalyzer.directory"
+      dest: "/usr/share/desktop-directories/HamRadioAntennaAnalyzer.directory"
+
+  - name: Create HamRadioAPRS.directory in /usr/share/desktop-directories
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/desktop-directories/HamRadioAPRS.directory"
+      dest: "/usr/share/desktop-directories/HamRadioAPRS.directory"
+
+  - name: Create HamRadioCalculators.directory in /usr/share/desktop-directories
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/desktop-directories/HamRadioCalculators.directory"
+      dest: "/usr/share/desktop-directories/HamRadioCalculators.directory"
+
+  - name: Create HamRadioD-RATS.directory in /usr/share/desktop-directories
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/desktop-directories/HamRadioD-RATS.directory"
+      dest: "/usr/share/desktop-directories/HamRadioD-RATS.directory"
+
+  - name: Create HamRadioFldigi.directory in /usr/share/desktop-directories
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/desktop-directories/HamRadioFldigi.directory"
+      dest: "/usr/share/desktop-directories/HamRadioFldigi.directory"
+
+  - name: Create HamRadioLogging.directory in /usr/share/desktop-directories
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/desktop-directories/HamRadioLogging.directory"
+      dest: "/usr/share/desktop-directories/HamRadioLogging.directory"
+
+  - name: Create HamRadioMorseCode.directory in /usr/share/desktop-directories
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/desktop-directories/HamRadioMorseCode.directory"
+      dest: "/usr/share/desktop-directories/HamRadioMorseCode.directory"
+
+  - name: Create HamRadioPSK.directory in /usr/share/desktop-directories
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/desktop-directories/HamRadioPSK.directory"
+      dest: "/usr/share/desktop-directories/HamRadioPSK.directory"
+
+  - name: Create HamRadioSDR.directory in /usr/share/desktop-directories
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/desktop-directories/HamRadioSDR.directory"
+      dest: "/usr/share/desktop-directories/HamRadioSDR.directory"
+
+  - name: Create HamRadioTraining.directory in /usr/share/desktop-directories
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/desktop-directories/HamRadioTraining.directory"
+      dest: "/usr/share/desktop-directories/HamRadioTraining.directory"
+
+  - name: Create HamRadioWeakSignal.directory in /usr/share/desktop-directories
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/desktop-directories/HamRadioWeakSignal.directory"
+      dest: "/usr/share/desktop-directories/HamRadioWeakSignal.directory"

@@ -1,0 +1,52 @@
+---
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+#- name: Install linpac
+#  environment:
+#    # Build-Time Tuning:
+#    CXXFLAGS: -O2 -march=native -mtune=native
+#    CFLAGS: -O2 -march=native -mtune=native
+#    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+
+- name: Create directory hamradio
+  file:
+    path: /home/{{ ham_user }}/hamradio
+    state: directory
+
+- name: Download latest linpac sources
+  git:
+    repo: https://git.code.sf.net/p/linpac/linpac
+    dest: /home/{{ ham_user }}/hamradio/linpac
+
+- name: Checkout develop branch of linpac
+  command: git checkout develop
+  args:
+    chdir: /home/{{ ham_user }}/hamradio/linpac
+
+- name: Autoreconf linpac
+  command: autoreconf --install
+  args:
+    chdir: /home/{{ ham_user }}/hamradio/linpac
+
+- name: Configure linpac
+  command: ./configure
+  args:
+    chdir: /home/{{ ham_user }}/hamradio/linpac
+
+- name: Build linpac
+  command: make
+  args:
+    chdir: /home/{{ ham_user }}/hamradio/linpac
+
+- name: Install linpac
+  become: yes
+  command: make install
+  args:
+    chdir: /home/{{ ham_user }}/hamradio/linpac
+
+- name: Remove linpac build directory
+  file:
+    path: /home/{{ ham_user }}/hamradio/linpac
+    state: absent

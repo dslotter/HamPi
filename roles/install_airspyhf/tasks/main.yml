@@ -1,0 +1,64 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install AirSpy HF
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent libraries for AirSpy HF driver
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - build-essential
+      - cmake
+      - pkg-config
+      - libusb-1.0-0-dev
+
+  - name: Download and unarchive latest AirSpy HF driver sources
+    unarchive:
+      src: https://github.com/airspy/airspyhf/archive/master.zip
+      dest: /home/{{ ham_user }}/hamradio
+      remote_src: yes
+
+  - name: Create directory airspyhf-master/build
+    file:
+      path: /home/{{ ham_user }}/hamradio/airspyhf-master/build
+      state: directory
+
+  - name: Build AirSpy HF driver CMakeFiles
+    command: cmake .. -DINSTALL_UDEV_RULES=ON
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/airspyhf-master/build
+
+  - name: Build AirSpy HF driver
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/airspyhf-master/build
+
+  - name: Install AirSpy HF driver
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/airspyhf-master/build
+
+  - name: Configure dynamic linker run-time bindings
+    become: yes
+    command: ldconfig
+
+  - name: Remove AirSpy HF driver build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/airspyhf-master
+      state: absent

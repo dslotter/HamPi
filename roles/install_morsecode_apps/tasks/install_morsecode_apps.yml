@@ -1,0 +1,91 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Morse Code Software
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Install Morse Code Packages
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - cw
+      - cwcp
+      - xcwcp
+      - morsegen
+      - xdemorse
+      - aldo
+      - ebook2cw
+      - ebook2cwgui
+      - morse2ascii
+      - morsegen
+      - hamradio-morse
+      - morse-simulator
+      - python3-morse-simulator
+      - cwdaemon
+      - qrq
+      - morse
+
+  - name: Install multimon-ng
+    become: yes
+    package:
+      name: multimon-ng
+      state: present
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Modify categories for qrq.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/qrq.desktop
+      regexp: '^Categories=Audio;HamRadio;'
+      line: Categories=HamRadio Training
+
+  - name: Create /usr/local/share/applications directory
+    become: yes
+    file:
+      path: /usr/local/share/applications
+      state: directory
+
+  - name: Create xcwcp.desktop in /usr/local/share/applications
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/xcwcp.desktop"
+      dest: "/usr/local/share/applications/xcwcp.desktop"
+
+  - name: Create xdemorse.desktop in /usr/local/share/applications
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/xdemorse.desktop"
+      dest: "/usr/local/share/applications/xdemorse.desktop"
+
+  - name: Modify categories for ebook2cwgui.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/ebook2cwgui.desktop
+      regexp: '^Categories=Audio;HamRadio;'
+      line: Categories=HamRadio Morse Code
+
+  - name: Modify categories for xcwcp.desktop
+    become: yes
+    lineinfile:
+      path: /usr/local/share/applications/xcwcp.desktop
+      regexp: '^Categories=HamRadio'
+      line: Categories=HamRadio Morse Code
+
+  - name: Modify categories for xdemorse.desktop
+    become: yes
+    lineinfile:
+      path: /usr/local/share/applications/xdemorse.desktop
+      regexp: '^Categories=HamRadio'
+      line: Categories=HamRadio Morse Code
+
+  - name: Install Morse Practice by Martin Minow (K6MAM) S/K
+    become: yes
+    get_url:
+      url: https://www.qsl.net/hz1jw/morse/downloads/MorsePractice.jar
+      dest: /usr/local/bin/MorsePractice.jar
+    when: ansible_architecture == "i386" or ansible_architecture == "amd64"

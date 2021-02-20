@@ -1,0 +1,120 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install RPiTx Software
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - git
+      - libsndfile1-dev
+      - imagemagick
+      - libfftw3-dev
+      - buffer
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+
+#
+# Download rpitx
+#
+
+  - name: Download latest rpitx sources
+    git:
+      repo: https://github.com/F5OEO/rpitx
+      dest: /home/{{ ham_user }}/hamradio/rpitx
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+#
+# Build and install csdr
+#
+
+  - name: Download latest csdr sources
+    git:
+      repo: https://github.com/F5OEO/csdr
+      dest: /home/{{ ham_user }}/hamradio/rpitx/csdr
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Build csdr
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/rpitx/csdr
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Install csdr
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/rpitx/csdr
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Clean csdr
+    command: make clean
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/rpitx/csdr
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+#
+# Build librpitx
+#
+
+  - name: Download latest librpitx sources
+    git:
+      repo: https://github.com/F5OEO/librpitx
+      dest: /home/{{ ham_user }}/hamradio/rpitx/src/librpitx
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Build librpitx
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/rpitx/src/librpitx/src
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+#
+# Download pift8
+#
+
+  - name: Download latest pift8 sources
+    git:
+      repo: https://github.com/kgoba/ft8_lib
+      dest: /home/{{ ham_user }}/hamradio/rpitx/src/pift8/ft8_lib
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+#
+# Build rpitx
+#
+
+  - name: Build rpitx
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/rpitx/src
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Install rpitx
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/rpitx/src
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Clean rpitx
+    command: make clean
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/rpitx/src
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")

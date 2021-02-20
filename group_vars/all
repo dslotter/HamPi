@@ -1,0 +1,122 @@
+# file: group_vars/all
+# this is the playbook wide default
+# BlueDV version is current as of 2020-05-06
+bluedv_version: 09352
+gridtracker_md5sum_armf: ae526dc9855cc536f5ee3fc8f871ebf7
+# Hamlib version is current as of 2020-05-06
+hamlib_version: 4.0
+# SDRPlay RSP driver version is current as of 2020-05-22
+sdrplay_arm_version: 2.13.1
+sdrplay_x86_version: 2.13.1
+# Open Beta versions of SDRPlay RSP Driver:
+#sdrplay_arm_version: 3.07.2
+#sdrplay_x86_version: 3.07.1
+# Joe Taylor et al apparently hand-edit the HTML page for the WSJT-X release
+# and the version number format is not consistent, so coding the automatic
+# version determination is a "cat and mouse" game. It's just easier to
+# hard-code the version number going forward. - djs 2020-06-06
+wsjtx_version: 2.2.2
+wsjtx_212_md5sum_armf: 63a77f1875e274521f8c5e645e176657
+wsjtx_212_md5sum_amd64: cda3bc89a5386fe54e54d26013d38635
+wsjtx_212_md5sum_i386: e8dc2abe7160e7c3c74efdcb42c1b11f
+wsjtx_220_md5sum_armf: b9a212e97e073ecd3c2c7a3e4efe8dc7
+wsjtx_220_md5sum_i386: f34ede949fd1c3b07445d042f656fd9b
+wsjtx_221_md5sum_armf: eaee96207f1d48bce91e6d29c96be4b3
+wsjtx_221_md5sum_i386: e72c09c49d3ff72ca1abf2b44c3ffbf4
+wsjtx_222_md5sum_armf: b7b685db0845670bee507da511766c6a
+wsjtx_222_md5sum_amd64: 5aaa2935bcd8dc7a49ddf3cbbe257f80
+wsjtx_222_md5sum_i386: 21309cddcad6b586ca47490965855ce0
+
+configuration_tasks: False
+install_HamClock: True
+install_ acarsdec: True
+install_ adifmerg: True
+install_airspy: True
+install_airspyhf: True
+install_ambeserver: True
+install_antenna_modeling_apps: True
+install_aprs_apps: True
+install_ardop_utils: True
+install_ax25: True
+install_bluev: True
+install_boinc:  True
+install_bookmarks: False
+install_chirp: True
+install_cmake: False
+install_cubicsdr: True
+install_cutesdr: True
+install_sygnusRFI: True
+install_d-rats: True
+install_digital_apps: True
+install_dump1090: True
+install_dxspider: True
+install_echolink_apps: True
+install_flaa: True
+install_flamp: True
+install_flcluster: True
+install_fldigi: True
+install_fllog: True
+install_flmsg: True
+install_flnet: True
+install_flpost: True
+install_flrig: True
+install_flwkey: True
+install_flwrap: True
+install_flxmlrpc: True
+install_freedv: True
+install_gqrx: True
+install_gridtracker: True
+install_training: True
+install_hamlib: True
+install_js8call: True
+install_js8callutils: True
+install_jtdx: True
+install_leansdr: True
+install_librstldr: True
+install_linpac: True
+install_logging: True
+install_lopora: True
+install_lysdr: True
+install_menus: True
+install_misc_apps: True
+install_morsecode: True
+install_opendv: True
+install_openwebrx: True
+install_pat: True
+install_pi34stat_mon: True
+install_pmon: True
+install_pybombs: True
+install_qslware: True
+install_qsstv: True
+install_quisk: True
+install_rpitx: True
+install_sat_track: True
+install_sdrangel: True
+install_soapy_airspy: True
+install_soapy_airspyhf: True
+install_soapy_audio: True
+install_soapy_bladrf: True
+install_soapy_fcdpp: True
+install_soapy_hackrf: True
+install_soapy_multi: True
+install_soapy_netsdr: True
+install_soapy_osmo: True
+install_soapy_plusdr: True
+install_soapy_redpitaya: True
+install_soapy_remote: True
+install_soapy_rtlsdr: True
+install_soapy_sdr: True
+install_soapy_udh: True
+install_soapy_volkconverters: True
+isntall_sparksdr: True
+install_tapr_wspr: True
+install_teamviewer_host: True
+install_tqsl: True
+install_twclock: True
+install_twhamqth: True
+install_uhrr: True
+install_voacapl: True
+install_wallpaper: True
+install_wsjtx: True
+install_wxtoimg: True
+install_wxwidgets: True

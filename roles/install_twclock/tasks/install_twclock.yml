@@ -1,0 +1,56 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install TwClock Software
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  vars:
+    twclock_version: 3.5
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libmotif-dev
+      - libcurl4-openssl-dev
+
+  - name: Download and Unarchive TwClock {{ twclock_version }}
+    become: yes
+    unarchive:
+      src: http://wa0eir.bcts.info/src/twclock-{{ twclock_version }}.src.tar.gz
+      dest: /home/{{ ham_user }}/hamradio
+      remote_src: yes
+
+  - name: Configure TwClock {{ twclock_version }}
+    command: ./configure
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/twclock-{{ twclock_version }}
+
+  - name: Build TwClock {{ twclock_version }}
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/twclock-{{ twclock_version }}
+
+  - name: Install TwClock {{ twclock_version }}
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/twclock-{{ twclock_version }}
+
+  - name: Remove TwClock {{ twclock_version }} build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/twclock-{{ twclock_version }}
+      state: absent

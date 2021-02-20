@@ -1,0 +1,35 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install adifmerg Software
+  hosts: all
+  gather_facts: no
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Install dependent library
+    become: yes
+    package:
+      name: libterm-readline-gnu-perl
+      state: present
+
+  - name: Git clone latest adifmerg sources
+    git:
+      repo: https://github.com/oh7bf/adifmerg.git
+      dest: /home/{{ ham_user }}/hamradio/adifmerg
+
+  - name: Install adifmerg
+    become: yes
+    command: ./install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/adifmerg
+
+  - name: Remove adifmerg build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/adifmerg
+      state: absent

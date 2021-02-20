@@ -1,0 +1,81 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+
+- name: Remove pre-installed cmake
+  become: yes
+  package:
+    name: cmake
+    state: absent
+
+- name: Create directory hamradio
+  file:
+    path: /home/{{ ham_user }}/hamradio
+    state: directory
+
+- name: Install dependent libraries (Raspberry Pi)
+  become: yes
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - libssl-dev
+    - curl
+    - gcc
+    - build-essential
+    - unzip
+    - qt4-qmake
+  when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+- name: Install dependent libraries (Xubuntu)
+  become: yes
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - libssl-dev
+    - curl
+    - gcc
+    - build-essential
+    - unzip
+    - qt5-qmake
+  when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+
+#
+# Build and install CMake
+#
+
+- name: Determine latest version of CMake on GitHub
+  shell: curl --silent "https://github.com/Kitware/CMake/releases/" | grep -Po "cmake-[0-9]+.[0-9]+.[0-9]+.tar.gz" | head -n 1 | grep -Po "[0-9]+.[0-9]+.[0-9]+"
+  args:
+    warn: no
+  register: cmake_version
+
+- name: Download and Unarchive CMake {{ cmake_version.stdout }} sources
+  unarchive:
+    src: https://github.com/Kitware/CMake/releases/download/v{{ cmake_version.stdout }}/cmake-{{ cmake_version.stdout }}.tar.gz
+    dest: /home/{{ ham_user }}/hamradio
+    remote_src: yes
+
+- name: Configure CMake {{ cmake_version.stdout }}
+  command: ./configure
+  args:
+    chdir: /home/{{ ham_user }}/hamradio/cmake-{{ cmake_version.stdout }}
+
+- name: Build CMake {{ cmake_version.stdout }}
+  command: make
+  args:
+    chdir: /home/{{ ham_user }}/hamradio/cmake-{{ cmake_version.stdout }}
+
+- name: Install CMake {{ cmake_version.stdout }}
+  become: yes
+  command: make install
+  args:
+    chdir: /home/{{ ham_user }}/hamradio/cmake-{{ cmake_version.stdout }}
+
+- name: Remove CMake {{ cmake_version.stdout }} build directory
+  file:
+    path: /home/{{ ham_user }}/hamradio/cmake-{{ cmake_version.stdout }}
+    state: absent

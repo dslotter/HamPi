@@ -1,0 +1,141 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Pat (WinLink)
+  hosts: all
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio/
+      state: directory
+
+  - name: Git clone latest Patmenu2
+    git:
+      repo: 'https://github.com/km4ack/patmenu2.git'
+      dest: /home/{{ ham_user }}/patmenu2
+
+  - name: Make Patmenu2 setup executable
+    become: yes
+    file:
+      path: /home/{{ ham_user }}/patmenu2/setup
+      mode: a+x
+
+  - name: Create directory /usr/local/share/applications
+    become: yes
+    file:
+      path: /usr/local/share/applications
+      state: directory
+
+  - name: Copy Patmenu2.desktop to /usr/local/share/applications
+    become: yes
+    shell: cp -a /home/{{ ham_user }}/patmenu2/patmenu2.desktop /usr/local/share/applications/patmenu2.desktop
+
+  - name: Modify categories for patmenu2.desktop
+    become: yes
+    lineinfile:
+      path: /usr/local/share/applications/patmenu2.desktop
+      regexp: '^Categories=Network;HamRadio;'
+      line: Categories=HamRadio
+
+#
+# Raspbian ARM
+#
+
+  - name: Determine latest version of Pat (WinLink) (ARM) on GitHub
+    shell: curl --silent "https://github.com/la5nta/pat/releases/" | grep "pat.*_linux_armhf.deb" | head -n 1 | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq
+    args:
+      warn: no
+    register: pat_version
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+  - name: Download Pat {{ pat_version.stdout }} (WinLink) (ARM)
+    get_url:
+      url: https://github.com/la5nta/pat/releases/download/v{{ pat_version.stdout }}/pat_{{ pat_version.stdout }}_linux_armhf.deb
+      dest: /home/{{ ham_user }}/hamradio/pat_{{ pat_version.stdout }}_linux_armhf.deb
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+  - name: Install Pat {{ pat_version.stdout }} (WinLink) (ARM)
+    become: yes
+    apt:
+      deb: /home/{{ ham_user }}/hamradio/pat_{{ pat_version.stdout }}_linux_armhf.deb
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+  - name: Remove latest Pat (WinLink) installer (ARM)
+    file:
+      path: /home/{{ ham_user }}/hamradio/pat_{{ pat_version.stdout }}_linux_armhf.deb
+      state: absent
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+  - name: Download Pi Ardop (ARM)
+    become: yes
+    get_url:
+      url: http://www.cantab.net/users/john.wiseman/Downloads/Beta/piardopc
+      dest: /usr/local/bin/piardopc
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+  - name: Make Pi Ardop ARM executable
+    become: yes
+    file:
+      path: /usr/local/bin/piardopc
+      mode: a+x
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+#
+# Raspbian x86
+#
+
+  - name: Determine latest version of Pat (WinLink) (x86) on GitHub
+    shell: curl --silent "https://github.com/la5nta/pat/releases/" | grep "pat.*_linux_i386.deb" | head -n 1 | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq
+    args:
+      warn: no
+    register: pat_version
+    when: ansible_architecture == "i386"
+
+  - name: Download Pat {{ pat_version.stdout }} (WinLink) (x86)
+    get_url:
+      url: https://github.com/la5nta/pat/releases/download/v{{ pat_version.stdout }}/pat_{{ pat_version.stdout }}_linux_i386.deb
+      dest: /home/{{ ham_user }}/hamradio/pat_{{ pat_version.stdout }}_linux_i386.deb
+    when: ansible_architecture == "i386"
+
+  - name: Install Pat {{ pat_version.stdout }} (WinLink) (x86)
+    become: yes
+    apt:
+      deb: /home/{{ ham_user }}/hamradio/pat_{{ pat_version.stdout }}_linux_i386.deb
+    when: ansible_architecture == "i386"
+
+  - name: Remove latest Pat (WinLink) installer (x86)
+    file:
+      path: /home/{{ ham_user }}/hamradio/pat_{{ pat_version.stdout }}_linux_i386.deb
+      state: absent
+    when: ansible_architecture == "i386"
+
+#
+# Raspbian amd64
+#
+
+  - name: Determine latest version of Pat (WinLink) (amd64) on GitHub
+    shell: curl --silent "https://github.com/la5nta/pat/releases/" | grep "pat.*_linux_amd64.deb" | head -n 1 | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq
+    args:
+      warn: no
+    register: pat_version
+    when: ansible_architecture == "amd64"
+
+  - name: Download latest Pat (WinLink) (amd64)
+    get_url:
+      url: https://github.com/la5nta/pat/releases/download/v{{ pat_version.stdout }}/pat_{{ pat_version.stdout }}_linux_amd64.deb
+      dest: /home/{{ ham_user }}/hamradio/pat_{{ pat_version.stdout }}_linux_amd64.deb
+    when: ansible_architecture == "amd64"
+
+  - name: Install latest Pat (WinLink) (amd64)
+    become: yes
+    apt:
+      deb: /home/{{ ham_user }}/hamradio/pat_{{ pat_version.stdout }}_linux_amd64.deb
+    when: ansible_architecture == "amd64"
+
+  - name: Remove latest Pat (WinLink) installer (amd64)
+    file:
+      path: /home/{{ ham_user }}/hamradio/pat_{{ pat_version.stdout }}_linux_amd64.deb
+      state: absent
+    when: ansible_architecture == "amd64"

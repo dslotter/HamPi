@@ -1,0 +1,255 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Wallpaper Tasks
+  hosts: all
+  tasks:
+
+  - name: Create {{ wallpaper_prefix }} directory
+    become: yes
+    file:
+      path: "{{ wallpaper_prefix }}"
+      state: directory
+
+  - name: Create HamPi desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/HamPi Desktop Wallpaper.png"
+      dest: "{{ wallpaper_prefix }}/HamPi Desktop Wallpaper.png"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Create HamPC desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/HamPC Desktop Wallpaper.png"
+      dest: "{{ wallpaper_prefix }}/HamPC Desktop Wallpaper.png"
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/2300H_1600x1200_AM.jpg"
+      dest: "{{ wallpaper_prefix }}/2300H_1600x1200_AM.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/7300_Wallpaper_1600x1200.jpg"
+      dest: "{{ wallpaper_prefix }}/7300_Wallpaper_1600x1200.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/7610_Wallpaper_1600x1200.jpg"
+      dest: "{{ wallpaper_prefix }}/7610_Wallpaper_1600x1200.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/7800_1600x1200.jpg"
+      dest: "{{ wallpaper_prefix }}/7800_1600x1200.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/AMSATALTLOGO.png"
+      dest: "{{ wallpaper_prefix }}/AMSATALTLOGO.png"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/ARES.png"
+      dest: "{{ wallpaper_prefix }}/ARES.png"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/ARISS pic 1.jpg"
+      dest: "{{ wallpaper_prefix }}/ARISS pic 1.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/ARRL We Do That.jpg"
+      dest: "{{ wallpaper_prefix }}/ARRL We Do That.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/Amateur Radio World Map and DXCC Country List.jpg"
+      dest: "{{ wallpaper_prefix }}/Amateur Radio World Map and DXCC Country List.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/Antennas Major Design Types.jpg"
+      dest: "{{ wallpaper_prefix }}/Antennas Major Design Types.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/Band_Chart_Image_for_ARRL_Web.jpg"
+      dest: "{{ wallpaper_prefix }}/Band_Chart_Image_for_ARRL_Web.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/Callsign Prefix List International.jpg"
+      dest: "{{ wallpaper_prefix }}/Callsign Prefix List International.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/DSTAR2_1600x1200_AM.jpg"
+      dest: "{{ wallpaper_prefix }}/DSTAR2_1600x1200_AM.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/DSTAR_Wallpaper_1600x1200.jpg"
+      dest: "{{ wallpaper_prefix }}/DSTAR_Wallpaper_1600x1200.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/Elecraft K3s Transceiver.jpg"
+      dest: "{{ wallpaper_prefix }}/Elecraft K3s Transceiver.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/FTDX 9000.jpg"
+      dest: "{{ wallpaper_prefix }}/FTDX 9000.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/ICOM IC-9100.jpg"
+      dest: "{{ wallpaper_prefix }}/ICOM IC-9100.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/ID31APlus_1600x1200.jpg"
+      dest: "{{ wallpaper_prefix }}/ID31APlus_1600x1200.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/InTheCommunity_Wallpaper_1600x1200.jpg"
+      dest: "{{ wallpaper_prefix }}/InTheCommunity_Wallpaper_1600x1200.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/Kenwood TS-2000.jpg"
+      dest: "{{ wallpaper_prefix }}/Kenwood TS-2000.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/Kenwood TS-590.jpg"
+      dest: "{{ wallpaper_prefix }}/Kenwood TS-590.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/Moonbounce.jpg"
+      dest: "{{ wallpaper_prefix }}/Moonbounce.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/R30_Wallpaper_1600x1200.jpg"
+      dest: "{{ wallpaper_prefix }}/R30_Wallpaper_1600x1200.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/Space Antenna.jpg"
+      dest: "{{ wallpaper_prefix }}/Space Antenna.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/Van mobile radio.jpg"
+      dest: "{{ wallpaper_prefix }}/Van mobile radio.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/Very Large Array.jpg"
+      dest: "{{ wallpaper_prefix }}/Very Large Array.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/W100AW.jpg"
+      dest: "{{ wallpaper_prefix }}/W100AW.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/W1AW_Fall.jpg"
+      dest: "{{ wallpaper_prefix }}/W1AW_Fall.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/When all else fails - amateur radio.jpg"
+      dest: "{{ wallpaper_prefix }}/When all else fails - amateur radio.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/World CQ Zones.gif"
+      dest: "{{ wallpaper_prefix }}/World CQ Zones.gif"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/Worlds Largest Radio Telescope.jpg"
+      dest: "{{ wallpaper_prefix }}/Worlds Largest Radio Telescope.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/baofeng.jpg"
+      dest: "{{ wallpaper_prefix }}/baofeng.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/cubesat2.jpg"
+      dest: "{{ wallpaper_prefix }}/cubesat2.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/dstar_1600x1200.jpg"
+      dest: "{{ wallpaper_prefix }}/dstar_1600x1200.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/hf_1600x1200.jpg"
+      dest: "{{ wallpaper_prefix }}/hf_1600x1200.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/j-38 key.jpg"
+      dest: "{{ wallpaper_prefix }}/j-38 key.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/morse-code.jpg"
+      dest: "{{ wallpaper_prefix }}/morse-code.jpg"
+
+  - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/r8600_Wallpaper_1600x1200.jpg"
+      dest: "{{ wallpaper_prefix }}/r8600_Wallpaper_1600x1200.jpg"

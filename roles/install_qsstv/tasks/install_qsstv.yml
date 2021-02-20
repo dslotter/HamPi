@@ -1,0 +1,74 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install QSSTV
+  hosts: all
+  gather_facts: no
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - g++
+      - libfftw3-dev
+      - qt5-default
+      - libpulse-dev
+      - libhamlib-dev
+      - libasound2-dev
+      - libv4l-dev
+      - libopenjp2-7
+      - libopenjp2-7-dev
+
+  - name: Determine latest version of QSSTV on web
+    shell: curl --silent "http://users.telenet.be/on4qz/qsstv/downloads/" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq
+    args:
+      warn: no
+    register: download_date
+
+  - name: Download and Unarchive QSSTV {{ download_date.stdout }}
+    unarchive:
+      src: "http://users.telenet.be/on4qz/qsstv/downloads/qsstv_{{ download_date.stdout }}.tar.gz"
+      dest: "/home/{{ ham_user }}/hamradio/"
+      remote_src: yes
+
+  - name: Build QSSTV Makefile {{ download_date.stdout }}
+    command: qmake
+    args:
+      chdir: "/home/{{ ham_user }}/hamradio/qsstv_{{ download_date.stdout }}"
+
+  - name: Build QSSTV {{ download_date.stdout }}
+    command: make
+    args:
+      chdir: "/home/{{ ham_user }}/hamradio/qsstv_{{ download_date.stdout }}"
+
+  - name: Install QSSTV {{ download_date.stdout }}
+    become: yes
+    command: make install
+    args:
+      chdir: "/home/{{ ham_user }}/hamradio/qsstv_{{ download_date.stdout }}"
+
+  - name: Modify categories for qsstv.desktop
+    become: yes
+    lineinfile:
+      path: /usr/local/share/applications/qsstv.desktop
+      regexp: '^Categories=Education;'
+      line: Categories=HamRadio
+
+  - name: Remove QSSTV {{ download_date.stdout }} build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/qsstv_{{ download_date.stdout }}
+      state: absent

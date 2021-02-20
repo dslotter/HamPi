@@ -1,0 +1,68 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install flpost
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+    - name: Create directory hamradio
+      file:
+        path: /home/{{ ham_user }}/hamradio
+        state: directory
+
+    - name: Install dependent libraries
+      become: yes
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - build-essential
+        - libfltk1.3-dev
+        - libcurl4-openssl-dev
+        - libsamplerate0-dev
+
+    - name: Determine latest version of flpost on web
+      shell: curl --silent "http://www.w1hkj.com/alpha/flpost/" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq | tail -n 1
+      args:
+        warn: no
+      register: download_date
+
+    - name: Download and Unarchive flpost {{ download_date.stdout }}
+      unarchive:
+        src: "http://www.w1hkj.com/alpha/flpost/flpost-{{ download_date.stdout }}.tar.gz"
+        dest: "/home/{{ ham_user }}/hamradio/"
+        remote_src: yes
+
+    - name: Configure flpost {{ download_date.stdout }}
+      command: ./configure
+      args:
+        chdir: /home/{{ ham_user }}/hamradio/flpost-{{ download_date.stdout }}
+
+    - name: Build flpost {{ download_date.stdout }}
+      command: make all
+      args:
+        chdir: /home/{{ ham_user }}/hamradio/flpost-{{ download_date.stdout }}
+
+    - name: Install flpost {{ download_date.stdout }}
+      become: yes
+      command: make install
+      args:
+        chdir: /home/{{ ham_user }}/hamradio/flpost-{{ download_date.stdout }}
+
+    - name: Modify categories for flpost.desktop
+      become: yes
+      lineinfile:
+        path: /usr/local/share/applications/flpost.desktop
+        regexp: '^Categories=Other;HamRadio;'
+        line: Categories=HamRadio Fldigi
+
+    - name: Remove flpost {{ download_date.stdout }} build directory
+      file:
+        path: /home/{{ ham_user }}/hamradio/flpost-{{ download_date.stdout }}
+        state: absent

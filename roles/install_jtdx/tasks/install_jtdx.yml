@@ -1,0 +1,157 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install JTDX
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+#  - name: Install dependent components
+#    become: yes
+#    package:
+#      name: "{{ item }}"
+#      state: present
+#    with_items:
+#      - python3
+#      - python3-pip
+
+
+# Raspbian (ARM)
+#
+
+  # Sometimes this will fail due to a security check. This is beyond the capabilities of this
+  # Playbook, so manual intervention will have to occur.
+#  - name: Determine latest version of JTDX on web (ARM)
+#    shell: curl --silent --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36" "https://www.jtdx.tech/en/" | grep -Po "https://www.jtdx.tech/downloads/Linux/jtdx-.*_armhf.deb" | grep -Po "jtdx-.*_armhf.deb"
+#    args:
+#      warn: no
+#    register: jtdx_name
+#        when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+ # - name: Download JTDX {{ jtdx_name.stdout }} (ARM)
+ #   get_url:
+ #     url: "https://www.jtdx.tech/downloads/Linux/{{ jtdx_name.stdout }}"
+ #     dest: /home/{{ ham_user }}/hamradio/{{ jtdx_name.stdout }}
+ #       when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+#  - name: Install JTDX {{ jtdx_name.stdout }} (ARM)
+#    become: yes
+#    apt:
+#      deb: /home/{{ ham_user }}/hamradio/{{ jtdx_name.stdout }}
+#        when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+#  - name: Remove JTDX {{ jtdx_name.stdout }} installer (ARM)
+#    file:
+#      path: /home/{{ ham_user }}/hamradio/{{ jtdx_name.stdout }}
+#      state: absent
+#        when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+  - name: Copy JTDX from local file (because automated downloads don't work reliably) (ARM)
+    copy:
+      src: "{{ playbook_dir }}/../files/jtdx-2.2.0-rc152_u_armhf.deb"
+      dest: "/home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc152_u_armhf.deb"
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+  - name: Install JTDX from local file (because automated downloads don't work reliably) (ARM)
+    become: yes
+    apt:
+      deb: /home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc152_u_armhf.deb
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+  - name: Remove JTDX installer from local file (because automated downloads don't work reliably) (ARM)
+    file:
+      path: /home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc152_u_armhf.deb
+      state: absent
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+
+#
+# Raspbian (x86)
+#
+
+#  - name: Determine latest version of JTDX on web (x86)
+#    shell: curl --silent --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36" "https://www.jtdx.tech/en/" | grep -Po "https://www.jtdx.tech/downloads/Linux/jtdx-.*_i386.deb"  | grep -Po "jtdx-.*_i386.deb"
+#    args:
+#      warn: no
+#    register: jtdx_name
+#    when: ansible_architecture == "i386"
+
+#  - name: Download JTDX {{ jtdx_name.stdout }} (x86)
+#    get_url:
+#      url: "https://www.jtdx.tech/downloads/Linux/{{ jtdx_name.stdout }}"
+#      dest: /home/{{ ham_user }}/hamradio/{{ jtdx_name.stdout }}
+#    when: ansible_architecture == "i386"
+
+#  - name: Install JTDX {{ jtdx_name.stdout }} (x86)
+#    become: yes
+#    apt:
+#      deb: /home/{{ ham_user }}/hamradio/{{ jtdx_name.stdout }}
+#    when: ansible_architecture == "i386"
+
+#  - name: Remove JTDX {{ jtdx_name.stdout }} installer (x86)
+#    file:
+#      path: /home/{{ ham_user }}/hamradio/{{ jtdx_name.stdout }}
+#      state: absent
+#    when: ansible_architecture == "i386"
+
+  - name: Copy JTDX from local file (because automated downloads don't work reliably) (x86)
+    copy:
+      src: "{{ playbook_dir }}/../files/jtdx-2.2.0-rc152_i386.deb"
+      dest: "/home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc152_i386.deb"
+    when: ansible_architecture == "i386"
+
+  - name: Install JTDX from local file (because automated downloads don't work reliably) (x86)
+    become: yes
+    apt:
+      deb: /home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc152_i386.deb
+    when: ansible_architecture == "i386"
+
+  - name: Remove JTDX installer from local file (because automated downloads don't work reliably) (x86)
+    file:
+      path: /home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc152_i386.deb
+      state: absent
+    when: ansible_architecture == "i386"
+
+
+#
+# AMD64
+#
+
+  - name: Copy JTDX from local file (because automated downloads don't work reliably) (AMD64)
+    copy:
+      src: "{{ playbook_dir }}/../files/jtdx-2.2.0-rc154_2004_amd64.deb"
+      dest: "/home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc154_2004_amd64.deb"
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+  - name: Install JTDX from local file (because automated downloads don't work reliably) (AMD64)
+    become: yes
+    apt:
+      deb: /home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc154_2004_amd64.deb
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+  - name: Remove JTDX installer from local file (because automated downloads don't work reliably) (AMD64)
+    file:
+      path: /home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc154_2004_amd64.deb
+      state: absent
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+#
+# Common
+#
+
+  - name: Modify categories for jtdx.desktop
+    become: yes
+    lineinfile:
+      path: /usr/local/share/applications/jtdx.desktop
+      regexp: '^Categories=AudioVideo;Audio;HamRadio;'
+      line: Categories=HamRadio Weak Signal

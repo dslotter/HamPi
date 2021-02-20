@@ -1,0 +1,172 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Logging Software
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Install Logging Packages
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - trustedqsl
+      - tlf
+      - klog
+      - xlog
+      - cqrlog
+
+  - name: Modify categories for cqrlog.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/cqrlog.desktop
+      regexp: '^Categories=Utility;Database;HamRadio'
+      line: Categories=HamRadio Logging
+
+  - name: Modify categories for xlog.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/xlog.desktop
+      regexp: '^Categories=Utility;Database;HamRadio;GTK'
+      line: Categories=HamRadio Logging
+
+  - name: Copy klog desktop file
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/klog.desktop"
+      dest: "/usr/local/share/applications/klog.desktop"
+
+#
+# Logging helpers by W3DJS
+#
+
+  - name: Create /home/{{ ham_user }}/bin
+    file:
+      path: /home/{{ ham_user }}/bin
+      state: directory
+
+  - name: Download wsjtx_to_n3fjp executable by W3DJS
+    get_url:
+      url: https://raw.githubusercontent.com/dslotter/wsjtx_to_n3fjp/master/wsjtx_to_n3fjp.py
+      dest: /home/{{ ham_user }}/bin/wsjtx_to_n3fjp.py
+      mode: a+x
+
+  - name: Download wsjtx_to_n3fjp default config
+    get_url:
+      url: https://raw.githubusercontent.com/dslotter/wsjtx_to_n3fjp/master/config
+      dest: /home/{{ ham_user }}/bin/config
+
+  - name: Install upload_adif_log dependencies
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - curl
+      - espeak
+      - ruby-notify
+
+  - name: Download upload_adif_log executable by W3DJS
+    get_url:
+      url: https://raw.githubusercontent.com/dslotter/upload_adif_log/master/upload_adif_log
+      dest: /home/{{ ham_user }}/bin/upload_adif_log
+      mode: a+x
+
+  - name: Install Logging Packages (ARM 32)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - tucnak2
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+  - name: Modify categories for tucnak2.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/tucnak2.desktop
+      regexp: '^Categories=Utility;HamRadio'
+      line: Categories=HamRadio Logging
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+
+#
+# Install PyQSO
+#
+
+  - name: Install PyQSO library dependencies
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - python3
+      - gir1.2-gtk-3.0
+      - python3-gi-cairo
+
+# This module is missing a dependency, and I do not know how to resolve this:
+# It is missing geos_c.h
+#
+#  - name: Download latest Cartopy from Git repo
+#    git:
+#      repo: https://github.com/SciTools/cartopy.git
+#      dest: /home/{{ ham_user }}/hamradio/cartopy
+
+  - name: Install Python module - Cython
+    become: yes
+    command: pip3 install cython
+
+  - name: Install Python module - sphinx
+    become: yes
+    command: pip3 install sphinx
+
+  - name: Install Python module - numpy
+    become: yes
+    command: pip3 install numpy
+
+  - name: Install Python module - matplotlib>=1.3.0
+    become: yes
+    command: pip3 install matplotlib>=1.3.0
+
+  - name: Install Python module - cairocffi
+    become: yes
+    command: pip3 install cairocffi
+
+  - name: Install Python module - geocoder
+    become: yes
+    command: pip3 install geocoder
+
+# This module is fouled up. Keep getting errors about missing
+
+#  - name: Install Python module - cartopy>=0.16.0
+#    become: yes
+#    command: pip3 install cartopy>=0.16.0
+
+  - name: Download latest PyQSO from Git repo
+    git:
+      repo: https://github.com/ctjacobs/pyqso.git
+      dest: /home/{{ ham_user }}/hamradio/pyqso
+
+# Doing this manually for now due to fouled up cartopy module
+#  - name: Install PyQSO module dependencies
+#    become: yes
+#    command: pip3 install -U -r requirements.txt
+#    args:
+#      chdir: /home/{{ ham_user }}/hamradio/pyqso
+
+  - name: Install PyQSO systemwide
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/pyqso
+
+  - name: Copy pyqso desktop file
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/pyqso.desktop"
+      dest: "/usr/local/share/applications/pyqso.desktop"
+
+# Todo:
+# twlog - basic logging program for ham radio

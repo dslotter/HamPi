@@ -1,0 +1,32 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Ham Training Packages
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Install Ham Training Software
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - fccexam
+      - hamexam
+
+  - name: Modify categories for fccexam.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/fccexam.desktop
+      regexp: '^Categories=Education;HamRadio;'
+      line: Categories=HamRadio Training
+
+  - name: Modify categories for hamexam.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/hamexam.desktop
+      regexp: '^Categories=Education;HamRadio;'
+      line: Categories=HamRadio Training
+

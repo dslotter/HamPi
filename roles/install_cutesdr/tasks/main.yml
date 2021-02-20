@@ -1,0 +1,20 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install CuteSDR
+  hosts: all
+  tasks:
+
+  - name: Install CuteSdr from repository
+    become: yes
+    package:
+      name: cutesdr
+      state: present
+
+  - name: Modify categories for cutesdr.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/cutesdr.desktop
+      regexp: '^Categories=Utility;HamRadio;Tuner'
+      line: Categories=HamRadio SDR

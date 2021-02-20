@@ -1,0 +1,67 @@
+---
+- name: HamPi / HamPC v1.2rc1 (Dec 2020) Playbook by W3DJS
+  hosts: all
+  become: True
+  gather_facts: True
+  pre_tasks:
+    - include_vars: x86_vars.yml
+      when: ansible_architecture == "x86_64"
+    - include_vars : x86_vars.yml 
+      when: ansible_architecture == "armhf"
+  roles:
+   #- upgrade_debian_packages
+   - { role: configuration_tasks, when: configuration_tasks | bool }
+   - { role: install_menus, when: install_menus | bool }
+   - { role: install_wallpaper, when: install_wallpaper | bool }
+   - { role: install_bookmarks, when: install_bookmarks | bool }
+   - { role: install_cmake, when: install_cmake | bool }
+   - { role: install_wxwidgets, when: install_wxwidgets | bool }
+   - { role: download_country_files, when: download_country_files | bool }
+   - { role: install_linpac, when: install_linpac | bool }
+   - { role: install_logging_apps, when: install_logging_apps | bool }
+   - { role: install_lopora, when: install_lopora | bool }
+   - { role: install_lysdr, when: install_lysdr | bool }
+   - { role: install_miscellaneous_apps, when: install_miscellaneous_apps | bool }
+   - { role: install_morsecode_apps, when: install_morsecode_apps | bool }
+   - { role: install_opendv, when: install_opendv | bool }
+   - { role: install_openwebrx, when: install_openwebrx | bool }
+   - { role: install_pat, when: install_pat | bool }
+   - { role: install_pi34statsmonitor, when: install_pi34statsmonitor | bool }
+   - { role: install_pmon, when: install_pmon | bool }
+   - { role: install_pybombs, when: install_pybombs | bool }
+   - { role: install_qslware, when: install_qslware  | bool }
+   - { role: install_qsstv, when: install_qsstv | bool }
+   - install_quisk
+   - install_rpitx
+   - install_satellite_tracking
+   - install_sdrangel
+   - install_soapy_airspyhf
+   - install_soapy_airspy
+   - install_soapy_audio
+   - install_soapy_bladeRF
+   - install_soapy_fcdpp
+   - install_soapy_hackrf
+   - install_soapy_multi
+   - install_soapy_netsdr
+   - install_soapy_osmo
+   - install_soapy_plutosdr
+   - install_soapy_redpitaya
+   - install_soapy_remote
+   - install_soapy_rtlsdr
+   - install_soapy_sdrplay
+   - install_soapy_sdr
+   - install_soapy_uhd
+   - install_soapy_volkconverters
+   - install_sparksdr
+   - install_tapr_wspr
+   - install_teamviewer_host
+   - install_tqsl
+   - install_twclock
+   - install_twhamqth
+   - install_uhrr
+   - install_voacapl
+   - install_wsjtx
+   - install_wxtoimg
+   - install_wxwidgets
+   - terminate_ansible_early
+  

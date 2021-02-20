@@ -1,0 +1,66 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Create directory hamradio
+  file:
+    path: /home/{{ ham_user }}/hamradio
+    state: directory
+
+- name: Create directory wxWidgets-staticlib
+  file:
+    path: /home/{{ ham_user }}/hamradio/wxWidgets-staticlib
+    state: directory
+
+#
+# Build and install wxWidgets (dependency for CubicSDR)
+#
+
+- name: Install dependent libraries
+  become: yes
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - libgtk-3-dev
+    - libgtk2.0-dev
+    - libjpeg-dev
+    - libtiff-dev
+    - libglu1-mesa-dev
+    - freeglut3-dev
+    - mesa-common-dev
+    - libnotify-dev
+    - libsecret-1-dev
+
+- name: Download and Unarchive wxWidgets {{ wxwidgets_version }}
+  become: yes
+  unarchive:
+    src: https://github.com/wxWidgets/wxWidgets/releases/download/v{{ wxwidgets_version }}/wxWidgets-{{ wxwidgets_version }}.tar.bz2
+    dest: /home/{{ ham_user }}/hamradio
+    remote_src: yes
+
+- name: Autogen wxWidgets {{ wxwidgets_version }}
+  command: ./autogen.sh
+  args:
+    chdir: /home/{{ ham_user }}/hamradio/wxWidgets-{{ wxwidgets_version }}
+
+- name: Configure wxWidgets {{ wxwidgets_version }}
+  shell: ./configure --with-opengl --disable-shared --enable-monolithic --with-libjpeg --with-libtiff --with-libpng --with-zlib --disable-sdltest --enable-unicode --enable-display --enable-propgrid --disable-webkit --disable-webview --disable-webviewwebkit --prefix=`echo ~/hamradio/wxWidgets-staticlib` CXXFLAGS="-std=c++0x"
+  args:
+    chdir: /home/{{ ham_user }}/hamradio/wxWidgets-{{ wxwidgets_version }}
+
+- name: Build wxWidgets {{ wxwidgets_version }}
+  command: make
+  args:
+    chdir: /home/{{ ham_user }}/hamradio/wxWidgets-{{ wxwidgets_version }}
+
+- name: Install wxWidgets {{ wxwidgets_version }}
+  become: yes
+  command: make install
+  args:
+    chdir: /home/{{ ham_user }}/hamradio/wxWidgets-{{ wxwidgets_version }}
+
+- name: Remove wxWidgets {{ wxwidgets_version }} build directory
+  file:
+    path: /home/{{ ham_user }}/hamradio/wxWidgets-{{ wxwidgets_version }}
+    state: absent

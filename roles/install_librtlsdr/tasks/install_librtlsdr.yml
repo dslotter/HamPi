@@ -1,0 +1,45 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: libusb-1.0-0-dev
+      state: present
+
+  - name: Download latest RTL-SDR sources
+    git:
+      repo: https://github.com/steve-m/librtlsdr
+      dest: /home/{{ ham_user }}/hamradio/librtlsdr
+
+  - name: Create directory librtlsdr/build
+    file:
+      path: /home/{{ ham_user }}/hamradio/librtlsdr/build
+      state: directory
+
+  - name: Build RTL-SDR CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/librtlsdr/build
+
+  - name: Build RTL-SDR
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/librtlsdr/build
+
+  - name: Install RTL-SDR
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/librtlsdr/build
+
+  - name: Clean RTL-SDR
+    command: make clean
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/librtlsdr/build

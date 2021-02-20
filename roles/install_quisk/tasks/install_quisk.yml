@@ -1,0 +1,40 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Quisk Software
+  hosts: all
+  gather_facts: no
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  # Use this for Python3
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - python3-wxgtk4.0
+      - libpython3-dev
+      - python3-usb
+      - python3-setuptools
+      - python3-pip
+      - libfftw3-dev
+      - libasound2-dev
+      - portaudio19-dev
+      - libpulse-dev
+
+  - name: Install quisk
+    become: yes
+    command: python3 -m pip install --upgrade quisk
+
+  - name: Copy quisk desktop file
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/quisk.desktop"
+      dest: "/usr/local/share/applications/quisk.desktop"

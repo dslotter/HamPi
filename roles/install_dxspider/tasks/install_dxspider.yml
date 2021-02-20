@@ -1,0 +1,163 @@
+#
+# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install DXSpider
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Add the user 'sysop'
+    become: yes
+    user:
+      name: sysop
+      comment: DXSpider SysOp
+      password_lock: yes
+
+  - name: Add the user 'pi' to group of 'sysop'
+    become: yes
+    user:
+      name: pi
+      groups: sysop
+      append: yes
+
+  - name: Download DXSpider sources
+    git:
+      repo: git://scm.dxcluster.org/scm/spider
+      dest: /home/{{ ham_user }}/hamradio/spider.new
+
+  - name: Copy DXSpider sources to root directory
+    become: yes
+    shell: cp -a /home/{{ ham_user }}/hamradio/spider.new /spider
+
+  - name: Clean old DXSpider path
+    file:
+      state: absent
+      path: /home/{{ ham_user }}/hamradio/spider.new/
+
+  - name: Git Reset --hard on new DXSpider path
+    become: yes
+    shell: git reset --hard
+    args:
+      warn: no
+      chdir: /spider
+
+  - name: Remove spider.new directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/spider.new/
+      state: absent
+
+  - name: Create local directory - As per section 1.4 and 6.0 of DXCluster Installation Manual
+    become: yes
+    file:
+      path: /spider/local
+      state: directory
+
+  - name: Create local_cmd directory - As per section 1.4 and 6.0 of DXCluster Installation Manual
+    become: yes
+    file:
+      path: /spider/local_cmd
+      state: directory
+
+  - name: Change Ownership of /spider to sysop
+    become: yes
+    shell: chown -R sysop.sysop /spider
+
+  - name: Change permissions of /spider directories to rwxrwsr-x
+    become: yes
+    shell: find /spider -type d -exec chmod 2775 {} \;
+
+  - name: Change permissions of /spider files to rwxrwxr-x
+    become: yes
+    shell: find /spider -type f -exec chmod 775 {} \;
+
+  - name: Build DXSpider source directory
+    become: yes
+    command: make
+    args:
+      chdir: /spider/src
+
+  - name: Change Ownership of /spider to sysop (Pass 2)
+    become: yes
+    shell: chown -R sysop.sysop /spider
+
+  - name: Change permissions of /spider directories to rwxrwsr-x (Pass 2)
+    become: yes
+    shell: find /spider -type d -exec chmod 2775 {} \;
+
+  - name: Change permissions of /spider files to rwxrwxr-x (Pass 2)
+    become: yes
+    shell: find /spider -type f -exec chmod 775 {} \;
+
+  - name: Set SUID permissions on ax25_call - As per section 1.3 of DXCluster Installation Manual
+    become: yes
+    file:
+      path: /usr/local/sbin/ax25_call
+      owner: root
+      mode: 4775
+
+  - name: Set SUID permissions on netrom_call - As per section 1.3 of DXCluster Installation Manual
+    become: yes
+    file:
+      path: /usr/local/sbin/netrom_call
+      owner: root
+      mode: 4775
+
+  - name: Install built-in DXVars module from template
+    become: yes
+    shell: cp /spider/perl/DXVars.pm.issue /spider/perl/DXVars.pm
+
+  - name: Set DXVars module file group to sysop
+    become: yes
+    file:
+      path: /spider/perl/DXVars.pm
+      owner: sysop
+
+  - name: Autoconfigure CPAN
+    become: yes
+    shell: (echo y;echo o conf prerequisites_policy follow;echo o conf commit)|cpan
+
+  - name: Install Perl MD5 module dependency for creating USDB
+    become: yes
+    shell: cpan -i MD5
+
+  - name: Install Perl Data Dumper module dependency for creating USDB
+    become: yes
+    shell: "cpan -i Data::Dumper"
+
+  - name: Install Perl TimeDate module dependency for creating USDB
+    become: yes
+    shell: cpan -i TimeDate
+
+  - name: Install Perl Net Telnet module dependency for creating USDB
+    become: yes
+    shell: "cpan -i TimeDate"
+
+  - name: Install Perl Curses module dependency for creating USDB
+    become: yes
+    shell: cpan -i Curses
+
+  - name: Install Perl TimeHires module dependency for creating USDB
+    become: yes
+    shell: "cpan -i Time::HiRes"
+
+  - name: Download US State and City Database
+    get_url:
+      url: http://ftp.w1nr.net/usdbraw.gz
+      dest: /tmp/usdbraw.gz
+
+  - name: Create USDB
+    shell: /spider/perl/create_usdb.pl /tmp/usdbraw.gz
+    args:
+      chdir: /spider/perl/
+
+  - name: Remove temp file usdbraw.gz
+    file:
+      path: /tmp/usdbraw.gz
+      state: absent
+
+# TODO: Create Autostart in /etc/init.d
+# For more info, see http://www.dxcluster.org/main/installation_en-4.html
+#
+##Start DXSpider on bootup and respawn it should it crash
+# DX:3:respawn:/bin/su -c "/usr/bin/perl -w /spider/perl/cluster.pl" sysop >/dev/tty7
