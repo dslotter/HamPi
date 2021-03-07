@@ -1,0 +1,65 @@
+#
+# Copyright 2021, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install QrssPiG
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libyaml-cpp-dev
+      - libfftw3-dev
+      - libgd-dev
+      - libliquid-dev
+      - librtfilter-dev
+      - libboost-filesystem-dev
+      - libasound2-dev
+      - libpulse-dev
+      - libcurl4-openssl-dev
+      - libssh-dev
+
+  - name: Git clone latest QrssPiG sources
+    git:
+      repo: https://gitlab.com/hb9fxx/qrsspig.git
+      dest: /home/{{ ham_user }}/hamradio/qrsspig
+
+  - name: Create directory qrsspig/build
+    file:
+      path: /home/{{ ham_user }}/hamradio/qrsspig/build
+      state: directory
+
+  - name: Build QrssPiG CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/qrsspig/build
+
+  - name: Build QrssPiG
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/qrsspig/build
+
+  - name: Install QrssPiG
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/qrsspig/build
+
+  - name: Remove QrssPiG build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/qrsspig
+      state: absent

@@ -4,17 +4,17 @@
 
 ---
 
-- name: HamPi / HamPC v1.2rc1 (Dec 2020) Playbook by W3DJS
-  # hosts: all
-  hosts: nuc
+- name: HamPi / HamPC v1.3d1 (Mar 2021) Playbook by W3DJS
+  hosts: all
+  # hosts: nuc
   # hosts: vm
   # hosts: hardware
   pre_tasks:
-    - name: Verify Ansible meets HamPi version requirements.
+    - name: Verify Ansible meets HamPi / HamPC version requirements.
       assert:
         that: "ansible_version.full is version_compare('2.8', '>=')"
         msg: >
-          "You must update Ansible to at least 2.9 to install this version of HamPi by W3DJS."
+          "You must update Ansible to at least 2.9 to install this version of HamPi / HamPC by W3DJS."
 
 - import_playbook: init_task.yml
 - import_playbook: configuration_tasks.yml
@@ -131,6 +131,7 @@
 - import_playbook: install_leansdr.yml
 - import_playbook: install_cygnusRFI.yml
 - import_playbook: install_uhrr.yml
+- import_playbook: install_qrsspig.yml
 
 # Install SDR GUI apps after all pre-requisite SDR drivers are installed
 - import_playbook: install_cutesdr.yml
