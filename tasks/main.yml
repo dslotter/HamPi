@@ -132,6 +132,7 @@
 - import_playbook: install_cygnusRFI.yml
 - import_playbook: install_uhrr.yml
 - import_playbook: install_qrsspig.yml
+- import_playbook: install_skcclogger.yml
 
 # Install SDR GUI apps after all pre-requisite SDR drivers are installed
 - import_playbook: install_cutesdr.yml
