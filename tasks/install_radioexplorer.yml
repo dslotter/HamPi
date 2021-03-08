@@ -1,0 +1,38 @@
+#
+# Copyright 2021, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Radio Explorer
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Download and Unarchive RadioExplorer
+    become: yes
+    unarchive:
+      src:  http://www.radioexplorer.com.ru/RadioExplorer-2_7_7.zip
+      dest: /usr/local/
+      remote_src: yes
+
+  - name: Change Mode of /usr/local/RadioExplorer/RadioExplorer.sh to executable
+    become: yes
+    file: dest=/usr/local/RadioExplorer/RadioExplorer.sh mode=a+x
+
+  - name: Download current EiBi shortwave schedule
+    become: yes
+    get_url:
+      url: http://www.eibispace.de/dx/eibi-radioexplorer-b20.zip
+      dest: /usr/local/RadioExplorer/eibi-radioexplorer-b20.zip
+
+# FCC Website is causing error: urlopen error [SSL: DH_KEY_TOO_SMALL] dh key too small
+#  - name: Download specific FCC shortwave schedule
+#    become: yes
+#    get_url:
+#      url: https://transition.fcc.gov/ib/sand/neg/hf_web/B20FCC01.TXT
+#      dest: /usr/local/RadioExplorer/B20FCC01.TXT
+
+  - name: Copy RadioExplorer desktop file
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/RadioExplorer.desktop"
+      dest: "/usr/local/share/applications/RadioExplorer.desktop"
