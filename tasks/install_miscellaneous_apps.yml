@@ -117,6 +117,12 @@
       src: "{{ playbook_dir }}/../files/usr/local/share/applications/inspectrum.desktop"
       dest: "/usr/local/share/applications/inspectrum.desktop"
 
+  - name: Install minimodem Package (provides general-purpose software audio FSK modem)
+    become: yes
+    package:
+      name: minimodem
+      state: present
+
   - name: Install wwl Package (Calculates distance and azimuth between two Maidenhead locators)
     become: yes
     package:
