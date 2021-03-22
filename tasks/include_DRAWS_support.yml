@@ -13,7 +13,7 @@
       dest: /boot/config.txt
       create: yes
       block: |
-        # Uncomment these if you have a D.R.A.W.S. / UDRC from NW Digital Radio
+        # Uncomment these if you have a DRAWS / UDRC from NW Digital Radio
         # Flush all overlays, ie. deprecated overlays loaded from eeprom
         # dtoverlay=
         # Enable UDRC/DRAWS if no EEPROM
@@ -22,7 +22,12 @@
         force_turbo=1
         # Enable audio (loads snd_bcm2835)
         # dtparam=audio=0
-        # End of D.R.A.W.S. / UDRC section
+        # End of DRAWS / UDRC section
+        #
+        # Uncomment these if you are using rpitx
+        # gpu_freq=250
+        # force_turbo=1
+        # End of rpitx section
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
   - name: Create directory hamradio
@@ -90,13 +95,13 @@
       - libasound2-dev
     when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
 
-  - name: Insert sensors configuration for D.R.A.W.S. / UDRC
+  - name: Insert sensors configuration for DRAWS / UDRC
     become: yes
     blockinfile:
       dest: /etc/sensors.d/draws
       create: yes
       block: |
-        # This is for the D.R.A.W.S. / UDRC from NW Digital Radio
+        # This is for the DRAWS / UDRC from NW Digital Radio
 
         chip "ads1015-*"
                 label in3 "User ADC Differential"

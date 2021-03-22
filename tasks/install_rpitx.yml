@@ -86,6 +86,13 @@
       chdir: /home/{{ ham_user }}/hamradio/rpitx/src/librpitx/src
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
+  - name: Install librpitx
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/rpitx/src/librpitx/src
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
 #
 # Download pift8
 #
@@ -94,6 +101,25 @@
     git:
       repo: https://github.com/kgoba/ft8_lib
       dest: /home/{{ ham_user }}/hamradio/rpitx/src/pift8/ft8_lib
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Build ft8_lib
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/rpitx/src/pift8/ft8_lib
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Install ft8_lib
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/rpitx/src/pift8/ft8_lib
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Build pift8
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/rpitx/src/pift8
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
 #
