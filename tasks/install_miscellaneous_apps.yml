@@ -185,6 +185,12 @@
       dest: /home/{{ ham_user }}/bin/update_wsjtx_from_src
       mode: a+x
 
+  - name: Download update_wsjtx_log.py executable by W3DJS
+    get_url:
+      url: https://raw.githubusercontent.com/dslotter/ham_radio_scripts/main/update_wsjtx_log.py
+      dest: /home/{{ ham_user }}/bin/update_wsjtx_log.py
+      mode: a+x
+
   - name: Download upload_adif_log executable by W3DJS
     get_url:
       url: https://raw.githubusercontent.com/dslotter/ham_radio_scripts/main/upload_adif_log
