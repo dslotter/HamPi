@@ -42,16 +42,20 @@ if {$force_conservative} {
 # -Don
 
 
-set timeout -1
+set timeout 120
 spawn ./SDRplay_RSP_API-ARM32-3.07.2.run
 match_max 100000
 expect "Press RETURN to view the license agreement"
 send -- "\r"
-expect -exact "--More--"
-send -- " "
-expect -exact "--More--"
-send -- " "
-expect "press n and RETURN to exit the installer "
-sleep 1
-send -- "y\r"
-expect eof
+
+expect {
+        -- "--More--" {
+                send -- " "
+                exp_continue
+        }
+
+        "\[y/n\] " {
+                send -- "y\r"
+                exp_continue
+        }
+}
