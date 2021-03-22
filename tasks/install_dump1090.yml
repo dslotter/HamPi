@@ -4,6 +4,11 @@
 
 - name: Install dump1090 Software
   hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
   - name: Create directory hamradio
@@ -21,20 +26,32 @@
       - librtlsdr0
 
 #
-# Install dump1090 for SDRPlay (ARM)
+# Install dump1090 for SDRPlay + RTLSDR (ARM)
 #
 
-  - name: Download and unarchive dump1090 1.3.1 for SDRPlay (ARM)
-    unarchive:
-      src: https://www.sdrplay.com/software/dump1090_1.3.1.rpi.tar.gz
-      dest: /home/{{ ham_user }}/hamradio/
-      remote_src: yes
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+  - name: Git clone latest dump1090
+    git:
+      repo: https://github.com/SDRplay/dump1090.git
+      dest: /home/{{ ham_user }}/hamradio/dump1090
 
-  - name: Make directory name more meaningful
-    command: mv /home/{{ ham_user }}/hamradio/dump1090_1.3.1 /home/{{ ham_user }}/hamradio/dump1090_sdrplay_1.3.1
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+  - name: Checkout api3 branch of dump1090
+    command: git checkout api3
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/dump1090
 
+  - name: Build dump1090
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/dump1090
+
+  - name: Install dump1090
+    become: yes
+    shell: cp -a [a-z]*1090 /usr/local/bin/
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/dump1090
+
+  - name: Remove dump1090 build directory
+    command: rm -fr /home/{{ ham_user }}/hamradio/dump1090
 
 #
 # Install dump1090 for SDRPlay (amd64)
