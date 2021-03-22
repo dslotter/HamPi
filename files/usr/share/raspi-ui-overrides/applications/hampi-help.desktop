@@ -1,0 +1,8 @@
+Name=HamPi / HamPC Wiki
+TryExec=/usr/bin/x-www-browser
+Exec=x-www-browser https://github.com/dslotter/hampi/wiki
+Icon=rpi
+Terminal=false
+Type=Application
+Categories=Help;
+StartupNotify=true
