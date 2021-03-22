@@ -16,7 +16,7 @@
 #
 
   - name: Determine latest version of wxtoimg on web (ARM)
-    shell: curl --silent "https://wxtoimgrestored.xyz/downloads/" | grep -Po "wxtoimg-armhf-[0-9]+.[0-9]+.[0-9]+-beta.deb" | grep -Po "[0-9]+.[0-9]+.[0-9]+"
+    shell: curl --silent "https://wxtoimgrestored.xyz/downloads/" | grep -Po "wxtoimg-armhf-[0-9]+.[0-9]+.[0-9]+-beta.deb" | grep -Po "[0-9]+.[0-9]+.[0-9]+" | uniq | tail -n 1
     args:
       warn: no
     register: wxtoimg_version
