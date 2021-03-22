@@ -2,12 +2,12 @@
 # Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
 #
 
-- name: Install support for D.R.A.W.S.
+- name: Install support for DRAWS
   hosts: all
   gather_facts: no
   tasks:
 
-  - name: Insert boot config configuration for D.R.A.W.S. / UDRC
+  - name: Insert boot config configuration for DRAWS / UDRC
     become: yes
     blockinfile:
       dest: /boot/config.txt
@@ -110,11 +110,11 @@
                 label in7 "User ADC 2"
                 compute in4 ((48.7/10)+1)*@, @/((48.7/10)+1)
 
-        # End of D.R.A.W.S. / UDRC section
+        # End of DRAWS / UDRC section
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
 #
-# Install D.R.A.W.S. compatible version of GPSd
+# Install DRAWS compatible version of GPSd
 #
   - name: Git clone latest GPSd sources
     git:
@@ -144,7 +144,7 @@
       regexp: '^USBAUTO=\"true\"'
       line: USBAUTO="false"
 
-  - name: Add D.R.A.W.S. port to gpsd config
+  - name: Add DRAWS port to gpsd config
     become: yes
     lineinfile:
       path: /etc/default/gpsd
@@ -152,7 +152,7 @@
       line: DEVICES="/dev/ttySC0 /dev/pps0"
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
-  - name: Add D.R.A.W.S. gps option to gpsd config
+  - name: Add DRAWS gps option to gpsd config
     become: yes
     lineinfile:
       path: /etc/default/gpsd
@@ -161,7 +161,7 @@
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
 #
-# Install D.R.A.W.S. compatible version of Direwolf
+# Install DRAWS compatible version of Direwolf
 #
   - name: Git clone latest Direwolf sources
     git:
@@ -173,7 +173,7 @@
     args:
       chdir: /home/{{ ham_user }}/hamradio/direwolf
 
-  - name: Fix check for D.R.A.W.S. support
+  - name: Fix check for DRAWS support
     lineinfile:
       path: /home/{{ ham_user }}/hamradio/direwolf/src/dwgpsd.c
       regexp: '^#if GPSD_API_MAJOR_VERSION \< 5 \|\| GPSD_API_MAJOR_VERSION \> 10'
@@ -219,7 +219,7 @@
       state: absent
 
 #
-# Install D.R.A.W.S. Manager
+# Install DRAWS Manager
 #
   - name: Update npm
     become: yes
