@@ -45,6 +45,11 @@
       dest: "/home/{{ ham_user }}/hamradio/"
       remote_src: yes
 
+  - name: Patch FILPATHLEN to HAMLIB_FILPATHLEN for newer version of HamLib
+    command: sed 's/FILPATHLEN/HAMLIB_FILPATHLEN/' -i "/home/{{ ham_user }}/hamradio/qsstv_{{ download_date.stdout }}/rig/rigcontrol.cpp"
+    args:
+      warn: no
+
   - name: Build QSSTV Makefile {{ download_date.stdout }}
     command: qmake
     args:
@@ -62,11 +67,17 @@
       chdir: "/home/{{ ham_user }}/hamradio/qsstv_{{ download_date.stdout }}"
 
   - name: Modify categories for qsstv.desktop
-    become: yes
     lineinfile:
-      path: /usr/local/share/applications/qsstv.desktop
+      path: "/home/{{ ham_user }}/hamradio/qsstv_{{ download_date.stdout }}/qsstv.desktop"
       regexp: '^Categories=Education;'
       line: Categories=HamRadio
+
+  - name: Copy qsstv.desktop to /usr/local/share/applications
+    become: yes
+    copy:
+      src: "/home/{{ ham_user }}/hamradio/qsstv_{{ download_date.stdout }}/qsstv.desktop"
+      dest: /usr/local/share/applications/qsstv.desktop
+      remote_src: yes
 
   - name: Remove QSSTV {{ download_date.stdout }} build directory
     file:
