@@ -37,7 +37,6 @@
     become: yes
     file: dest=/opt/install owner={{ ham_user }}
 
-
   - name: Install dependent libraries
     become: yes
     package:
@@ -59,10 +58,24 @@
       - libqt5multimedia5-plugins
       - qtmultimedia5-dev
       - libqt5websockets5-dev
+      - libqt5serialport5-dev
       - qttools5-dev
       - qttools5-dev-tools
       - libqt5opengl5-dev
       - qtbase5-dev
+      - libqt5quick5
+      - libqt5charts5-dev
+      - qml-module-qtlocation
+      - qml-module-qtpositioning
+      - qml-module-qtquick-window2
+      - qml-module-qtquick-dialogs
+      - qml-module-qtquick-controls
+      - qml-module-qtquick-layouts
+      - libqt5serialport5-dev
+      - qtdeclarative5-dev
+      - qtpositioning5-dev
+      - qtlocation5-dev
+      - libqt5texttospeech5-dev
       - libboost-all-dev
       - libasound2-dev
       - pulseaudio
@@ -86,6 +99,51 @@
     become: yes
     apt:
       autoclean: yes
+
+
+#
+# APT
+#
+
+  - name: Git clone latest APT sources
+    git:
+      repo: https://github.com/srcejon/aptdec.git
+      dest: /opt/build/aptdec
+
+  - name: Git Checkout APT
+    command: git checkout libaptdec
+    args:
+      chdir: /opt/build/aptdec
+
+  - name: Create directory aptdec/build
+    file:
+      path: /opt/build/aptdec/build
+      state: directory
+
+  - name: Build APT CMakeFiles
+    command: cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=/opt/install/aptdec ..
+    args:
+      chdir: /opt/build/aptdec/build
+
+  - name: Build APT
+    command: make
+    args:
+      chdir: /opt/build/aptdec/build
+
+  - name: Install APT
+    become: yes
+    command: make install
+    args:
+      chdir: /opt/build/aptdec/build
+
+  - name: Remove APT build directory
+    file:
+      path: /opt/build/aptdec
+      state: absent
+
+#
+# CM265cc
+#
 
   - name: Git clone latest CM265cc sources
     git:
@@ -726,6 +784,81 @@
       path: /opt/build/xtrx-images
       state: absent
 
+#
+# SGP4
+#
+
+  - name: Git clone latest SGP4 sources
+    git:
+      repo: https://github.com/dnwrnr/sgp4.git
+      dest: /opt/build/sgp4
+
+  - name: Create directory sgp4/build
+    file:
+      path: /opt/build/sgp4/build
+      state: directory
+
+  - name: Build SGP4 CMakeFiles
+    command: cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=/opt/install/sgp4 ..
+    args:
+      chdir: /opt/build/sgp4/build
+
+  - name: Build SGP4
+    command: make
+    args:
+      chdir: /opt/build/sgp4/build
+
+  - name: Install SGP4
+    become: yes
+    command: make install
+    args:
+      chdir: /opt/build/sgp4/build
+
+  - name: Remove SGP4 build directory
+    file:
+      path: /opt/build/sgp4
+      state: absent
+
+#
+# LibSigMF
+#
+
+  - name: Git clone latest LibSigMF sources
+    git:
+      repo: https://github.com/f4exb/libsigmf.git
+      dest: /opt/build/libsigmf
+
+  - name: Git Checkout "new-namespaces"
+    command: git checkout "new-namespaces"
+    args:
+      chdir: /opt/build/libsigmf
+
+  - name: Create directory libsigmf/build
+    file:
+      path: /opt/build/libsigmf/build
+      state: directory
+
+  - name: Build LibSigMF CMakeFiles
+    command: cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=/opt/install/libsigmf ..
+    args:
+      chdir: /opt/build/libsigmf/build
+
+  - name: Build LibSigMF
+    command: make
+    args:
+      chdir: /opt/build/libsigmf/build
+
+  - name: Install LibSigMF
+    become: yes
+    command: make install
+    args:
+      chdir: /opt/build/libsigmf/build
+
+  - name: Remove LibSigMF build directory
+    file:
+      path: /opt/build/libsigmf
+      state: absent
+
 
 #
 # SDRAngel
@@ -742,7 +875,7 @@
       state: directory
 
   - name: Build SDRAngel CMakeFiles
-    command: cmake -Wno-dev -DDEBUG_OUTPUT=ON -DRX_SAMPLE_24BIT=ON -DMIRISDR_DIR=/opt/install/libmirisdr -DAIRSPY_DIR=/opt/install/libairspy -DAIRSPYHF_DIR=/opt/install/libairspyhf -DBLADERF_DIR=/opt/install/libbladeRF -DHACKRF_DIR=/opt/install/libhackrf -DRTLSDR_DIR=/opt/install/librtlsdr -DLIMESUITE_DIR=/opt/install/LimeSuite -DIIO_DIR=/opt/install/libiio -DPERSEUS_DIR=/opt/install/libperseus -DXTRX_DIR=/opt/install/xtrx-images -DSOAPYSDR_DIR=/usr/local/lib/SoapySDR -DCM256CC_DIR=/opt/install/cm256cc -DDSDCC_DIR=/opt/install/dsdcc -DSERIALDV_DIR=/opt/install/serialDV -DMBE_DIR=/opt/install/mbelib -DCODEC2_DIR=/opt/install/codec2 -DCMAKE_INSTALL_PREFIX=/opt/install/sdrangel ..
+    command: cmake -Wno-dev -DDEBUG_OUTPUT=ON -DRX_SAMPLE_24BIT=ON -DMIRISDR_DIR=/opt/install/libmirisdr -DAIRSPY_DIR=/opt/install/libairspy -DAIRSPYHF_DIR=/opt/install/libairspyhf -DBLADERF_DIR=/opt/install/libbladeRF -DHACKRF_DIR=/opt/install/libhackrf -DRTLSDR_DIR=/opt/install/librtlsdr -DLIMESUITE_DIR=/opt/install/LimeSuite -DIIO_DIR=/opt/install/libiio -DPERSEUS_DIR=/opt/install/libperseus -DXTRX_DIR=/opt/install/xtrx-images -DSOAPYSDR_DIR=/usr/local/lib/SoapySDR -DAPT_DIR=/opt/install/aptdec -DCM256CC_DIR=/opt/install/cm256cc -DDSDCC_DIR=/opt/install/dsdcc -DSERIALDV_DIR=/opt/install/serialDV -DMBE_DIR=/opt/install/mbelib -DCODEC2_DIR=/opt/install/codec2 -DSGP4_DIR=/opt/install/sgp4 -DLIBSIGMF_DIR=/opt/install/libsigmf -DCMAKE_INSTALL_PREFIX=/opt/install/sdrangel ..
     args:
       chdir: /opt/build/sdrangel/build
 
