@@ -58,7 +58,7 @@
 # Build and install FreeDV GUI
 #
 
-  - name: Download and Unarchive latest freedv-gui
+  - name: Git clone latest freedv-gui
     git:
       repo: https://github.com/drowe67/freedv-gui.git
       dest: /home/{{ ham_user }}/hamradio/freedv-gui
