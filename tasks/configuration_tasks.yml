@@ -269,6 +269,27 @@
       src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/GIVE BACK.PDF"
       dest: "/home/{{ ham_user }}/Desktop/GIVE BACK.PDF"
 
+  - name: Create HamPi-Help menu item in /usr/share/raspi-ui-overrides/applications
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/raspi-ui-overrides/applications/hampi-help.desktop"
+      dest: "/usr/share/raspi-ui-overrides/applications/hampi-help.desktop"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Create HamPi-Group menu item in /usr/share/raspi-ui-overrides/applications
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/raspi-ui-overrides/applications/hampi-group.desktop"
+      dest: "/usr/share/raspi-ui-overrides/applications/hampi-group.desktop"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+# TODO: See if Xubuntu has a Help Menu where this can be added
+#  - name: Create HamPC-Group menu item in /usr/share/raspi-ui-overrides/applications
+#    copy:
+#      src: "{{ playbook_dir }}/../files/usr/share/raspi-ui-overrides/applications/hampc-group.desktop"
+#      dest: "/usr/share/raspi-ui-overrides/applications/hampc-group.desktop"
+#    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
   - name: Insert .bash_local configuration
     blockinfile:
       dest: "/home/{{ ham_user }}/.bash_local"
