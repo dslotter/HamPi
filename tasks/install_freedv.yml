@@ -63,6 +63,11 @@
       repo: https://github.com/drowe67/freedv-gui.git
       dest: /home/{{ ham_user }}/hamradio/freedv-gui
 
+  - name: Patch FILPATHLEN to HAMLIB_FILPATHLEN for newer version of HamLib
+    command: sed 's/FILPATHLEN/HAMLIB_FILPATHLEN/' -i "/home/{{ ham_user }}/hamradio/freedv-gui/src/hamlib.cpp"
+    args:
+      warn: no
+
   - name: Build freedv-gui Binaries
     command: ./build_linux.sh
     args:
