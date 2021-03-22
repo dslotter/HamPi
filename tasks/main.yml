@@ -4,7 +4,7 @@
 
 ---
 
-- name: HamPi / HamPC v1.3d1 (Mar 2021) Playbook by W3DJS
+- name: HamPi / HamPC v1.3 (Mar 2021) Playbook by W3DJS
   hosts: all
   # hosts: nuc
   # hosts: vm
@@ -53,7 +53,6 @@
 # Fails to build under aarch64:
 - import_playbook: install_soapy_volkconverters.yml
 # ^^^ This part takes about 1 hour, 15 minutes to build on a RPi 4 ^^^
-
 - import_playbook: install_soapy_uhd.yml
 # ^^^ UHD / SoapyUHD takes about 45 minutes to build on a RPi 4 ^^^
 
@@ -141,7 +140,7 @@
 - import_playbook: install_lysdr.yml
 - import_playbook: install_cubicsdr.yml
 - import_playbook: install_sdrangel.yml
-# ^^^ SDRAngel takes about 55 minutes to build on a RPi 4 and 42 minutes on a x86_64 ^^^
+# ^^^ SDRAngel takes about 65 minutes to build on a RPi 4 and 42 minutes on a x86_64 ^^^
 
 # Final tasks
 - import_playbook: finish_tasks.yml
