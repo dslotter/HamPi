@@ -8,6 +8,7 @@ gridtracker_md5sum_armf: ae526dc9855cc536f5ee3fc8f871ebf7
 hamlib_version: 4.0
 # SDRPlay RSP driver version is current as of 2020-05-22
 sdrplay_arm_version: 2.13.1
+sdrplay3_arm_version: 3.07.2
 sdrplay_x86_version: 2.13.1
 # Open Beta versions of SDRPlay RSP Driver:
 #sdrplay_arm_version: 3.07.2
