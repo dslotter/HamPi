@@ -52,7 +52,7 @@
       url: https://physics.princeton.edu/pulsar/K1JT/wsjtx_{{ wsjtx_version }}_armhf.deb
       dest: /home/{{ ham_user }}/hamradio/wsjtx_{{ wsjtx_version }}_armhf.deb
       validate_certs: no
-      checksum: md5:{{ wsjtx_222_md5sum_armf }}
+      checksum: md5:{{ wsjtx_230_md5sum_armf }}
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Install WSJT-X {{ wsjtx_version }} (ARM)
@@ -85,7 +85,7 @@
       url: https://physics.princeton.edu/pulsar/K1JT/wsjtx_{{ wsjtx_version }}_i386.deb
       dest: /home/{{ ham_user }}/hamradio/wsjtx_{{ wsjtx_version }}_i386.deb
       validate_certs: no
-      checksum: md5:{{ wsjtx_222_md5sum_i386 }}
+      checksum: md5:{{ wsjtx_230_md5sum_i386 }}
     when: ansible_architecture == "i386"
 
   - name: Install WSJT-X {{ wsjtx_version }} (x86)
@@ -119,7 +119,7 @@
       url: https://physics.princeton.edu/pulsar/K1JT/wsjtx_{{ wsjtx_version }}_amd64.deb
       dest: /home/{{ ham_user }}/hamradio/wsjtx_{{ wsjtx_version }}_amd64.deb
       validate_certs: no
-      checksum: md5:{{ wsjtx_222_md5sum_amd64 }}
+      checksum: md5:{{ wsjtx_230_md5sum_amd64 }}
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
   # Install WSJT-X the hard way because we're having issues

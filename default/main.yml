@@ -17,7 +17,7 @@ sdrplay_x86_version: 2.13.1
 # and the version number format is not consistent, so coding the automatic
 # version determination is a "cat and mouse" game. It's just easier to
 # hard-code the version number going forward. - djs 2020-06-06
-wsjtx_version: 2.2.2
+wsjtx_version: 2.3.0
 wsjtx_212_md5sum_armf: 63a77f1875e274521f8c5e645e176657
 wsjtx_212_md5sum_amd64: cda3bc89a5386fe54e54d26013d38635
 wsjtx_212_md5sum_i386: e8dc2abe7160e7c3c74efdcb42c1b11f
@@ -28,3 +28,6 @@ wsjtx_221_md5sum_i386: e72c09c49d3ff72ca1abf2b44c3ffbf4
 wsjtx_222_md5sum_armf: b7b685db0845670bee507da511766c6a
 wsjtx_222_md5sum_amd64: 5aaa2935bcd8dc7a49ddf3cbbe257f80
 wsjtx_222_md5sum_i386: 21309cddcad6b586ca47490965855ce0
+wsjtx_230_md5sum_armf: e2de050eb1cd354b1884129948973360
+wsjtx_230_md5sum_amd64: 339dd33fc007733cac5f29260bc89dc8
+wsjtx_230_md5sum_i386: 8a4b52edd41c5fee439552bdcb9a0792
