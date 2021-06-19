@@ -25,13 +25,13 @@
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
   - name: Install lxsession autostart
-    copy:
+    template:
       src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/.config/lxsession/LXDE-pi/autostart"
       dest: "/home/{{ ham_user }}/.config/lxsession/LXDE-pi/autostart"
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
   - name: Install remove script
-    copy:
+    template:
       src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/.config/lxsession/LXDE-pi/remove_nag_dialog"
       dest: "/home/{{ ham_user }}/.config/lxsession/LXDE-pi/remove_nag_dialog"
       mode: a+x
