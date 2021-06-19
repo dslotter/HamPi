@@ -1,3 +1,4 @@
+[Desktop Entry]
 Name=HamPi / HamPC Wiki
 TryExec=/usr/bin/x-www-browser
 Exec=x-www-browser https://github.com/dslotter/hampi/wiki
