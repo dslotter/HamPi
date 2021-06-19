@@ -1,0 +1,81 @@
+#
+# Copyright 2021, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install QDMR - GUI application and command line tool to program DMR radios
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - build-essential
+      - git
+      - libusb-1.0-0-dev
+      - qtbase5-dev
+      - qttools5-dev
+      - qttools5-dev-tools
+      - qtpositioning5-dev
+      - libqt5serialport5-dev
+
+  - name: Git clone latest QDMR sources
+    git:
+      repo: https://github.com/hmatuschek/qdmr
+      dest: /home/{{ ham_user }}/hamradio/qdmr
+
+  - name: Create directory qdmr/build
+    file:
+      path: /home/{{ ham_user }}/hamradio/qdmr/build
+      state: directory
+
+  - name: Build QDMR Makefiles
+    command: cmake .. -Wno-dev
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/qdmr/build
+
+  - name: Build QDMR
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/qdmr/build
+
+  - name: Install QDMR
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/qdmr/build
+
+  - name: Run udevadm to activate new USB rule file
+    become: yes
+    command: udevadm control --reload-rules
+
+  - name: Modify categories for qdmr.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/qdmr.desktop
+      regexp: '^Categories=HamRadio;Network'
+      line: Categories=HamRadio
+
+  - name: Modify icon path for qdmr.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/qdmr.desktop
+      regexp: '^Icon=qdmr'
+      line: Icon=/usr/share/icons/hicolor/64x64/qdmr.png 
+
+  - name: Remove QDMR
+    file:
+      path: /home/{{ ham_user }}/hamradio/qdmr
+      state: absent
