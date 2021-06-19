@@ -1,0 +1,80 @@
+#
+# Copyright 2021, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install wfview - a program to control modern Icom ham radios
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - build-essential
+      - git
+      - qt5-qmake
+      - qt5-default
+      - libqt5core5a
+      - qtbase5-dev
+      - libqt5serialport5
+      - libqt5serialport5-dev
+      - libqt5multimedia5
+      - libqt5multimedia5-plugins
+      - qtmultimedia5-dev
+      - libqcustomplot2.0
+      - libqcustomplot-doc
+      - libqcustomplot-dev
+
+  - name: Git clone latest wfview sources
+    git:
+      repo: https://gitlab.com/eliggett/wfview.git
+      dest: /home/{{ ham_user }}/hamradio/wfview
+
+  - name: Create directory build
+    file:
+      path: /home/{{ ham_user }}/hamradio/build
+      state: directory
+
+  - name: Build wfview Makefiles
+    command: qmake ../wfview/wfview.pro
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/build
+
+  - name: Build wfview
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/build
+
+  - name: Install wfview
+    shell: echo "y" | sudo ./install.sh
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/build
+
+  - name: Modify categories for wfview.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/wfview.desktop
+      regexp: '^Categories=Network;HamRadio'
+      line: Categories=HamRadio
+
+  - name: Remove wfview sources
+    file:
+      path: /home/{{ ham_user }}/hamradio/wfview
+      state: absent
+
+  - name: Remove wfview build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/build
+      state: absent
