@@ -4,7 +4,7 @@
 
 ---
 
-- name: HamPi / HamPC v1.3 (Mar 2021) Playbook by W3DJS
+- name: HamPi / HamPC v1.4d1 (June 2021) Playbook by W3DJS
   hosts: all
   # hosts: nuc
   # hosts: vm
@@ -22,6 +22,7 @@
 - import_playbook: install_wallpaper.yml
 - import_playbook: upgrade_debian_packages.yml
 - import_playbook: install_bookmarks.yml
+- import_playbook: install_orca.yml
 - import_playbook: install_cmake.yml
 - import_playbook: install_wxwidgets.yml
 # ^^^ This part takes about 1 hour to build on a RPi 4 ^^^

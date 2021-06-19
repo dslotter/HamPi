@@ -1,0 +1,13 @@
+#
+# Copyright 2021, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Orca screen-reading software for blind hams
+  hosts: all
+  tasks:
+
+  - name: Install Orca screen-reading software for blind hams
+    become: yes
+    package:
+      name: orca
+      state: present
