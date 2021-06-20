@@ -30,6 +30,7 @@
       - qttools5-dev-tools
       - qtpositioning5-dev
       - libqt5serialport5-dev
+      - qtmultimedia5-dev
 
   - name: Git clone latest RBNC sources
     git:
