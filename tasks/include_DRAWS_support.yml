@@ -176,7 +176,7 @@
   - name: Fix check for DRAWS support
     lineinfile:
       path: /home/{{ ham_user }}/hamradio/direwolf/src/dwgpsd.c
-      regexp: '^#if GPSD_API_MAJOR_VERSION \< 5 \|\| GPSD_API_MAJOR_VERSION \> 10'
+      regexp: '^#if GPSD_API_MAJOR_VERSION \< 5 \|\| GPSD_API_MAJOR_VERSION \> 11'
       line: '#if GPSD_API_MAJOR_VERSION < 5 || GPSD_API_MAJOR_VERSION > 12'
 
   - name: Create directory direwolf/build
