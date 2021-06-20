@@ -64,16 +64,16 @@
   - name: Modify categories for qdmr.desktop
     become: yes
     lineinfile:
-      path: /usr/share/applications/qdmr.desktop
+      path: /usr/local/share/applications/qdmr.desktop
       regexp: '^Categories=HamRadio;Network'
       line: Categories=HamRadio
 
   - name: Modify icon path for qdmr.desktop
     become: yes
     lineinfile:
-      path: /usr/share/applications/qdmr.desktop
+      path: /usr/local/share/applications/qdmr.desktop
       regexp: '^Icon=qdmr'
-      line: Icon=/usr/share/icons/hicolor/64x64/qdmr.png 
+      line: Icon=/usr/local/share/icons/hicolor/64x64/qdmr.png 
 
   - name: Remove QDMR
     file:
