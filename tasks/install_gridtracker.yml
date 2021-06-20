@@ -36,19 +36,23 @@
 #
 
   - name: Determine latest version of GridTracker (ARM) on web
-    shell: curl --silent "https://tagloomis.com/downloads/" | grep -Po "https:\/\/.*GridTracker-Linux-Arm-.*.tar.gz\?dl=1"
+    shell: curl --silent "https://tagloomis.com/downloads/" | grep -Po "https:\/\/.*GridTracker-.*-linux-arm.tar.gz\"" | uniq | head -n 1 | grep -Po "https:\/\/.*GridTracker-.*-linux-arm.tar.gz"
     args:
       warn: no
-    register: download_date
+    register: download_file
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
-  - name: Download and Unarchive GridTracker {{ download_date.stdout }} (ARM)
+  - name: Download and Unarchive GridTracker {{ download_file.stdout }} (ARM)
     become: yes
     unarchive:
-      src: "{{ download_date.stdout }}"
+      src: "{{ download_file.stdout }}"
       dest: /usr/local
       remote_src: yes
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+
+  - name: Rename GridTracker directory
+    become: yes
+    shell: mv /usr/local/GridTracker* /usr/local/GridTracker
 
   - name: Copy GridTracker Desktop file (ARM)
     become: yes
@@ -82,13 +86,13 @@
     shell: curl --silent "https://tagloomis.com/downloads/" | grep -Po "https:\/\/.*GridTracker-Linux-32-.*.tar.gz\?dl=1"
     args:
       warn: no
-    register: download_date
+    register: download_file
     when: ansible_architecture == "i386"
 
-  - name: Download and Unarchive GridTracker {{ download_date.stdout }} (x86)
+  - name: Download and Unarchive GridTracker {{ download_file.stdout }} (x86)
     become: yes
     unarchive:
-      src: "{{ download_date.stdout }}"
+      src: "{{ download_file.stdout }}"
       dest: /usr/local
       remote_src: yes
     when: ansible_architecture == "i386"
@@ -126,13 +130,13 @@
     shell: curl --silent "https://tagloomis.com/downloads/" | grep -Po "https:\/\/.*GridTracker-Linux-64-.*.tar.gz\?dl=1"
     args:
       warn: no
-    register: download_date
+    register: download_file
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
-  - name: Download and Unarchive GridTracker {{ download_date.stdout }} (AMD64)
+  - name: Download and Unarchive GridTracker {{ download_file.stdout }} (AMD64)
     become: yes
     unarchive:
-      src: "{{ download_date.stdout }}"
+      src: "{{ download_file.stdout }}"
       dest: /usr/local
       remote_src: yes
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
