@@ -67,6 +67,14 @@
       state: absent
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
+  - name: Work around WSJT-X behavior - configure locales
+    become: yes
+    command: sed -i "s/# en_US.UTF-8/en_US.UTF-8/g" /etc/locale.gen
+
+  - name: Work around WSJT-X behavior - run local-gen
+    become: yes
+    command: locale-gen
+
 #
 # Raspbian x86
 #
