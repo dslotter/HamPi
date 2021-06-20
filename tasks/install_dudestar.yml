@@ -1,0 +1,79 @@
+#
+# Copyright 2021, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install DUDE-Star - software to RX/TX D-Star, DMR, Fusion YSF/FCS, NXDN, P25, M17 and IAX (AllStar Client)
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - build-essential
+      - git
+      - libqt5multimedia5-plugins
+      - libqt5serialport5-dev
+      - qtmultimedia5-dev
+      - libqt5multimediawidgets5
+      - libqt5multimedia5
+      - pulseaudio
+
+  - name: Git clone latest DUDE-Star sources
+    git:
+      repo: https://github.com/nostar/dudestar.git
+      dest: /home/{{ ham_user }}/hamradio/dudestar
+
+  - name: Create directory dudestar/build
+    file:
+      path: /home/{{ ham_user }}/hamradio/dudestar/build
+      state: directory
+
+  - name: Build DUDE-Star Makefiles
+    command: qmake ../dudestar.pro
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/dudestar/build
+
+  - name: Build DUDE-Star
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/dudestar/build
+
+  - name: Install DUDE-Star
+    become: yes
+    shell: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/dudestar/build
+
+  - name: Move DUDE-Star to /usr/local/bin
+    become: yes
+    command: mv /opt/dudestar/bin/dudestar /usr/local/bin
+
+  - name: Remove /opt/dudestar
+    become: yes
+    file:
+      path: /opt/dudestar
+      state: absent
+
+  - name: Copy DUDE-Star desktop file
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/DUDE-Star.desktop"
+      dest: "/usr/local/share/applications/DUDE-Star.desktop"
+
+  - name: Remove dudestar sources
+    file:
+      path: /home/{{ ham_user }}/hamradio/dudestar
+      state: absent
