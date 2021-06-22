@@ -156,7 +156,7 @@
     become: yes
     replace:
       path: /usr/local/share/applications/GridTracker.desktop
-      regexp: '~\/Downloads'
+      regexp: '/home/pi/Downloads'
       replace: '/usr/local'
 
   - name: Modify categories for GridTracker.desktop
