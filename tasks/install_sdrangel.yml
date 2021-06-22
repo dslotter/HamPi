@@ -70,12 +70,15 @@
       - qml-module-qtquick-window2
       - qml-module-qtquick-dialogs
       - qml-module-qtquick-controls
+      - qml-module-qtquick-controls2
       - qml-module-qtquick-layouts
       - libqt5serialport5-dev
       - qtdeclarative5-dev
       - qtpositioning5-dev
       - qtlocation5-dev
       - libqt5texttospeech5-dev
+      - libfaad-dev
+      - zlib1g-dev
       - libboost-all-dev
       - libasound2-dev
       - pulseaudio
@@ -87,6 +90,7 @@
       - libavcodec-dev
       - libavformat-dev
       - libopus-dev
+      - graphviz
 
 # Because we're installing so many packages...
   - name: Autoremove unneeded packages
@@ -183,6 +187,47 @@
 
 
 #
+# LibDAB
+#
+
+  - name: Git clone latest LibDAB sources
+    git:
+      repo: https://github.com/srcejon/dab-cmdline
+      dest: /opt/build/dab-cmdline
+
+  - name: Git Reset LibDAB CMakeFiles
+    command: git checkout msvc
+    args:
+      chdir: /opt/build/dab-cmdline/library
+
+  - name: Create directory dab-cmdline/build
+    file:
+      path: /opt/build/dab-cmdline/library/build
+      state: directory
+
+  - name: Build LibDAB CMakeFiles
+    command: cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=/opt/install/libdav ..
+    args:
+      chdir: /opt/build/dab-cmdline/library/build
+
+  - name: Build LibDAB
+    command: make
+    args:
+      chdir: /opt/build/dab-cmdline/library/build
+
+  - name: Install LibDAB
+    become: yes
+    command: make install
+    args:
+      chdir: /opt/build/dab-cmdline/library/build
+
+  - name: Remove LibDAB build directory
+    file:
+      path: /opt/build/dab-cmdline
+      state: absent
+
+
+#
 # MBElib
 #
 
@@ -274,7 +319,7 @@
       dest: /opt/build/dsdcc
 
   - name: Git Reset DSDcc CMakeFiles
-    command: git reset --hard "v1.8.7"
+    command: git reset --hard "v1.9.3"
     args:
       chdir: /opt/build/dsdcc
 
@@ -526,7 +571,7 @@
       dest: /opt/build/libiio
 
   - name: Git Reset Pluto SDR CMakeFiles
-    command: git reset --hard 826563e41b5ce9890b75506f672017de8d76d52d
+    command: git reset --hard v0.21
     args:
       chdir: /opt/build/libiio
 
@@ -819,6 +864,7 @@
       path: /opt/build/sgp4
       state: absent
 
+
 #
 # LibSigMF
 #
@@ -875,7 +921,7 @@
       state: directory
 
   - name: Build SDRAngel CMakeFiles
-    command: cmake -Wno-dev -DDEBUG_OUTPUT=ON -DRX_SAMPLE_24BIT=ON -DMIRISDR_DIR=/opt/install/libmirisdr -DAIRSPY_DIR=/opt/install/libairspy -DAIRSPYHF_DIR=/opt/install/libairspyhf -DBLADERF_DIR=/opt/install/libbladeRF -DHACKRF_DIR=/opt/install/libhackrf -DRTLSDR_DIR=/opt/install/librtlsdr -DLIMESUITE_DIR=/opt/install/LimeSuite -DIIO_DIR=/opt/install/libiio -DPERSEUS_DIR=/opt/install/libperseus -DXTRX_DIR=/opt/install/xtrx-images -DSOAPYSDR_DIR=/usr/local/lib/SoapySDR -DAPT_DIR=/opt/install/aptdec -DCM256CC_DIR=/opt/install/cm256cc -DDSDCC_DIR=/opt/install/dsdcc -DSERIALDV_DIR=/opt/install/serialDV -DMBE_DIR=/opt/install/mbelib -DCODEC2_DIR=/opt/install/codec2 -DSGP4_DIR=/opt/install/sgp4 -DLIBSIGMF_DIR=/opt/install/libsigmf -DCMAKE_INSTALL_PREFIX=/opt/install/sdrangel ..
+    command: cmake -Wno-dev -DDEBUG_OUTPUT=ON -DRX_SAMPLE_24BIT=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo -DMIRISDR_DIR=/opt/install/libmirisdr -DAIRSPY_DIR=/opt/install/libairspy -DAIRSPYHF_DIR=/opt/install/libairspyhf -DBLADERF_DIR=/opt/install/libbladeRF -DHACKRF_DIR=/opt/install/libhackrf -DRTLSDR_DIR=/opt/install/librtlsdr -DLIMESUITE_DIR=/opt/install/LimeSuite -DIIO_DIR=/opt/install/libiio -DPERSEUS_DIR=/opt/install/libperseus -DXTRX_DIR=/opt/install/xtrx-images -DSOAPYSDR_DIR=/usr/local/lib/SoapySDR -DAPT_DIR=/opt/install/aptdec -DCM256CC_DIR=/opt/install/cm256cc -DDSDCC_DIR=/opt/install/dsdcc -DSERIALDV_DIR=/opt/install/serialDV -DMBE_DIR=/opt/install/mbelib -DCODEC2_DIR=/opt/install/codec2 -DSGP4_DIR=/opt/install/sgp4 -DLIBSIGMF_DIR=/opt/install/libsigmf -DDAB_DIR=/opt/install/libdab -DCMAKE_INSTALL_PREFIX=/opt/install/sdrangel ..
     args:
       chdir: /opt/build/sdrangel/build
 
