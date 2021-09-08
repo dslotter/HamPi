@@ -35,7 +35,7 @@
       repo: https://github.com/m0iax/JS8CallUtilities_V2
       dest: /usr/local/JS8CallUtilities_V2
 
-  - name: Set JS8CallUtilities dir to owned by pi user
+  - name: Set JS8CallUtilities dir to owned by ham user
     become: yes
     file:
       path: /usr/local/JS8CallUtilities_V2
