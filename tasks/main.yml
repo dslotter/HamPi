@@ -1,10 +1,10 @@
 #
-# Copyright 2020, Dave Slotter (W3DJS). All rights reserved.
+# Copyright 2020 - 2021, Dave Slotter (W3DJS). All rights reserved.
 #
 
 ---
 
-- name: HamPi / HamPC v1.4 (June 2021) Playbook by W3DJS
+- name: HamPi / HamPC v1.4a (June 2021) Playbook by W3DJS
   hosts: all
   # hosts: nuc
   # hosts: vm

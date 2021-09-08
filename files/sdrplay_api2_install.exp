@@ -1,5 +1,5 @@
 #!/usr/bin/expect -f
-# Copyright 2020, Dave Slotter, W3DJS
+# Copyright 2020 - 2021, Dave Slotter, W3DJS
 
 set timeout 120
 match_max 100000
