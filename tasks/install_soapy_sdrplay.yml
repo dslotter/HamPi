@@ -68,7 +68,7 @@
   - name: Remove SDRPlay Driver Expect Script {{ sdrplay_arm_version }} (ARM)
     become: yes
     file:
-      path: /home/{{ ham_user }}/hamradio/sdrplay_api3_install.exp
+      path: /home/{{ ham_user }}/hamradio/sdrplay_api2_install.exp
       state: absent
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
