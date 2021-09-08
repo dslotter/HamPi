@@ -53,6 +53,7 @@
   - name: Rename GridTracker directory
     become: yes
     shell: mv /usr/local/GridTracker* /usr/local/GridTracker
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Copy GridTracker Desktop file (ARM)
     become: yes
@@ -127,7 +128,7 @@
 #
 
   - name: Determine latest version of GridTracker (AMD64) on web
-    shell: curl --silent "https://tagloomis.com/downloads/" | grep -Po "https:\/\/.*GridTracker-Linux-64-.*.tar.gz\?dl=1"
+    shell: curl --silent "https://tagloomis.com/downloads/" | grep -Po "https:\/\/.*GridTracker-.*-linux-x64.tar.gz\"" | uniq | head -n 1 | grep -Po "https:\/\/.*GridTracker-.*-linux-x64.tar.gz"
     args:
       warn: no
     register: download_file
@@ -141,11 +142,16 @@
       remote_src: yes
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
+  - name: Rename GridTracker directory
+    become: yes
+    shell: mv /usr/local/GridTracker* /usr/local/GridTracker
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
 #
 # Common
 #
 
-  - name: Copy GridTracker Desktop file (AMD64)
+  - name: Copy GridTracker Desktop file
     become: yes
     copy:
       src: /usr/local/GridTracker/GridTracker.desktop
