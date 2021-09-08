@@ -36,7 +36,7 @@
   - name: Download and Unarchive SKCCLogger (Xubuntu)
     become: yes
     unarchive:
-      src:  http://www.ac2c.net/downloads/Current_Releases/SKCCLogger_Linux_64-Bit
+      src: http://www.ac2c.net/downloads/Current_Releases/SKCCLogger_Linux_64-Bit.zip
       dest: /usr/local/
       remote_src: yes
     when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
