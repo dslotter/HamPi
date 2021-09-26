@@ -1,0 +1,69 @@
+#
+# Copyright 2020 - 2021, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install CQRPROP
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - git
+      - lazarus-ide
+      - lazarus
+      - lazarus-doc
+      - lazarus-src
+      - lcl
+      - lcl-gtk2
+      - lcl-nogui
+      - lcl-units
+      - lcl-utils
+      - fp-units-misc
+      - fp-units-rtl
+      - fp-utils
+      - fpc
+      - fpc-source
+      - libssl-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Download latest CQRPROP sources
+    git:
+      repo: https://github.com/ok2cqr/cqrprop.git
+      dest: /home/{{ ham_user }}/hamradio/cqrprop
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Build CQRPROP
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/cqrprop
+
+  - name: Install CQRPROP
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/cqrprop
+
+  - name: Remove CQRPROP build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/cqrprop
+      state: absent
