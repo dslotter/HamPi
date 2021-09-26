@@ -1,0 +1,76 @@
+#
+# Copyright 2020 - 2021, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install SDR++
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent components for SDR++
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libfftw3-dev
+      - libglfw3-dev
+      - libglew-dev
+      - libiio-dev
+      - libad9361-dev
+      - librtaudio-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Git clone latest SDR++ sources
+    git:
+      repo: https://github.com/AlexandreRouma/SDRPlusPlus
+      dest: /home/{{ ham_user }}/hamradio/SDRPlusPlus
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Create directory SDRPlusPlus/build
+    file:
+      path: /home/{{ ham_user }}/hamradio/SDRPlusPlus/build
+      state: directory
+
+  - name: Build SDR++ CMakefiles
+    command: cmake ..
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/SDRPlusPlus/build
+
+  - name: Build SDR++
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/SDRPlusPlus/build
+
+  - name: Install SDR++
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/SDRPlusPlus/build
+
+  - name: Modify categories for sdrpp.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/sdrpp.desktop
+      regexp: '^Categories=HamRadio'
+      line: Categories=HamRadio SDR
+
+  - name: Remove SDR++ build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/SDRPlusPlus
+      state: absent
