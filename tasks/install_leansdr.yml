@@ -16,7 +16,6 @@
       path: /home/{{ ham_user }}/hamradio
       state: directory
 
-
 #
 # Build and install leansdr
 #
@@ -25,6 +24,10 @@
     git:
       repo: https://github.com/pabr/leansdr
       dest: /home/{{ ham_user }}/hamradio/leansdr
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Build leansdr
     command: make
@@ -45,6 +48,10 @@
       - leansdrscan
       - leansdrserv
       - leantsgen
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Remove build directory leansdr
     file:

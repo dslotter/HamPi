@@ -13,6 +13,10 @@
       src:  http://www.radioexplorer.com.ru/RadioExplorer-2_7_7.zip
       dest: /usr/local/
       remote_src: yes
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Change Mode of /usr/local/RadioExplorer/RadioExplorer.sh to executable
     become: yes
@@ -23,6 +27,10 @@
     get_url:
       url: http://www.eibispace.de/dx/eibi-radioexplorer-b20.zip
       dest: /usr/local/RadioExplorer/eibi-radioexplorer-b20.zip
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
 # FCC Website is causing error: urlopen error [SSL: DH_KEY_TOO_SMALL] dh key too small
 #  - name: Download specific FCC shortwave schedule

@@ -35,12 +35,20 @@
       - qml-module-qtquick-window2
       - qml-module-qtquick-layouts
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download TeamViewer Host (ARM)
     get_url:
       url: https://download.teamviewer.com/download/linux/teamviewer-host_armhf.deb
       dest: /home/{{ ham_user }}/hamradio/teamviewer-host_armhf.deb
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install TeamViewer Host (ARM)
     become: yes
@@ -82,6 +90,10 @@
       - qml-module-qtquick-window2
       - qml-module-qtquick-layouts
     when: ansible_architecture == "i386"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download and unarchive TeamViewer Host (x86)
     unarchive:
@@ -89,6 +101,10 @@
       dest: /usr/local
       remote_src: yes
     when: ansible_architecture == "i386"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install TeamViewer Host (x86)
     shell: /usr/local/teamviewer/tv-setup install force

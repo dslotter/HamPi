@@ -27,15 +27,27 @@
       - libusb-1.0-0-dev
       - python3
       - python3-pip
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install dependent python3 modules
     become: yes
     shell: pip3 install mako
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download latest volk sources
     git:
       repo: https://github.com/gnuradio/volk
       dest: /home/{{ ham_user }}/hamradio/volk
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory volk/build
     file:
@@ -74,6 +86,10 @@
     git:
       repo: https://github.com/pothosware/SoapyVOLKConverters
       dest: /home/{{ ham_user }}/hamradio/SoapyVOLKConverters
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory SoapyVOLKConverters/build
     file:

@@ -29,6 +29,10 @@
       - libgtk-3-dev
       - freeglut3
       - freeglut3-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
 #
 # Build and install rtaudio (CMake 3.10 is a pre-requisite for building RtAudio)
@@ -45,11 +49,19 @@
       - libpulse-dev
       - libasound2-dev
       - libfftw3-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download latest RtAudio sources
     git:
       repo: https://github.com/thestk/rtaudio.git
       dest: /home/{{ ham_user }}/hamradio/rtaudio
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory rtaudio/build
     file:
@@ -85,6 +97,10 @@
     git:
       repo: https://github.com/jgaeddert/liquid-dsp
       dest: /home/{{ ham_user }}/hamradio/liquid-dsp
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Bootstrap liquid-dsp
     command: ./bootstrap.sh
@@ -124,6 +140,10 @@
     git:
       repo: https://github.com/cjcliffe/CubicSDR.git
       dest: /home/{{ ham_user }}/hamradio/CubicSDR
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Patch FILPATHLEN to HAMLIB_FILPATHLEN for newer version of HamLib
     command: sed 's/FILPATHLEN/HAMLIB_FILPATHLEN/' -i "/home/{{ ham_user }}/hamradio/CubicSDR/src/rig/RigThread.cpp"

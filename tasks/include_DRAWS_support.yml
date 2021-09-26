@@ -64,6 +64,10 @@
       - lm-sensors
       - libasound2-dev
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install dependent libraries (Xubuntu)
     become: yes
@@ -94,6 +98,10 @@
       - lm-sensors
       - libasound2-dev
     when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Insert sensors configuration for DRAWS / UDRC
     become: yes
@@ -120,6 +128,10 @@
     git:
       repo: https://gitlab.com/gpsd/gpsd.git
       dest: /home/{{ ham_user }}/hamradio/gpsd
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Build GPSd sources
     shell: scons prefix=/usr
@@ -167,6 +179,10 @@
     git:
       repo: https://www.github.com/wb2osz/direwolf
       dest: /home/{{ ham_user }}/hamradio/direwolf
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Checkout Dev Direwolf sources
     shell: git checkout dev
@@ -225,12 +241,20 @@
     become: yes
     shell: npm install -g npm
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git clone latest DRAWS Manager sources
     git:
       repo: https://github.com/nwdigitalradio/draws-manager.git
       dest: /home/{{ ham_user }}/hamradio/draws-manager
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install DRAWS Manager service file
     become: yes
@@ -252,6 +276,10 @@
     args:
       chdir: /home/{{ ham_user }}/hamradio/draws-manager/webapp
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Add Northwest Digital Documentation to Desktop
     copy:

@@ -24,18 +24,29 @@
       with_items:
         - build-essential
         - libfltk1.3-dev
+      retries: 5
+      delay: 30
+      register: result
+      until: result.failed == false
 
     - name: Determine latest version of flwkey on web
       shell: curl --silent "http://www.w1hkj.com/files/flwkey/" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+\.tar\.gz" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq | tail -n 1
       args:
         warn: no
       register: download_date
+      retries: 5
+      delay: 30
+      until: download_date.failed == false
 
     - name: Download and Unarchive flwkey {{ download_date.stdout }}
       unarchive:
         src: "http://www.w1hkj.com/files/flwkey/flwkey-{{ download_date.stdout }}.tar.gz"
         dest: /home/{{ ham_user }}/hamradio/
         remote_src: yes
+      retries: 5
+      delay: 30
+      register: result
+      until: result.failed == false
 
     - name: Configure flwkey {{ download_date.stdout }}
       command: ./configure

@@ -26,12 +26,20 @@
       - cmake
       - pkg-config
       - libusb-1.0-0-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download and unarchive latest AirSpy HF driver sources
     unarchive:
       src: https://github.com/airspy/airspyhf/archive/master.zip
       dest: /home/{{ ham_user }}/hamradio
       remote_src: yes
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory airspyhf-master/build
     file:

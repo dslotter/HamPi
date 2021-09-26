@@ -35,11 +35,19 @@
       - libaio-dev
       - libserialport-dev
       - libavahi-client-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download latest LibIIO sources
     git:
       repo: https://github.com/analogdevicesinc/libiio
       dest: /home/{{ ham_user }}/hamradio/libiio
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory libiio/build
     file:
@@ -76,6 +84,10 @@
     git:
       repo: https://github.com/analogdevicesinc/libad9361-iio
       dest: /home/{{ ham_user }}/hamradio/libad9361-iio
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory libad9361-iio/build
     file:
@@ -107,6 +119,10 @@
     git:
       repo: https://github.com/pothosware/SoapyPlutoSDR.git
       dest: /home/{{ ham_user }}/hamradio/SoapyPlutoSDR
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory SoapyPlutoSDR/build
     file:

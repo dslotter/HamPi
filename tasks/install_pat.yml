@@ -15,6 +15,10 @@
     git:
       repo: 'https://github.com/km4ack/patmenu2.git'
       dest: /home/{{ ham_user }}/patmenu2
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Make Patmenu2 setup executable
     become: yes
@@ -49,12 +53,19 @@
       warn: no
     register: pat_version
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    retries: 5
+    delay: 30
+    until: pat_version.failed == false
 
   - name: Download Pat {{ pat_version.stdout }} (WinLink) (ARM)
     get_url:
       url: https://github.com/la5nta/pat/releases/download/v{{ pat_version.stdout }}/pat_{{ pat_version.stdout }}_linux_armhf.deb
       dest: /home/{{ ham_user }}/hamradio/pat_{{ pat_version.stdout }}_linux_armhf.deb
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install Pat {{ pat_version.stdout }} (WinLink) (ARM)
     become: yes
@@ -74,6 +85,10 @@
       url: http://www.cantab.net/users/john.wiseman/Downloads/Beta/piardopc
       dest: /usr/local/bin/piardopc
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Make Pi Ardop ARM executable
     become: yes
@@ -92,12 +107,19 @@
       warn: no
     register: pat_version
     when: ansible_architecture == "i386"
+    retries: 5
+    delay: 30
+    until: pat_version.failed == false
 
   - name: Download Pat {{ pat_version.stdout }} (WinLink) (x86)
     get_url:
       url: https://github.com/la5nta/pat/releases/download/v{{ pat_version.stdout }}/pat_{{ pat_version.stdout }}_linux_i386.deb
       dest: /home/{{ ham_user }}/hamradio/pat_{{ pat_version.stdout }}_linux_i386.deb
     when: ansible_architecture == "i386"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install Pat {{ pat_version.stdout }} (WinLink) (x86)
     become: yes
@@ -121,12 +143,19 @@
       warn: no
     register: pat_version
     when: ansible_architecture == "amd64"
+    retries: 5
+    delay: 30
+    until: pat_version.failed == false
 
   - name: Download latest Pat (WinLink) (amd64)
     get_url:
       url: https://github.com/la5nta/pat/releases/download/v{{ pat_version.stdout }}/pat_{{ pat_version.stdout }}_linux_amd64.deb
       dest: /home/{{ ham_user }}/hamradio/pat_{{ pat_version.stdout }}_linux_amd64.deb
     when: ansible_architecture == "amd64"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install latest Pat (WinLink) (amd64)
     become: yes

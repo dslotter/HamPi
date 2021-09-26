@@ -21,12 +21,19 @@
       warn: no
     register: wxtoimg_version
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    retries: 5
+    delay: 30
+    until: wxtoimg_version.failed == false
 
   - name: Download wxtoimg {{ wxtoimg_version.stdout }} (ARM)
     get_url:
       url: "https://wxtoimgrestored.xyz/beta/wxtoimg-linux-armhf-{{ wxtoimg_version.stdout }}-beta.tar.gz"
       dest: /home/{{ ham_user }}/hamradio/wxtoimg-linux-armhf-{{ wxtoimg_version.stdout }}-beta.tar.gz
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install wxtoimg {{ wxtoimg_version.stdout }} (ARM)
     become: yes
@@ -52,12 +59,19 @@
       warn: no
     register: wxtoimg_version
     when: ansible_architecture == "i386"
+    retries: 5
+    delay: 30
+    until: wxtoimg_version.failed == false
 
   - name: Download wxtoimg {{ wxtoimg_version.stdout }} (x86)
     get_url:
       url: "https://wxtoimgrestored.xyz/beta/wxtoimg-i386-{{ wxtoimg_version.stdout }}-beta.deb"
       dest: /home/{{ ham_user }}/hamradio/wxtoimg-i386-{{ wxtoimg_version.stdout }}-beta.deb
     when: ansible_architecture == "i386"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install wxtoimg {{ wxtoimg_version.stdout }} (x86)
     become: yes
@@ -81,12 +95,19 @@
       warn: no
     register: wxtoimg_version
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    retries: 5
+    delay: 30
+    until: wxtoimg_version.failed == false
 
   - name: Download wxtoimg {{ wxtoimg_version.stdout }} (AMD64)
     get_url:
       url: "https://wxtoimgrestored.xyz/beta/wxtoimg-amd64-{{ wxtoimg_version.stdout }}-beta.deb"
       dest: /home/{{ ham_user }}/hamradio/wxtoimg-amd64-{{ wxtoimg_version.stdout }}-beta.deb
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install wxtoimg {{ wxtoimg_version.stdout }} (AMD64)
     become: yes

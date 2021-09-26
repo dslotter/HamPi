@@ -25,11 +25,19 @@
       - gr-osmosdr
       - libfftw3-dev
       - libusb-1.0-0-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download latest SoapyRedPitaya sources
     git:
       repo: https://github.com/pothosware/SoapyRedPitaya
       dest: /home/{{ ham_user }}/hamradio/SoapyRedPitaya
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory SoapyRedPitaya/build
     file:

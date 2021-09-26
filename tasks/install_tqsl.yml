@@ -27,6 +27,10 @@
       - libcurl4-openssl-dev
       - libwxgtk3.0-dev
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install dependent libraries (Xubuntu)
     become: yes
@@ -39,18 +43,29 @@
       - libcurl4-openssl-dev
       - libwxgtk3.0-gtk3-dev
     when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Determine latest version of TQSL on web
     shell: curl --silent "http://www.arrl.org/tqsl-download" | grep -Po "TQSL [0-9]+\.[0-9]+\.[0-9]+ for Linux" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+"
     args:
       warn: no
     register: tqsl_version
+    retries: 5
+    delay: 30
+    until: tqsl_version.failed == false
 
   - name: Download and Unarchive TQSL {{ tqsl_version.stdout }}
     unarchive:
       src: "http://www.arrl.org/files/file/LoTW%20Instructions/tqsl-{{ tqsl_version.stdout }}.tar.gz"
       dest: "/home/{{ ham_user }}/hamradio/"
       remote_src: yes
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Configure TQSL {{ tqsl_version.stdout }}
     command: cmake .

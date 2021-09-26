@@ -21,11 +21,19 @@
     shell: wget -q -O - https://www.scs-ptc.com/repo/packages/scs.gpg.key | apt-key add -
     args:
       warn: no
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Update APT repo sources
     become: yes
     apt:
       update_cache: yes
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install PMON (ARM) - PACTOR Monitoring Utility for Linux
     become: yes
@@ -33,3 +41,7 @@
       name: pmon
       state: present
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false

@@ -28,10 +28,18 @@
       - libasound2-dev
       - portaudio19-dev
       - libpulse-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install quisk
     become: yes
     command: python3 -m pip install --upgrade quisk
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Copy quisk desktop file
     become: yes

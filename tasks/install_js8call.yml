@@ -20,6 +20,10 @@
       - libqt5multimedia5
       - libqt5multimedia5-plugins
       - libqt5serialport5
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install dependent libraries (ARM32)
     become: yes
@@ -29,6 +33,10 @@
     with_items:
       - libgfortran3
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
 #
 # Raspbian ARM
@@ -40,12 +48,19 @@
       warn: no
     register: download_date
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    retries: 5
+    delay: 30
+    until: download_date.failed == false
 
   - name: Download JS8Call (ARM) {{ download_date.stdout }}
     get_url:
       url: http://files.js8call.com/{{ download_date.stdout }}/js8call_{{ download_date.stdout }}_armhf.deb
       dest: /home/{{ ham_user }}/hamradio/js8call_{{ download_date.stdout }}_armhf.deb
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install JS8Call (ARM) {{ download_date.stdout }}
     become: yes
@@ -71,6 +86,10 @@
     with_items:
       - libc6:i386
     when: ansible_architecture == "i386"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Determine latest version of JS8Call (x86) on web
     shell: curl --silent "http://files.js8call.com/latest.html" | grep -Po "http://files.js8call.com/.*/js8call_.*_i386.deb" | uniq | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq
@@ -78,12 +97,19 @@
       warn: no
     register: download_date
     when: ansible_architecture == "i386"
+    retries: 5
+    delay: 30
+    until: download_date.failed == false
 
   - name: Download JS8Call (x86) {{ download_date.stdout }}
     get_url:
       url: http://files.js8call.com/{{ download_date.stdout }}/js8call_{{ download_date.stdout }}_i386.deb
       dest: /home/{{ ham_user }}/hamradio/js8call_{{ download_date.stdout }}_i386.deb
     when: ansible_architecture == "i386"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install JS8Call (x86) {{ download_date.stdout }}
     become: yes
@@ -110,6 +136,10 @@
     with_items:
       - libgfortran5
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Determine latest version of JS8Call (AMD64) on web
     shell: curl --silent "http://files.js8call.com/latest.html" | grep -Po "http://files.js8call.com/.*/js8call_.*_amd64.deb" | uniq | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq
@@ -117,12 +147,19 @@
       warn: no
     register: download_date
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    retries: 5
+    delay: 30
+    until: download_date.failed == false
 
   - name: Download JS8Call (AMD64) {{ download_date.stdout }}
     get_url:
       url: http://files.js8call.com/{{ download_date.stdout }}/js8call_{{ download_date.stdout }}_18.04_amd64.deb
       dest: /home/{{ ham_user }}/hamradio/js8call_{{ download_date.stdout }}_18.04_amd64.deb
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install JS8Call (AMD64) {{ download_date.stdout }}
     become: yes
@@ -135,7 +172,6 @@
       path: /home/{{ ham_user }}/hamradio/js8call_{{ download_date.stdout }}_18.04_amd64.deb
       state: absent
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
-
 
 #
 # Common

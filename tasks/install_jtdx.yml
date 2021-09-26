@@ -24,8 +24,12 @@
 #    with_items:
 #      - python3
 #      - python3-pip
+#    retries: 5
+#    delay: 30
+#    register: result
+#    until: result.failed == false
 
-
+#
 # Raspbian (ARM)
 #
 
@@ -37,12 +41,19 @@
 #      warn: no
 #    register: jtdx_name
 #        when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+#    retries: 5
+#    delay: 30
+#    until: jtdx_name.failed == false
 
  # - name: Download JTDX {{ jtdx_name.stdout }} (ARM)
  #   get_url:
  #     url: "https://www.jtdx.tech/downloads/Linux/{{ jtdx_name.stdout }}"
  #     dest: /home/{{ ham_user }}/hamradio/{{ jtdx_name.stdout }}
  #       when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+#    retries: 5
+#    delay: 30
+#    register: result
+#    until: result.failed == false
 
 #  - name: Install JTDX {{ jtdx_name.stdout }} (ARM)
 #    become: yes
@@ -85,12 +96,19 @@
 #      warn: no
 #    register: jtdx_name
 #    when: ansible_architecture == "i386"
+#    retries: 5
+#    delay: 30
+#    until: jtdx_name.failed == false
 
 #  - name: Download JTDX {{ jtdx_name.stdout }} (x86)
 #    get_url:
 #      url: "https://www.jtdx.tech/downloads/Linux/{{ jtdx_name.stdout }}"
 #      dest: /home/{{ ham_user }}/hamradio/{{ jtdx_name.stdout }}
 #    when: ansible_architecture == "i386"
+#    retries: 5
+#    delay: 30
+#    register: result
+#    until: result.failed == false
 
 #  - name: Install JTDX {{ jtdx_name.stdout }} (x86)
 #    become: yes

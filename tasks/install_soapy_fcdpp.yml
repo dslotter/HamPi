@@ -27,11 +27,19 @@
       - libusb-1.0-0-dev
       - libhidapi-dev
       - libasound2-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download latest SoapyFCDPP sources
     git:
       repo: https://github.com/pothosware/SoapyFCDPP
       dest: /home/{{ ham_user }}/hamradio/SoapyFCDPP
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory SoapyFCDPP/build
     file:

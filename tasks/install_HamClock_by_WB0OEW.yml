@@ -24,12 +24,20 @@
     with_items:
       - libmotif-dev
       - libcurl4-openssl-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download and Unarchive HamClock by WB0OEW
     unarchive:
       src: https://www.clearskyinstitute.com/ham/HamClock/ESPHamClock.zip
       dest: /home/{{ ham_user }}/hamradio
       remote_src: yes
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Build HamClock by WB0OEW
     command: make hamclock-800x480

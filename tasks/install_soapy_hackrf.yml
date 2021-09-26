@@ -25,11 +25,19 @@
       - gr-osmosdr
       - libfftw3-dev
       - libusb-1.0-0-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download latest HackRF sources
     git:
       repo: https://github.com/mossmann/hackrf.git
       dest: /home/{{ ham_user }}/hamradio/hackrf
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory hackrf/host/build
     file:
@@ -65,6 +73,10 @@
     git:
       repo: https://github.com/pothosware/SoapyHackRF.git
       dest: /home/{{ ham_user }}/hamradio/SoapyHackRF
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory SoapyHackRF/build
     file:

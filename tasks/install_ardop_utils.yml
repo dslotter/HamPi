@@ -26,11 +26,19 @@
       url: https://raw.githubusercontent.com/km4ack/pi-scripts/master/ardop/findardop
       dest: /usr/local/bin/findardop
       mode: a+x
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download ICOM Grid Map
     get_url:
       url: https://github.com/km4ack/pi-scripts/raw/master/ardop/grid-map.pdf
       dest: /home/{{ ham_user }}/ardop/grid-map.pdf
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Ensure a job that runs at 1:30 exists (but is disabled). Creates an entry like "30 1 * * /home/{{ ham_user }}/ardop/getardoplist > /dev/null"
     cron:
@@ -51,6 +59,10 @@
       dest: /usr/local/bin/piARDOP_GUI
       mode: a+x
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
 #
 # Raspbian x86
@@ -62,3 +74,7 @@
       dest: /usr/local/bin/ARDOP_GUI
       mode: a+x
     when: ansible_architecture == "i386"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false

@@ -32,12 +32,19 @@
       args:
         warn: no
       register: download_date
+      retries: 5
+      delay: 30
+      until: download_date.failed == false
 
     - name: Download and Unarchive flpost {{ download_date.stdout }}
       unarchive:
         src: "http://www.w1hkj.com/alpha/flpost/flpost-{{ download_date.stdout }}.tar.gz"
         dest: "/home/{{ ham_user }}/hamradio/"
         remote_src: yes
+      retries: 5
+      delay: 30
+      register: result
+      until: result.failed == false
 
     - name: Configure flpost {{ download_date.stdout }}
       command: ./configure

@@ -11,6 +11,10 @@
     package:
       name: cutesdr
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Modify categories for cutesdr.desktop
     become: yes

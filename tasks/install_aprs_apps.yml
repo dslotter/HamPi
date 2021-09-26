@@ -12,24 +12,40 @@
     package:
       name: aprsdigi
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install aprx Package (APRS Digipeater and iGate)
     become: yes
     package:
       name: aprx
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install soundmodem Package (Sound Card Amateur Packet Radio Modems)
     become: yes
     package:
       name: soundmodem
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install Xastir Package
     become: yes
     package:
       name: xastir
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Modify categories for xastir.desktop
     become: yes
@@ -47,6 +63,10 @@
     package:
       name: librxtx-java
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory /usr/local/YAAC
     become: yes
@@ -61,6 +81,10 @@
       dest: /usr/local/YAAC
       remote_src: yes
       validate_certs: no
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download and Unarchive latest YAAC plugin callsigndb.jar from KA2DDO
     become: yes
@@ -69,6 +93,10 @@
       dest: /usr/local/YAAC/plugins
       remote_src: yes
       validate_certs: no
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Copy YAAC desktop file
     become: yes

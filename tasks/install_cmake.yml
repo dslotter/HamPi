@@ -35,6 +35,10 @@
       - unzip
       - qt4-qmake
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install dependent libraries (Xubuntu)
     become: yes
@@ -49,7 +53,10 @@
       - unzip
       - qt5-qmake
     when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
-
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
 #
 # Build and install CMake
@@ -59,13 +66,20 @@
     shell: curl --silent "https://github.com/Kitware/CMake/releases/" | grep -Po "cmake-[0-9]+.[0-9]+.[0-9]+.tar.gz" | head -n 1 | grep -Po "[0-9]+.[0-9]+.[0-9]+"
     args:
       warn: no
+    retries: 5
+    delay: 30
     register: cmake_version
+    until: cmake_version.failed == false
 
   - name: Download and Unarchive CMake {{ cmake_version.stdout }} sources
     unarchive:
       src: https://github.com/Kitware/CMake/releases/download/v{{ cmake_version.stdout }}/cmake-{{ cmake_version.stdout }}.tar.gz
       dest: /home/{{ ham_user }}/hamradio
       remote_src: yes
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Configure CMake {{ cmake_version.stdout }}
     command: ./configure

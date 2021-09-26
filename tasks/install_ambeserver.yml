@@ -37,6 +37,10 @@
     git:
       repo: https://github.com/nwdigitalradio/ambeserver-install.git
       dest: /home/{{ ham_user }}/hamradio/ambeserver-install
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Set install script to executable
     file: dest=/home/{{ ham_user }}/hamradio/ambeserver-install/install.sh mode=a+x

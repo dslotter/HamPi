@@ -30,11 +30,19 @@
       - qttools5-dev-tools
       - qtpositioning5-dev
       - libqt5serialport5-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git clone latest QDMR sources
     git:
       repo: https://github.com/hmatuschek/qdmr
       dest: /home/{{ ham_user }}/hamradio/qdmr
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory qdmr/build
     file:

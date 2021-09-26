@@ -26,6 +26,10 @@
       state: present
     with_items:
       - mono-complete
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download and Unarchive BlueDV {{ bluedv_version }}
     become: yes
@@ -34,6 +38,10 @@
       dest: "/usr/local/bluedv"
       remote_src: yes
       validate_certs: no
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Copy BlueDV default preferences file
     become: yes
@@ -62,6 +70,10 @@
     git:
       repo: https://github.com/marrold/AMBEServer.git
       dest: /home/{{ ham_user }}/hamradio/AMBEServer
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Build AMBEServer
     command: make

@@ -91,6 +91,10 @@
       - libavformat-dev
       - libopus-dev
       - graphviz
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
 # Because we're installing so many packages...
   - name: Autoremove unneeded packages
@@ -113,6 +117,10 @@
     git:
       repo: https://github.com/srcejon/aptdec.git
       dest: /opt/build/aptdec
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git Checkout APT
     command: git checkout libaptdec
@@ -153,6 +161,10 @@
     git:
       repo: https://github.com/f4exb/cm256cc.git
       dest: /opt/build/cm256cc
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git Reset CM265cc CMakeFiles
     command: git reset --hard c0e92b92aca3d1d36c990b642b937c64d363c559
@@ -194,6 +206,10 @@
     git:
       repo: https://github.com/srcejon/dab-cmdline
       dest: /opt/build/dab-cmdline
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git Reset LibDAB CMakeFiles
     command: git checkout msvc
@@ -235,6 +251,10 @@
     git:
       repo: https://github.com/szechyjs/mbelib.git
       dest: /opt/build/mbelib
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git Reset MBElib CMakeFiles
     command: git reset --hard 9a04ed5c78176a9965f3d43f7aa1b1f5330e771f
@@ -276,6 +296,10 @@
     git:
       repo: https://github.com/f4exb/serialDV.git
       dest: /opt/build/serialDV
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git Reset SerialDV CMakeFiles
     command: git reset --hard "v1.1.4"
@@ -317,6 +341,10 @@
     git:
       repo: https://github.com/f4exb/dsdcc.git
       dest: /opt/build/dsdcc
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git Reset DSDcc CMakeFiles
     command: git reset --hard "v1.9.3"
@@ -362,11 +390,19 @@
     with_items:
       - libspeexdsp-dev
       - libsamplerate0-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git clone latest Codec2 sources
     git:
       repo: https://github.com/drowe67/codec2.git
       dest: /opt/build/codec2
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git Reset Codec2 CMakeFiles
     command: git reset --hard 76a20416d715ee06f8b36a9953506876689a3bd2
@@ -408,6 +444,10 @@
     git:
       repo: https://github.com/airspy/host.git
       dest: /opt/build/libairspy
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git Reset Airspy CMakeFiles
     command: git reset --hard bfb667080936ca5c2d23b3282f5893931ec38d3f
@@ -449,6 +489,10 @@
     git:
       repo: https://github.com/airspy/airspyhf
       dest: /opt/build/airspyhf
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git Reset AirspyHF CMakeFiles
     command: git reset --hard "1.1.5"
@@ -490,6 +534,10 @@
     git:
       repo: https://github.com/f4exb/libmirisdr-4.git
       dest: /opt/build/libmirisdr-4
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory libmirisdr-4/build
     file:
@@ -526,6 +574,10 @@
     git:
       repo: https://github.com/osmocom/rtl-sdr.git
       dest: /opt/build/librtlsdr
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git Reset RTL-SDR CMakeFiles
     command: git reset --hard be1d1206bfb6e6c41f7d91b20b77e20f929fa6a7
@@ -569,6 +621,10 @@
     git:
       repo: https://github.com/analogdevicesinc/libiio.git
       dest: /opt/build/libiio
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git Reset Pluto SDR CMakeFiles
     command: git reset --hard v0.21
@@ -610,6 +666,10 @@
     git:
       repo: https://github.com/Nuand/bladeRF.git
       dest: /opt/build/bladeRF
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git Reset BladeRF CMakeFiles
     command: git reset --hard "2019.07"
@@ -651,6 +711,10 @@
     git:
       repo: https://github.com/mossmann/hackrf.git
       dest: /opt/build/hackrf
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git Reset HackRF CMakeFiles
     command: git reset --hard "v2018.01.1"
@@ -692,6 +756,10 @@
     git:
       repo: https://github.com/myriadrf/LimeSuite.git
       dest: /opt/build/LimeSuite
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git Reset LimeSDR CMakeFiles
     command: git reset --hard "v20.01.0"
@@ -733,6 +801,10 @@
     git:
       repo: https://github.com/f4exb/libperseus-sdr.git
       dest: /opt/build/libperseus-sdr
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: git checkout fixes Perseus CMakeFiles
     command: git checkout fixes
@@ -787,11 +859,19 @@
       - python3
       - python3-pip
       - python3-cheetah
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git clone latest XTRX sources
     git:
       repo: https://github.com/f4exb/images.git
       dest: /opt/build/xtrx-images
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git submodule init XTRX
     command: git submodule init
@@ -837,6 +917,10 @@
     git:
       repo: https://github.com/dnwrnr/sgp4.git
       dest: /opt/build/sgp4
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory sgp4/build
     file:
@@ -873,6 +957,10 @@
     git:
       repo: https://github.com/f4exb/libsigmf.git
       dest: /opt/build/libsigmf
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git Checkout "new-namespaces"
     command: git checkout "new-namespaces"
@@ -914,6 +1002,10 @@
     git:
       repo: https://github.com/f4exb/sdrangel.git
       dest: /opt/build/sdrangel
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory sdrangel/build
     file:

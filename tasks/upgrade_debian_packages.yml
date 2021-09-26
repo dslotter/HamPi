@@ -11,6 +11,10 @@
     become: yes
     apt:
       upgrade: dist
+    retries: 10
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Autoremove unneeded packages
     become: yes

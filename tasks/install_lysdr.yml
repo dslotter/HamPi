@@ -29,11 +29,19 @@
       - libgtk-3-dev
       - libjack-jackd2-dev
       - libfftw3-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download latest lysdr sources
     git:
       repo: https://github.com/gordonjcp/lysdr.git
       dest: /home/{{ ham_user }}/hamradio/lysdr
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Run autoreconf for lysdr
     command: autoreconf -i

@@ -20,6 +20,10 @@
       - ntp
       - python-setuptools
       - python-pil
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory hamradio
     file:
@@ -37,6 +41,10 @@
 #    git:
 #      repo: https://github.com/JamesP6000/WsprryPi.git
 #      dest: /home/{{ ham_user }}/hamradio/WsprryPi
+#    retries: 5
+#    delay: 30
+#    register: result
+#    until: result.failed == false
 #
 #  - name: Build WsprryPi
 #    command: make
@@ -59,6 +67,10 @@
       repo: https://github.com/DanAnkers/WsprryPi.git
       dest: /home/{{ ham_user }}/hamradio/WsprryPi
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Build WsprryPi
     command: gcc wspr.c -o wspr-pi
@@ -88,6 +100,10 @@
 #    git:
 #      repo: https://github.com/JamesP6000/PiCW.git
 #      dest: /home/{{ ham_user }}/hamradio/PiCW
+#    retries: 5
+#    delay: 30
+#    register: result
+#    until: result.failed == false
 #
 #  - name: Build PiCW
 #    command: make
@@ -114,6 +130,10 @@
 #    git:
 #      repo: https://github.com/JennyList/LanguageSpy/blob/master/RaspberryPi/rf/freq_pi/freq_pi.c
 #      dest: /home/{{ ham_user }}/hamradio
+#    retries: 5
+#    delay: 30
+#    register: result
+#    until: result.failed == false
 
 #
 # PySSTV
@@ -124,15 +144,27 @@
     package:
       name: python3-pip
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: pip3 install setuptools
     become: yes
     command: "pip3 install setuptools --upgrade --no-binary :all:"
     args:
       chdir: /home/{{ ham_user }}/hamradio
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: pip3 install PySSTV
     become: yes
     command: pip3 install PySSTV
     args:
       chdir: /home/{{ ham_user }}/hamradio
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false

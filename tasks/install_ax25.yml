@@ -25,6 +25,10 @@
       - zlib1g
       - zlib1g-dev
       - libncurses-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install dependent libraries for ax.25 (AMD64)
     become: yes
@@ -34,11 +38,19 @@
     with_items:
       - libncursesw5-dev
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download latest ax.25 sources by VE7FET
     git:
       repo: https://github.com/ve7fet/linuxax25.git
       dest: /home/{{ ham_user }}/hamradio/linuxax25
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
 #
 # ax25-lib

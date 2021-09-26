@@ -39,6 +39,10 @@
       - libsndfile-dev
       - sox
 #        - libjpeg9-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install dependent libraries for FreeDV (Raspberry Pi)
     become: yes
@@ -46,6 +50,10 @@
       name: libwxgtk3.0-dev
       state: present
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install dependent libraries for FreeDV (Xubuntu)
     become: yes
@@ -53,6 +61,10 @@
       name: libwxgtk3.0-gtk3-dev
       state: present
     when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
 #
 # Build and install FreeDV GUI
@@ -62,6 +74,10 @@
     git:
       repo: https://github.com/drowe67/freedv-gui.git
       dest: /home/{{ ham_user }}/hamradio/freedv-gui
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Patch FILPATHLEN to HAMLIB_FILPATHLEN for newer version of HamLib
     command: sed 's/FILPATHLEN/HAMLIB_FILPATHLEN/' -i "/home/{{ ham_user }}/hamradio/freedv-gui/src/hamlib.cpp"
@@ -91,7 +107,6 @@
       path: /home/{{ ham_user }}/hamradio/freedv-gui
       state: absent
 
-
 #
 # Codec2/FreeDV
 #
@@ -104,11 +119,19 @@
     with_items:
       - libspeexdsp-dev
       - libsamplerate0-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git clone latest Codec2 sources
     git:
       repo: https://github.com/drowe67/codec2.git
       dest: /home/{{ ham_user }}/hamradio/codec2
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory codec2/build
     file:
@@ -131,11 +154,14 @@
     args:
       chdir: /home/{{ ham_user }}/hamradio/codec2/build
 
-
   - name: Git clone latest Codec2 sources
     git:
       repo: https://github.com/drowe67/LPCNet
       dest: /home/{{ ham_user }}/hamradio/LPCNet
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory LPCNet/build
     file:

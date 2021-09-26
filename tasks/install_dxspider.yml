@@ -25,6 +25,10 @@
     git:
       repo: git://scm.dxcluster.org/scm/spider
       dest: /home/{{ ham_user }}/hamradio/spider.new
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Copy DXSpider sources to root directory
     become: yes
@@ -116,35 +120,67 @@
   - name: Autoconfigure CPAN
     become: yes
     shell: (echo y;echo o conf prerequisites_policy follow;echo o conf commit)|cpan
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install Perl MD5 module dependency for creating USDB
     become: yes
     shell: cpan -i MD5
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install Perl Data Dumper module dependency for creating USDB
     become: yes
     shell: "cpan -i Data::Dumper"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install Perl TimeDate module dependency for creating USDB
     become: yes
     shell: cpan -i TimeDate
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install Perl Net Telnet module dependency for creating USDB
     become: yes
     shell: "cpan -i TimeDate"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install Perl Curses module dependency for creating USDB
     become: yes
     shell: cpan -i Curses
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install Perl TimeHires module dependency for creating USDB
     become: yes
     shell: "cpan -i Time::HiRes"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download US State and City Database
     get_url:
       url: http://ftp.w1nr.net/usdbraw.gz
       dest: /tmp/usdbraw.gz
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create USDB
     shell: /spider/perl/create_usdb.pl /tmp/usdbraw.gz

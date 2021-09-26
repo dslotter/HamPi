@@ -37,12 +37,24 @@
       - libasound2-dev
       - libopus0
       - python3-pampy
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install Python module dependencies for Universal Ham Radio Remote (UHRR)
     become: yes
     command: pip3 install tornado pyalsaaudio numpy pyrtlsdr
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git clone latest Universal Ham Radio Remote (UHRR) sources
     git:
       repo: https://github.com/F4HTB/Universal_HamRadio_Remote_HTML5.git
       dest: /home/{{ ham_user }}/hamradio/Universal_HamRadio_Remote_HTML5
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false

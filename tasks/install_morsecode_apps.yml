@@ -29,6 +29,10 @@
       - cwdaemon
       - qrq
       - morse
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install multimon-ng
     become: yes
@@ -36,6 +40,10 @@
       name: multimon-ng
       state: present
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Modify categories for qrq.desktop
     become: yes
@@ -89,3 +97,7 @@
       url: https://www.qsl.net/hz1jw/morse/downloads/MorsePractice.jar
       dest: /usr/local/bin/MorsePractice.jar
     when: ansible_architecture == "i386" or ansible_architecture == "amd64"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false

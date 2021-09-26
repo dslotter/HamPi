@@ -25,11 +25,19 @@
       - gr-osmosdr
       - libfftw3-dev
       - libusb-1.0-0-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download latest bladeRF library sources
     git:
       repo: https://github.com/nuand/bladeRF
       dest: /home/{{ ham_user }}/hamradio/bladeRF
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory bladeRF/host/build
     file:
@@ -61,6 +69,10 @@
     git:
       repo: https://github.com/pothosware/SoapyBladeRF
       dest: /home/{{ ham_user }}/hamradio/SoapyBladeRF
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory SoapyBladeRF/build
     file:

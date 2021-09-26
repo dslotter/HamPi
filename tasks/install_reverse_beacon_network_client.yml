@@ -31,11 +31,19 @@
       - qtpositioning5-dev
       - libqt5serialport5-dev
       - qtmultimedia5-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git clone latest RBNC sources
     git:
       repo: https://github.com/hmatuschek/skcc
       dest: /home/{{ ham_user }}/hamradio/skcc
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory skcc/build
     file:

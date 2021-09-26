@@ -16,6 +16,9 @@
     args:
       warn: no
     register: sparksdr_version
+    retries: 5
+    delay: 30
+    until: sparksdr_version.failed == false
 
   - name: Download and Unarchive sparksdr {{ sparksdr_version.stdout }}
     become: yes
@@ -23,3 +26,7 @@
       src: "http://www.ihopper.org/radio/download.aspx?file=sparksdr{{ sparksdr_version.stdout }}_linux.tar.gz"
       dest: "/usr/local/"
       remote_src: yes
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false

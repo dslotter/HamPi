@@ -30,11 +30,19 @@
       - libqt5multimediawidgets5
       - libqt5multimedia5
       - pulseaudio
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git clone latest DUDE-Star sources
     git:
       repo: https://github.com/nostar/dudestar.git
       dest: /home/{{ ham_user }}/hamradio/dudestar
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory dudestar/build
     file:

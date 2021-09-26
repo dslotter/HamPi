@@ -20,12 +20,15 @@
       - python3-pyaudio
       - pulseaudio
       - pavucontrol
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory /home/{{ ham_user }}/lopora
     file:
       path: /home/{{ ham_user }}/lopora
       state: directory
-
 
 #
 # Download and install LOPORA
@@ -36,6 +39,10 @@
       src: https://www.qsl.net/pa2ohh/11lopsource.zip
       dest: /home/{{ ham_user }}/lopora
       remote_src: yes
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Set quickstart script to executable
     file: dest=/home/{{ ham_user }}/lopora/scriptfiles/quickstartlopora.sh mode=a+x

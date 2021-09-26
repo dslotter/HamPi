@@ -22,6 +22,10 @@
       - python-gtk2
       - python-serial
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install Chirp prerequisite packages
     become: yes
@@ -33,18 +37,29 @@
       - python-wxgtk3.0
       - python3-serial
     when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install dependent Python component python-gtk for Chirp (Xubuntu)
     become: yes
     apt:
       deb: http://archive.ubuntu.com/ubuntu/pool/universe/p/pygtk/python-gtk2_2.24.0-5.1ubuntu2_amd64.deb
     when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Determine latest version of Chirp on web
     shell: curl --silent "https://trac.chirp.danplanet.com/chirp_daily/LATEST/" | grep -Po "chirp-daily-[0-9]+.tar.gz" | uniq | egrep -o "[0-9]+"
     args:
       warn: no
+    retries: 5
+    delay: 30
     register: download_date
+    until: download_date.failed == false
 
   - name: Download and Unarchive Chirp {{ download_date.stdout }}
     unarchive:
@@ -52,6 +67,10 @@
       dest: /home/{{ ham_user }}/hamradio/
       remote_src: yes
       validate_certs: no
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install Chirp {{ download_date.stdout }}
     become: yes

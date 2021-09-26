@@ -21,6 +21,10 @@
       src: "http://www.music.mcgill.ca/~gary/rtaudio/release/rtaudio-5.1.0.tar.gz"
       dest: "/home/{{ ham_user }}/hamradio/"
       remote_src: yes
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Configure RTAudio
     command: ./configure
@@ -47,6 +51,10 @@
     git:
       repo: https://github.com/pothosware/SoapyAudio.git
       dest: /home/{{ ham_user }}/hamradio/SoapyAudio
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory SoapyAudio/build
     file:

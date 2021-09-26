@@ -12,11 +12,19 @@
     package:
       name: libusb-1.0-0-dev
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download latest RTL-SDR sources
     git:
       repo: https://github.com/steve-m/librtlsdr
       dest: /home/{{ ham_user }}/hamradio/librtlsdr
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory librtlsdr/build
     file:

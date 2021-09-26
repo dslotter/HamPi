@@ -19,6 +19,10 @@
       - python-libxslt1
       - python-serial
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install dependent Python components for D-Rats (Xubuntu)
     become: yes
@@ -30,35 +34,59 @@
       - python
       - python-libxml2
     when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install dependent Python component python-gtk for D-Rats (Xubuntu)
     become: yes
     apt:
       deb: http://archive.ubuntu.com/ubuntu/pool/universe/p/pygtk/python-gtk2_2.24.0-5.1ubuntu2_amd64.deb
     when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install dependent Python component python-serial for D-Rats (Xubuntu)
     become: yes
     apt:
       deb: http://mirrors.kernel.org/ubuntu/pool/main/p/pyserial/python-serial_3.4-2_all.deb
     when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install dependent Python component python-glade2 for D-Rats (Xubuntu)
     become: yes
     apt:
       deb: http://archive.ubuntu.com/ubuntu/pool/universe/p/pygtk/python-glade2_2.24.0-5.1ubuntu2_amd64.deb
     when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install dependent Python component python-libxslt1 for D-Rats (Xubuntu)
     become: yes
     apt:
       deb: http://security.ubuntu.com/ubuntu/pool/main/libx/libxslt/python-libxslt1_1.1.29-5ubuntu0.2_amd64.deb
     when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download D-Rats sources
     git:
       repo: https://github.com/maurizioandreotti/D-Rats.git
       dest: /home/{{ ham_user }}/hamradio/D-Rats
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install D-Rats update script (ARM)
     become: yes

@@ -15,6 +15,10 @@
     with_items:
       - boinc
       - boinctui
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory boinc-client
     become: yes

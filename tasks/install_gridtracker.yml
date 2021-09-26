@@ -41,6 +41,9 @@
       warn: no
     register: download_file
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    retries: 5
+    delay: 30
+    until: download_file.failed == false
 
   - name: Download and Unarchive GridTracker {{ download_file.stdout }} (ARM)
     become: yes
@@ -49,6 +52,10 @@
       dest: /usr/local
       remote_src: yes
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Rename GridTracker directory
     become: yes
@@ -89,6 +96,9 @@
       warn: no
     register: download_file
     when: ansible_architecture == "i386"
+    retries: 5
+    delay: 30
+    until: download_file.failed == false
 
   - name: Download and Unarchive GridTracker {{ download_file.stdout }} (x86)
     become: yes
@@ -97,6 +107,10 @@
       dest: /usr/local
       remote_src: yes
     when: ansible_architecture == "i386"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Copy GridTracker Desktop file (x86)
     become: yes
@@ -122,7 +136,6 @@
       line: Categories=HamRadio Weak Signal
     when: ansible_architecture == "i386"
 
-
 #
 # AMD64
 #
@@ -133,6 +146,9 @@
       warn: no
     register: download_file
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    retries: 5
+    delay: 30
+    until: download_file.failed == false
 
   - name: Download and Unarchive GridTracker {{ download_file.stdout }} (AMD64)
     become: yes
@@ -141,6 +157,10 @@
       dest: /usr/local
       remote_src: yes
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Rename GridTracker directory
     become: yes

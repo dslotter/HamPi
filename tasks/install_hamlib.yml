@@ -44,6 +44,10 @@
         - libgd-dev
         - python-dev
         - git
+      retries: 5
+      delay: 30
+      register: result
+      until: result.failed == false
 
 #    - name: Download and Unarchive Hamlib {{ hamlib_version }}
 #      unarchive:
@@ -57,6 +61,10 @@
       git:
         repo: https://github.com/Hamlib/Hamlib.git
         dest: /home/{{ ham_user }}/hamradio/hamlib
+      retries: 5
+      delay: 30
+      register: result
+      until: result.failed == false
 
     - name: Bootstrap Hamlib {{ hamlib_version }}
       command: ./bootstrap

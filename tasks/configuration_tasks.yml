@@ -88,12 +88,20 @@
     package:
       name: software-properties-common
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install powermgmt-base Package for unattended-upgrades
     become: yes
     package:
       name: powermgmt-base
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Enable mail notifications for unattended-upgrades
     become: yes

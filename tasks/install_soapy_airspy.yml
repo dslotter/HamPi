@@ -25,11 +25,19 @@
       - gr-osmosdr
       - libfftw3-dev
       - libusb-1.0-0-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download latest SoapyAirSpy sources
     git:
       repo: https://github.com/pothosware/SoapyAirSpy.git
       dest: /home/{{ ham_user }}/hamradio/SoapyAirSpy
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory SoapyAirSpy/build
     file:

@@ -32,11 +32,19 @@
       - libpulse-dev
       - libcurl4-openssl-dev
       - libssh-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git clone latest QrssPiG sources
     git:
       repo: https://gitlab.com/hb9fxx/qrsspig.git
       dest: /home/{{ ham_user }}/hamradio/qrsspig
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory qrsspig/build
     file:

@@ -20,11 +20,19 @@
     git:
       repo: https://github.com/ha7ilm/openwebrx.git
       dest: /home/{{ ham_user }}/hamradio/openwebrx
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git clone latest csdr sources
     git:
       repo: https://github.com/ha7ilm/csdr.git
       dest: /home/{{ ham_user }}/hamradio/csdr
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Build csdr
     command: make

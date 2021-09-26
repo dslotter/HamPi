@@ -17,12 +17,19 @@
     args:
       warn: no
     register: cty_version
+    retries: 5
+    delay: 30
+    until: cty_version.failed == false
 
   - name: Download and Unarchive CTY {{ cty_version.stdout }} from http://www.country-files.com/
     unarchive:
       src: https://www.country-files.com/cty/download/{{ cty_version.stdout }}/cty-{{ cty_version.stdout }}.zip
       dest: /home/{{ ham_user }}/hamradio/CTY_FILES
       remote_src: yes
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create FLDigi data directory
     file:
@@ -51,3 +58,7 @@
       src: https://www.country-files.com/bigcty/download/bigcty-{{ bigcty_version.stdout }}.zip
       dest: /home/{{ ham_user }}/hamradio/CTY_FILES
       remote_src: yes
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false

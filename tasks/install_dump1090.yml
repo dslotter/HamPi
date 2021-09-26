@@ -24,6 +24,10 @@
     with_items:
       - libusb-1.0-0-dev
       - librtlsdr0
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
 #
 # Install dump1090 for SDRPlay + RTLSDR (ARM)
@@ -33,11 +37,19 @@
     git:
       repo: https://github.com/SDRplay/dump1090.git
       dest: /home/{{ ham_user }}/hamradio/dump1090
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Checkout api3 branch of dump1090
     command: git checkout api3
     args:
       chdir: /home/{{ ham_user }}/hamradio/dump1090
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Build dump1090
     command: make
@@ -63,6 +75,10 @@
       dest: /home/{{ ham_user }}/hamradio/
       remote_src: yes
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Make directory name more meaningful
     command: mv /home/{{ ham_user }}/hamradio/dump1090_1.3.1 /home/{{ ham_user }}/hamradio/dump1090_sdrplay_1.3.1
@@ -82,12 +98,19 @@
       warn: no
     register: dump1090_version
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    retries: 5
+    delay: 30
+    until: dump1090.failed == false
 
   - name: Download dump1090-mutability {{ dump1090_version.stdout }} (ARM)
     get_url:
       url: https://github.com/abcd567a/dump1090/releases/download/v1/dump1090-mutability_{{ dump1090_version.stdout }}_dev_armhf.deb
       dest: /home/{{ ham_user }}/hamradio/dump1090-mutability_{{ dump1090_version.stdout }}_dev_armhf.deb
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install dump1090-mutability {{ dump1090_version.stdout }} (ARM)
     become: yes
@@ -111,12 +134,19 @@
       warn: no
     register: dump1090_version
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    retries: 5
+    delay: 30
+    until: dump1090_version.failed == false
 
   - name: Download dump1090-mutability {{ dump1090_version.stdout }} (AMD64)
     get_url:
       url: https://github.com/abcd567a/dump1090/releases/download/v1/dump1090-mutability_{{ dump1090_version.stdout }}.dev_amd64.deb
       dest: /home/{{ ham_user }}/hamradio/dump1090-mutability_{{ dump1090_version.stdout }}.dev_amd64.deb
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install dump1090-mutability {{ dump1090_version.stdout }} (AMD64)
     become: yes

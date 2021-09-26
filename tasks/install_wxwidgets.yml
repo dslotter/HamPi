@@ -42,6 +42,10 @@
       - mesa-common-dev
       - libnotify-dev
       - libsecret-1-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download and Unarchive wxWidgets {{ wxwidgets_version }}
     become: yes
@@ -49,6 +53,10 @@
       src: https://github.com/wxWidgets/wxWidgets/releases/download/v{{ wxwidgets_version }}/wxWidgets-{{ wxwidgets_version }}.tar.bz2
       dest: /home/{{ ham_user }}/hamradio
       remote_src: yes
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Autogen wxWidgets {{ wxwidgets_version }}
     command: ./autogen.sh

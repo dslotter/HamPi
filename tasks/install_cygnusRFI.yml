@@ -21,6 +21,10 @@
       - python
       - gnuradio-dev
       - gr-osmosdr
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
 #
 # Download CygnusRFI
@@ -30,3 +34,7 @@
     git:
       repo: https://github.com/0xCoto/CygnusRFI
       dest: /home/{{ ham_user }}/hamradio/CygnusRFI
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false

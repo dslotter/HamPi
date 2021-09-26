@@ -28,6 +28,10 @@
       - gnuradio-dev
       - libpulse-dev
       - pavucontrol
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install dependent libraries for GQRX (Raspberry Pi)
     become: yes
@@ -38,6 +42,10 @@
       - libgnuradio-osmosdr0.1.4
       - libgnuradio-iqbalance3.7.11
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install dependent libraries for GQRX (Xubuntu)
     become: yes
@@ -48,11 +56,19 @@
       - libgnuradio-osmosdr0.2.0
       - libgnuradio-iqbalance3.8.0
     when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download GQRX sources
     git:
       repo: https://github.com/csete/gqrx.git
       dest: /home/{{ ham_user }}/hamradio/gqrx-source
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory gqrx-source/build
     file:

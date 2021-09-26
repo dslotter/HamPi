@@ -36,11 +36,19 @@
       - libqcustomplot2.0
       - libqcustomplot-doc
       - libqcustomplot-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git clone latest wfview sources
     git:
       repo: https://gitlab.com/eliggett/wfview.git
       dest: /home/{{ ham_user }}/hamradio/wfview
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory build
     file:

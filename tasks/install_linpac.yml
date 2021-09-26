@@ -20,6 +20,10 @@
     git:
       repo: https://git.code.sf.net/p/linpac/linpac
       dest: /home/{{ ham_user }}/hamradio/linpac
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Checkout develop branch of linpac
     command: git checkout develop

@@ -26,6 +26,10 @@
     with_items:
       - libmotif-dev
       - libcurl4-openssl-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download and Unarchive TwHamQTH {{ twhamqth_version }}
     become: yes
@@ -33,6 +37,10 @@
       src: http://wa0eir.bcts.info/src/twhamqth-{{ twhamqth_version }}.src.tar.gz
       dest: /home/{{ ham_user }}/hamradio
       remote_src: yes
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Configure TwHamQTH {{ twhamqth_version }}
     command: ./configure

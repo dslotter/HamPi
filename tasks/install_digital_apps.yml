@@ -12,6 +12,10 @@
     package:
       name: linpsk
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Modify categories for linpsk.desktop
     become: yes
@@ -25,12 +29,20 @@
     package:
       name: multimon
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install psk31lx Package (PSK31 terminal application with text-based user interface)
     become: yes
     package:
       name: psk31lx
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Modify categories for psk31lx.desktop
     become: yes
@@ -44,6 +56,10 @@
     package:
       name: twpsk
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Modify categories for twpsk.desktop
     become: yes

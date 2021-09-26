@@ -24,6 +24,10 @@
     with_items:
       - libusb-1.0-0-dev
       - expect
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
 #
 # Raspbian (ARM) v2
@@ -174,6 +178,10 @@
     git:
       repo: https://github.com/pothosware/SoapySDRPlay.git
       dest: /home/{{ ham_user }}/hamradio/SoapySDRPlay
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory SoapySDRPlay/build
     file:

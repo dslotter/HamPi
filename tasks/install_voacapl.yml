@@ -28,6 +28,10 @@
       - gfortran
       - python3-cartopy
       - python3-scipy
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
 #
 # VOACAPL
@@ -37,6 +41,10 @@
     git:
       repo: https://github.com/jawatson/voacapl
       dest: /home/{{ ham_user }}/hamradio/voacapl
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Autoreconf VOACAPL
     command: autoreconf -f -i
@@ -83,6 +91,10 @@
     command: pip3 install matplotlib
     args:
       chdir: /home/{{ ham_user }}/hamradio
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install dependent components for pythonprop
     become: yes
@@ -92,18 +104,29 @@
     with_items:
       - python3-cartopy
       - yelp-tools
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Determine latest version of pythonprop on GitHub
     shell: curl --silent "https://github.com/jawatson/pythonprop/releases" | grep -Po "/jawatson/pythonprop/tree/v[0-9]+.[0-9]+[a-zA-Z0-9\-]+" | head -n 1 | grep -Po "[0-9]+.[0-9]+[a-zA-Z0-9\-]+"
     args:
       warn: no
     register: pythonprop_version
+    retries: 5
+    delay: 30
+    until: pythonprop_version.failed == false
 
   - name: Download and Unarchive pythonprop {{ pythonprop_version.stdout }}
     unarchive:
       src: "https://github.com/jawatson/pythonprop/archive/v{{ pythonprop_version.stdout }}.tar.gz"
       dest: "/home/{{ ham_user }}/hamradio/"
       remote_src: yes
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Autogen pythonprop {{ pythonprop_version.stdout }}
     command: ./autogen.sh

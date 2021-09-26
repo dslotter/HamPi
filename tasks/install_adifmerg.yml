@@ -17,11 +17,19 @@
     package:
       name: libterm-readline-gnu-perl
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Git clone latest adifmerg sources
     git:
       repo: https://github.com/oh7bf/adifmerg.git
       dest: /home/{{ ham_user }}/hamradio/adifmerg
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install adifmerg
     become: yes

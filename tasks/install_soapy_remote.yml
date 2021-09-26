@@ -20,6 +20,10 @@
     git:
       repo: https://github.com/pothosware/SoapyRemote.git
       dest: /home/{{ ham_user }}/hamradio/SoapyRemote
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory SoapyRemote/build
     file:

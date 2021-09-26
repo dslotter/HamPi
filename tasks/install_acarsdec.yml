@@ -26,7 +26,10 @@
       - libusb-1.0-0-dev
       - zlib1g-dev
       - libxml2-dev
-
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
 #
 # Build and install libacars
@@ -36,6 +39,10 @@
     git:
       repo: https://github.com/szpajder/libacars
       dest: /home/{{ ham_user }}/hamradio/libacars
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory libacars/build
     file:
@@ -75,6 +82,10 @@
     git:
       repo: https://github.com/TLeconte/acarsdec
       dest: /home/{{ ham_user }}/hamradio/acarsdec
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory hamradio
     file:

@@ -32,11 +32,19 @@
       - libusb-1.0-0-dev
       - python3-mako
       - python3-ruamel.yaml
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download latest UHD sources
     git:
       repo: https://github.com/EttusResearch/uhd
       dest: /home/{{ ham_user }}/hamradio/uhd
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory uhd/host/build
     file:
@@ -68,6 +76,10 @@
     git:
       repo: https://github.com/pothosware/SoapyUHD.git
       dest: /home/{{ ham_user }}/hamradio/SoapyUHD
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory SoapyUHD/build
     file:

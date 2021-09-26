@@ -29,7 +29,10 @@
       - libfftw3-dev
       - buffer
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
-
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
 #
 # Download rpitx
@@ -40,6 +43,10 @@
       repo: https://github.com/F5OEO/rpitx
       dest: /home/{{ ham_user }}/hamradio/rpitx
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
 #
 # Build and install csdr
@@ -50,6 +57,10 @@
       repo: https://github.com/F5OEO/csdr
       dest: /home/{{ ham_user }}/hamradio/rpitx/csdr
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Build csdr
     command: make
@@ -79,6 +90,10 @@
       repo: https://github.com/F5OEO/librpitx
       dest: /home/{{ ham_user }}/hamradio/rpitx/src/librpitx
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Build librpitx
     command: make
@@ -102,6 +117,10 @@
       repo: https://github.com/kgoba/ft8_lib
       dest: /home/{{ ham_user }}/hamradio/rpitx/src/pift8/ft8_lib
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Build ft8_lib
     command: make
@@ -131,6 +150,10 @@
     args:
       chdir: /home/{{ ham_user }}/hamradio/rpitx/src
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install rpitx
     become: yes

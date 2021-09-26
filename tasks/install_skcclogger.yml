@@ -17,6 +17,10 @@
       dest: /usr/local/
       remote_src: yes
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Change Ownership of /usr/local/SKCCLogger_Linux_32-Bit-ARM to {{ ham_user }}
     become: yes
@@ -40,6 +44,10 @@
       dest: /usr/local/
       remote_src: yes
     when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Change Ownership of /usr/local/SKCCLogger_Linux_64-Bit to {{ ham_user }}
     become: yes

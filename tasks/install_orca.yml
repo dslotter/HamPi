@@ -11,6 +11,10 @@
     package:
       name: orca
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Disable Orca and make user enable it
     become: yes

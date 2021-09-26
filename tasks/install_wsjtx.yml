@@ -20,6 +20,10 @@
       - libqt5multimedia5
       - libqt5multimedia5-plugins
       - libqt5serialport5
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create directory for documentation
     become: yes
@@ -33,6 +37,10 @@
       url: https://physics.princeton.edu/pulsar/K1JT/wsjtx-doc/wsjtx-main-{{ wsjtx_version }}_en%20%28USLetter%29.pdf
       dest: /usr/share/doc/wsjt-x/wsjtx-main-{{ wsjtx_version }}_en%20%28USLetter%29.pdf
       validate_certs: no
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
 #
 # Raspbian ARM
@@ -46,6 +54,10 @@
     with_items:
       - libgfortran3
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download WSJT-X {{ wsjtx_version }} with check (md5) (ARM)
     get_url:
@@ -54,6 +66,10 @@
       validate_certs: no
       checksum: md5:{{ wsjtx_240_md5sum_armf }}
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install WSJT-X {{ wsjtx_version }} (ARM)
     become: yes
@@ -87,6 +103,10 @@
     with_items:
       - libc6:i386
     when: ansible_architecture == "x86_64" or ansible_architecture == "i386" or ansible_architecture == "amd64"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download WSJT-X {{ wsjtx_version }} with check (md5) (x86)
     get_url:
@@ -95,6 +115,10 @@
       validate_certs: no
       checksum: md5:{{ wsjtx_240_md5sum_i386 }}
     when: ansible_architecture == "i386"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install WSJT-X {{ wsjtx_version }} (x86)
     become: yes
@@ -121,6 +145,10 @@
       - libgfortran4
       - libreadline8
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download WSJT-X {{ wsjtx_version }} with check (md5) (x86_64)
     get_url:
@@ -129,6 +157,10 @@
       validate_certs: no
       checksum: md5:{{ wsjtx_240_md5sum_amd64 }}
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   # Install WSJT-X the hard way because we're having issues
   # getting apt to ignore "missing" dependencies

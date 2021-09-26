@@ -12,6 +12,10 @@
     package:
       name: telnet
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install colrconv Package (convers client with sound and ncurses color support)
     become: yes
@@ -19,6 +23,10 @@
       name: colrconv
       state: present
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install gcb Package (Utility to calculate long and short path to a location)
     become: yes
@@ -26,6 +34,10 @@
       name: gcb
       state: present
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install fbb Package (Packet radio mailbox and utilities)
     become: yes
@@ -35,12 +47,20 @@
     with_items:
       - fbb
       - ax25mail-utils
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install glfer Package (Program for reception and transmission of QRSS/DFCW signals)
     become: yes
     package:
       name: glfer
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Modify categories for glfer.desktop
     become: yes
@@ -55,6 +75,10 @@
     package:
       name: grig
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Modify categories for grig.desktop
     become: yes
@@ -71,18 +95,30 @@
     with_items:
       - gnuais
       - gnuaisgui
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install gnss-sdr Package (GLONASS satellite system Software Defined Receiver)
     become: yes
     package:
       name: gnss-sdr
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install acfax Package (Receive faxes using your radio and sound card)
     become: yes
     package:
       name: acfax
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install hamfax Package (Qt based shortwave fax)
     become: yes
@@ -90,6 +126,10 @@
       name: hamfax
       state: present
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Modify categories for hamfax.desktop
     become: yes
@@ -104,6 +144,10 @@
     package:
       name: inspectrum
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Create /usr/local/share/applications directory
     become: yes
@@ -122,24 +166,40 @@
     package:
       name: minimodem
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install wwl Package (Calculates distance and azimuth between two Maidenhead locators)
     become: yes
     package:
       name: wwl
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install wwl Package (Calculates distance and azimuth between two Maidenhead locators)
     become: yes
     package:
       name: wwl
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install xdx Package (DX-cluster TCP/IP client for amateur radio)
     become: yes
     package:
       name: xdx
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Modify categories for Xdx.desktop
     become: yes
@@ -160,39 +220,67 @@
     package:
       name: python3-xmltodict
       state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download qrz_callsign_reader executable by W3DJS
     get_url:
       url: https://raw.githubusercontent.com/dslotter/ham_radio_scripts/main/qrz_callsign_reader.py
       dest: /home/{{ ham_user }}/bin/qrz_callsign_reader.py
       mode: a+x
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download update_fldigi_suite executable by W3DJS
     get_url:
       url: https://raw.githubusercontent.com/dslotter/ham_radio_scripts/main/update_fldigi_suite
       dest: /home/{{ ham_user }}/bin/update_fldigi_suite
       mode: a+x
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download update_wsjtx_from_deb executable by W3DJS
     get_url:
       url: https://raw.githubusercontent.com/dslotter/ham_radio_scripts/main/update_wsjtx_from_deb
       dest: /home/{{ ham_user }}/bin/update_wsjtx_from_deb
       mode: a+x
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download update_wsjtx_from_src executable by W3DJS
     get_url:
       url: https://raw.githubusercontent.com/dslotter/ham_radio_scripts/main/update_wsjtx_from_src
       dest: /home/{{ ham_user }}/bin/update_wsjtx_from_src
       mode: a+x
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download update_wsjtx_log.py executable by W3DJS
     get_url:
       url: https://raw.githubusercontent.com/dslotter/ham_radio_scripts/main/update_wsjtx_log.py
       dest: /home/{{ ham_user }}/bin/update_wsjtx_log.py
       mode: a+x
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Download upload_adif_log executable by W3DJS
     get_url:
       url: https://raw.githubusercontent.com/dslotter/ham_radio_scripts/main/upload_adif_log
       dest: /home/{{ ham_user }}/bin/upload_adif_log
       mode: a+x
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
