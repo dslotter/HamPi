@@ -1,0 +1,59 @@
+#
+# Copyright 2020 - 2021, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Lady Heather
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - g++
+      - libx11-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Download and Unarchive Lady Heather
+    become: yes
+    unarchive:
+      src: "http://www.ke5fx.com/heather/heatherx11.zip"
+      dest: /usr/local
+      remote_src: yes
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Build Lady Heather
+    become: yes
+    command: make
+    args:
+      chdir: /usr/local/heatherx11
+
+  - name: Remove Lady Heather cruft
+    become: yes
+    shell: rm *.o *.cpp *.ch heathosx makefile
+    args:
+      chdir: /usr/local/heatherx11
+      warn: no
+
+  - name: Change Ownership of /usr/local/heatherx11/heather.cfg to {{ ham_user }}
+    become: yes
+    file: dest=/usr/local/heatherx11/heather.cfg owner={{ ham_user }} group={{ ham_user}} mode=644
+
+  - name: Convert Windows line endings to Unix
+    become: yes
+    command: sed 's/\r//' -i "/usr/local/heatherx11/heather.cfg"
+    args:
+      warn: no

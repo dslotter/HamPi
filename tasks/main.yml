@@ -139,6 +139,7 @@
 - import_playbook: install_qdmr_gui_dmr_radio_programmer.yml
 - import_playbook: install_wfview.yml
 - import_playbook: install_dudestar.yml
+- import_playbook: install_ladyheather.yml
 
 # Install SDR GUI apps after all pre-requisite SDR drivers are installed
 - import_playbook: install_cutesdr.yml
