@@ -2,7 +2,7 @@
 # Copyright 2020 - 2021, Dave Slotter (W3DJS). All rights reserved.
 #
 
-- name: Install SoapySDRPlay
+- name: Install SoapySDRPlay3
   hosts: all
   environment:
     # Build-Time Tuning:
@@ -30,81 +30,80 @@
     until: result.failed == false
 
 #
-# Raspbian (ARM) v2
+# Raspbian (ARM) v3
 #
-
-  - name: Copy SDRPlay RSP Driver Installer {{ sdrplay_arm_version }} (ARM)
+  - name: Copy SDRPlay RSP Driver Installer {{ sdrplay3_arm_version }} (ARM)
     copy:
-      src: "{{ playbook_dir }}/../files/SDRplay_RSP_API-RPi-{{ sdrplay_arm_version }}.run"
-      dest: /home/{{ ham_user }}/hamradio/SDRplay_RSP_API-RPi-{{ sdrplay_arm_version }}.run
+      src: "{{ playbook_dir }}/../files/SDRplay_RSP_API-ARM32-{{ sdrplay3_arm_version }}.run"
+      dest: /home/{{ ham_user }}/hamradio/SDRplay_RSP_API-ARM32-{{ sdrplay3_arm_version }}.run
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
-  - name: Copy SDRPlay Expect Script
+  - name: Copy SDRPlay 3 Expect Script
     copy:
-      src: "{{ playbook_dir }}/../files/sdrplay_api2_install.exp"
-      dest: /home/{{ ham_user }}/hamradio/sdrplay_api2_install.exp
+      src: "{{ playbook_dir }}/../files/sdrplay_api3_install.exp"
+      dest: /home/{{ ham_user }}/hamradio/sdrplay_api3_install.exp
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
-  - name: Set SDRPlay RSP Driver Installer {{ sdrplay_arm_version }} (ARM) to executable
+  - name: Set SDRPlay RSP Driver Installer {{ sdrplay3_arm_version }} (ARM) to executable
     become: yes
-    file: dest=/home/{{ ham_user }}/hamradio/SDRplay_RSP_API-RPi-{{ sdrplay_arm_version }}.run mode=a+x
+    file: dest=/home/{{ ham_user }}/hamradio/SDRplay_RSP_API-ARM32-{{ sdrplay3_arm_version }}.run mode=a+x
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
   - name: Set Expect Script to executable (ARM)
     become: yes
-    file: dest=/home/{{ ham_user }}/hamradio/sdrplay_api2_install.exp mode=a+x
+    file: dest=/home/{{ ham_user }}/hamradio/sdrplay_api3_install.exp mode=a+x
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
-  - name: Install SDRPlay RSP Driver {{ sdrplay_arm_version }} (ARM) using Expect Script
+  - name: Install SDRPlay RSP Driver {{ sdrplay3_arm_version }} (ARM) using Expect Script
     become: yes
-    command: ./sdrplay_api2_install.exp
+    command: ./sdrplay_api3_install.exp
     args:
       chdir: /home/{{ ham_user }}/hamradio
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
-  - name: Remove SDRPlay RSP Driver Installer {{ sdrplay_arm_version }} (ARM)
+  - name: Remove SDRPlay RSP Driver Installer {{ sdrplay3_arm_version }} (ARM)
     become: yes
     file:
-      path: /home/{{ ham_user }}/hamradio/SDRplay_RSP_API-RPi-{{ sdrplay_arm_version }}.run
+      path: /home/{{ ham_user }}/hamradio/SDRplay_RSP_API-ARM32-{{ sdrplay3_arm_version }}.run
       state: absent
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
-  - name: Remove SDRPlay Driver Expect Script {{ sdrplay_arm_version }} (ARM)
+  - name: Remove SDRPlay Driver Expect Script {{ sdrplay3_arm_version }} (ARM)
     become: yes
     file:
-      path: /home/{{ ham_user }}/hamradio/sdrplay_api2_install.exp
+      path: /home/{{ ham_user }}/hamradio/sdrplay_api3_install.exp
       state: absent
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
 #
-# Raspbian (x86) v2
+# Raspbian (x86)
 #
 
-  - name: Copy SDRPlay Driver {{ sdrplay_x86_version }} (x86)
+  - name: Copy SDRPlay Driver {{ sdrplay3_x86_version }} (x86)
     copy:
-      src: "{{ playbook_dir }}/../files/SDRplay_RSP_API-Linux-{{ sdrplay_x86_version }}.run"
-      dest: /home/{{ ham_user }}/hamradio/SDRplay_RSP_API-Linux-{{ sdrplay_x86_version }}.run
+      src: "{{ playbook_dir }}/../files/SDRplay_RSP_API-Linux-{{ sdrplay3_x86_version }}.run"
+      dest: /home/{{ ham_user }}/hamradio/SDRplay_RSP_API-Linux-{{ sdrplay3_x86_version }}.run
     when: ansible_architecture == "i386" or ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
   - name: Copy SDRPlay Expect Script (x86)
     copy:
-      src: "{{ playbook_dir }}/../files/sdrplay_linux_api2_install.exp"
-      dest: /home/{{ ham_user }}/hamradio/sdrplay_linux_api2_install.exp
+      src: "{{ playbook_dir }}/../files/sdrplay_linux_api3_install.exp"
+      dest: /home/{{ ham_user }}/hamradio/sdrplay_linux_api3_install.exp
     when: ansible_architecture == "i386" or ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
-  - name: Set SDRPlay RSP Driver Installer {{ sdrplay_x86_version }} (x86) to executable
+  - name: Set SDRPlay RSP Driver Installer {{ sdrplay3_x86_version }} (x86) to executable
     become: yes
-    file: dest=/home/{{ ham_user }}/hamradio/SDRplay_RSP_API-Linux-{{ sdrplay_x86_version }}.run mode=a+x
+    file: dest=/home/{{ ham_user }}/hamradio/SDRplay_RSP_API-Linux-{{ sdrplay3_x86_version }}.run mode=a+x
     when: ansible_architecture == "i386" or ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
   - name: Set Expect Script to executable (x86)
     become: yes
-    file: dest=/home/{{ ham_user }}/hamradio/sdrplay_linux_api2_install.exp mode=a+x
+    file: dest=/home/{{ ham_user }}/hamradio/sdrplay_linux_api3_install.exp mode=a+x
     when: ansible_architecture == "i386" or ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
-  - name: Install SDRPlay RSP Driver {{ sdrplay_x86_version }} (x86) using Expect Script
+  - name: Install SDRPlay RSP Driver {{ sdrplay3_x86_version }} (x86) using Expect Script
     become: yes
-    command: ./sdrplay_linux_api2_install.exp
+    command: ./sdrplay_linux_api3_install.exp
     args:
       chdir: /home/{{ ham_user }}/hamradio
     when: ansible_architecture == "i386" or ansible_architecture == "x86_64" or ansible_architecture == "amd64"
@@ -112,53 +111,53 @@
   - name: Remove SDRPlay RSP Driver Installer (x86)
     become: yes
     file:
-      path: /home/{{ ham_user }}/hamradio/SDRplay_RSP_API-Linux-{{ sdrplay_x86_version }}.run
+      path: /home/{{ ham_user }}/hamradio/SDRplay_RSP_API-Linux-{{ sdrplay3_x86_version }}.run
       state: absent
     when: ansible_architecture == "i386" or ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
   - name: Remove SDRPlay Driver Expect Script (x86)
     become: yes
     file:
-      path: /home/{{ ham_user }}/hamradio/sdrplay_linux_api2_install.exp
+      path: /home/{{ ham_user }}/hamradio/sdrplay_linux_api3_install.exp
       state: absent
     when: ansible_architecture == "i386" or ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
 
 #
-# Build SoapySDRPlay Module v2
+# Build SoapySDRPlay3 Module
 #
 
-  - name: Download latest SoapySDRPlay sources
+  - name: Download latest SoapySDRPlay3 sources
     git:
-      repo: https://github.com/pothosware/SoapySDRPlay.git
-      dest: /home/{{ ham_user }}/hamradio/SoapySDRPlay
+      repo: https://github.com/pothosware/SoapySDRPlay3.git
+      dest: /home/{{ ham_user }}/hamradio/SoapySDRPlay3
     retries: 5
     delay: 30
     register: result
     until: result.failed == false
 
-  - name: Create directory SoapySDRPlay/build
+  - name: Create directory SoapySDRPlay3/build
     file:
-      path: /home/{{ ham_user }}/hamradio/SoapySDRPlay/build
+      path: /home/{{ ham_user }}/hamradio/SoapySDRPlay3/build
       state: directory
 
-  - name: Build SoapySDRPlay CMakeFiles
+  - name: Build SoapySDRPlay3 CMakeFiles
     command: cmake ..
     args:
-      chdir: /home/{{ ham_user }}/hamradio/SoapySDRPlay/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapySDRPlay3/build
 
-  - name: Build SoapySDRPlay
+  - name: Build SoapySDRPlay3
     command: make
     args:
-      chdir: /home/{{ ham_user }}/hamradio/SoapySDRPlay/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapySDRPlay3/build
 
-  - name: Install SoapySDRPlay
+  - name: Install SoapySDRPlay3
     become: yes
     command: make install
     args:
-      chdir: /home/{{ ham_user }}/hamradio/SoapySDRPlay/build
+      chdir: /home/{{ ham_user }}/hamradio/SoapySDRPlay3/build
 
-  - name: Remove SoapySDRPlay build directory
+  - name: Remove SoapySDRPlay3 build directory
     file:
-      path: /home/{{ ham_user }}/hamradio/SoapySDRPlay
+      path: /home/{{ ham_user }}/hamradio/SoapySDRPlay3
       state: absent

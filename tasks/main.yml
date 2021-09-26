@@ -51,6 +51,7 @@
 - import_playbook: install_soapy_rtlsdr.yml
 # Fails to build under aarch64:
 - import_playbook: install_soapy_sdrplay.yml
+- import_playbook: install_soapy_sdrplay3.yml
 # Fails to build under aarch64:
 - import_playbook: install_soapy_volkconverters.yml
 # ^^^ This part takes about 1 hour, 15 minutes to build on a RPi 4 ^^^

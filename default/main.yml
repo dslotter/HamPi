@@ -10,6 +10,7 @@ hamlib_version: 4.0
 sdrplay_arm_version: 2.13.1
 sdrplay3_arm_version: 3.07.2
 sdrplay_x86_version: 2.13.1
+sdrplay3_x86_version: 3.07.1 
 # Open Beta versions of SDRPlay RSP Driver:
 #sdrplay_arm_version: 3.07.2
 #sdrplay_x86_version: 3.07.1
