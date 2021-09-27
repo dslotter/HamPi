@@ -1,0 +1,50 @@
+#
+# Copyright 2020 - 2021, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Ten Ten QSO Logger
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory /usr/local/1010qsologger
+    become: yes
+    file:
+      path: /usr/local/1010qsologger
+      state: directory
+
+  - name: Download and Unarchive Ten Ten QSO Logger
+    become: yes
+    unarchive:
+      src: "https://n7yg.net/files/10qsolog.zip"
+      dest: /usr/local/1010qsologger
+      remote_src: yes
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Remove Ten Ten QSO Logger cruft
+    become: yes
+    shell: rm 10QSOLogger.exe 10qsolog.bat
+    args:
+      chdir: /usr/local/1010qsologger
+      warn: no
+
+  - name: Change Ownership of /usr/local/1010qsologger to {{ ham_user }}
+    become: yes
+    file: dest=/usr/local/1010qsologger owner={{ ham_user }} group={{ ham_user}} recurse=yes
+
+  - name: Change /usr/local/1010qsologger/10qsolog.sh to Executable
+    become: yes
+    file: dest=/usr/local/1010qsologger/10qsolog.sh mode=a+x
+
+  - name: Copy Ten Ten QSO Logger desktop file
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/tentenlogger.desktop"
+      dest: "/usr/local/share/applications/tentenlogger.desktop"

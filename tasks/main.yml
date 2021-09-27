@@ -141,6 +141,7 @@
 - import_playbook: install_dudestar.yml
 - import_playbook: install_ladyheather.yml
 - import_playbook: install_cqrprop.yml
+- import_playbook: install_tentenqsologger.yml
 
 # Install SDR GUI apps after all pre-requisite SDR drivers are installed
 - import_playbook: install_cutesdr.yml

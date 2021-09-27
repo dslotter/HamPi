@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Ten Ten QSO Logger
+Comment=Ten Ten QSO Logger
+Exec=/usr/local/1010qsologger/10qsolog.sh
+Icon=/usr/local/1010qsologger/icon.png
+Terminal=false
+Type=Application
+Categories=HamRadio Logging
