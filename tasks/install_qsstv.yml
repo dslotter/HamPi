@@ -45,10 +45,11 @@
       dest: "/home/{{ ham_user }}/hamradio/"
       remote_src: yes
 
-  - name: Patch FILPATHLEN to HAMLIB_FILPATHLEN for newer version of HamLib
-    command: sed 's/FILPATHLEN/HAMLIB_FILPATHLEN/' -i "/home/{{ ham_user }}/hamradio/qsstv_{{ download_date.stdout }}/rig/rigcontrol.cpp"
+  - name: Normalize QSSTV directory name {{ download_date.stdout }}
+    shell: mv qsstv* "qsstv_{{ download_date.stdout }}"
+    ignore_errors: yes
     args:
-      warn: no
+      chdir: "/home/{{ ham_user }}/hamradio/"
 
   - name: Build QSSTV Makefile {{ download_date.stdout }}
     command: qmake
