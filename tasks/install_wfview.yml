@@ -36,6 +36,7 @@
       - libqcustomplot2.0
       - libqcustomplot-doc
       - libqcustomplot-dev
+      - libopus-dev
     retries: 5
     delay: 30
     register: result
@@ -66,14 +67,15 @@
       chdir: /home/{{ ham_user }}/hamradio/build
 
   - name: Install wfview
-    shell: echo "y" | sudo ./install.sh
+    become: yes
+    command: make install
     args:
       chdir: /home/{{ ham_user }}/hamradio/build
 
   - name: Modify categories for wfview.desktop
     become: yes
     lineinfile:
-      path: /usr/share/applications/wfview.desktop
+      path: /usr/local/share/applications/wfview.desktop
       regexp: '^Categories=Network;HamRadio'
       line: Categories=HamRadio
 
