@@ -17,6 +17,19 @@
     register: result
     until: result.failed == false
 
+  - name: Install atlc Package (Arbitrary Transmission Line Calculator)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - atlc
+      - atlc-examples
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
   - name: Install colrconv Package (convers client with sound and ncurses color support)
     become: yes
     package:
