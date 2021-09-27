@@ -100,7 +100,7 @@
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
     retries: 5
     delay: 30
-    until: dump1090.failed == false
+    until: dump1090_version.failed == false
 
   - name: Download dump1090-mutability {{ dump1090_version.stdout }} (ARM)
     get_url:
