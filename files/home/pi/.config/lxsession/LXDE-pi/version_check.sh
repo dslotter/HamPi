@@ -9,6 +9,20 @@ HAMPI_INSTALLED_VERSION=`grep -Po "VERSION_ID=\".*\"" /etc/hampi-release | grep 
 echo "HAMPI_LATEST_VERSION = $HAMPI_LATEST_VERSION"
 echo "HAMPI_INSTALLED_VERSION = $HAMPI_INSTALLED_VERSION"
 
+# If curl doesn't return version (network is down), then quit
+if [[ "$HAMPI_LATEST_VERSION" == "" ]]
+then
+  echo "Could not retrieve version of HamPi from Internet."
+  exit 1
+fi
+
+# If filesystem doesn't return version (someone mucked with version file), then quit
+if [[ "$HAMPI_INSTALLED_VERSION" == "" ]]
+then
+  echo "Could not retrieve version of HamPi from filesystem."
+  exit 1
+fi
+
 #
 # BASH Version compare used under Creative Commons License
 #
