@@ -4,3 +4,4 @@
 point-rpi
 @/home/{{ ham_user }}/.config/lxsession/LXDE-pi/qslware.sh
 @/home/{{ ham_user }}/.config/lxsession/LXDE-pi/boinc.sh
+@/home/{{ ham_user }}/.config/lxsession/LXDE-pi/version_check.sh
