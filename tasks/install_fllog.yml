@@ -36,7 +36,7 @@
       register: download_date
       retries: 5
       delay: 30
-      until: download_data.failed == false
+      until: download_date.failed == false
 
     - name: Download and Unarchive fllog {{ download_date.stdout }}
       unarchive:
