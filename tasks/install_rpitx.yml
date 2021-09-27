@@ -114,7 +114,7 @@
 
   - name: Download latest pift8 sources
     git:
-      repo: https://github.com/kgoba/ft8_lib
+      repo: https://github.com/F5OEO/ft8_lib
       dest: /home/{{ ham_user }}/hamradio/rpitx/src/pift8/ft8_lib
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
     retries: 5
