@@ -31,27 +31,26 @@
     register: result
     until: result.failed == false
 
-  - name: Download and Unarchive BlueDV {{ bluedv_version }}
+  - name: Download and Unarchive BlueDV
     become: yes
     unarchive:
-      src: "http://software.pa7lim.nl/BlueDV/BETA/Linux/BlueDV-Linux-{{ bluedv_version }}-BETA.zip"
+      src: "{{ playbook_dir }}/../files/usr/local/bluedv/BlueDV_v1_0_0_9609.zip"
       dest: "/usr/local/bluedv"
-      remote_src: yes
       validate_certs: no
     retries: 5
     delay: 30
     register: result
     until: result.failed == false
 
-  - name: Copy BlueDV default preferences file
-    become: yes
-    copy:
-      src: "{{ playbook_dir }}/../files/usr/local/bluedv/BlueDVconfig.ini"
-      dest: "/usr/local/bluedv/BlueDVconfig.ini"
+#  - name: Copy BlueDV default preferences file
+#    become: yes
+#    copy:
+#      src: "{{ playbook_dir }}/../files/usr/local/bluedv/BlueDVconfig.ini"
+#      dest: "/usr/local/bluedv/BlueDVconfig.ini"
 
-  - name: Change owner of BlueDV default preferences file to ham radio user
+  - name: Change owner of BlueDV folder to {{ ham_user }}
     become: yes
-    file: dest=/usr/local/bluedv/BlueDVconfig.ini owner="{{ ham_user }}" group="{{ ham_user }}"
+    file: dest=/usr/local/bluedv owner="{{ ham_user }}" group="{{ ham_user }}" recurse=yes
 
   - name: Copy BlueDV desktop file
     become: yes
