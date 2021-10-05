@@ -198,7 +198,7 @@ Version 2 of Raspberry Pi Ham Radio Image by W3DJS
   
   PyQSO - Logging software (written in Python)
   
-  klog - The Ham Radio Logging program
+  KLog - The Ham Radio Logging program
   
   tlf - console based ham radio contest logger
   
