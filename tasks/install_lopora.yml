@@ -56,7 +56,7 @@
 
         # Start Lopora
         cd /home/{{ ham_user }}/lopora
-        lxterminal -l -e 'python3 LOPORA-v5d.py ; /bin/sh' &
+        lxterminal -l -e 'python3 LOPORA-v5e.py ; /bin/sh' &
         lxterminal -l -e 'python3 LOPEXTftp-v1a.py ; /bin/sh' &
 
   - name: Copy Lopora desktop file
