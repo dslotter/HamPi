@@ -24,11 +24,23 @@
       - morse2ascii
       - morsegen
       - hamradio-morse
-      - morse-simulator
-      - python3-morse-simulator
       - cwdaemon
       - qrq
       - morse
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Install Morse Code Packages (Raspberry Pi Buster or Xubuntu)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - morse-simulator
+      - python3-morse-simulator
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and ansible_distribution_major_version != "11"
     retries: 5
     delay: 30
     register: result
