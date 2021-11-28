@@ -95,22 +95,20 @@
     register: result
     until: result.failed == false
 
-  - name: Install Logging Packages (ARM 32)
+  - name: Install Tucnak2 (Raspberry Pi Buster)
     become: yes
     package:
-      name: "{{ item }}"
+      name: tucnak2
       state: present
-    with_items:
-      - tucnak2
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and  ansible_distribution_major_version == "10" and (ansible_architecture == "armhf" or ansible_architecture == "armv7l")
 
-  - name: Modify categories for tucnak2.desktop
+  - name: Modify categories for tucnak2.desktop (Raspberry Pi Buster)
     become: yes
     lineinfile:
       path: /usr/share/applications/tucnak2.desktop
       regexp: '^Categories=Utility;HamRadio'
       line: Categories=HamRadio Logging
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and  ansible_distribution_major_version == "10" and (ansible_architecture == "armhf" or ansible_architecture == "armv7l")
 
 #
 # Install PyQSO
