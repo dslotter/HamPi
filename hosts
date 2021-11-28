@@ -21,6 +21,7 @@
 ansible_user=hampi
 ansible_password=hampi
 ansible_port=9022
+ansible_python_interpreter=/usr/bin/python3
 
 [nuc:vars]
 ansible_user=hampc
@@ -39,4 +40,5 @@ ansible_port=9022
 [hardware:vars]
 ansible_user=pi
 ansible_password=raspberry
-ansible_port=2622
+ansible_port=22
+ansible_python_interpreter=/usr/bin/python3
