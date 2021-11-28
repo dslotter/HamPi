@@ -138,7 +138,7 @@
     package:
       name: hamfax
       state: present
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and ansible_distribution_version == "10" and(ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
     retries: 5
     delay: 30
     register: result
@@ -150,7 +150,7 @@
       path: /usr/share/applications/hamfax.desktop
       regexp: '^Categories=AudioVideo;Audio;HamRadio;Qt'
       line: Categories=HamRadio
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and ansible_distribution_version == "10" and(ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
   - name: Install inspectrum Package (Tool for visualising captured radio signals)
     become: yes
