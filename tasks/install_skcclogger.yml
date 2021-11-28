@@ -10,10 +10,17 @@
 #
 # Raspberry Pi
 #
-  - name: Download and Unarchive SKCCLogger (Raspberry Pi)
+
+  - name: Copy SKCCLogger from local file (because developer moved download behind a login) (ARM)
+    copy:
+      src: "{{ playbook_dir }}/../files/SKCCLogger_Linux_32-Bit-ARM.zip"
+      dest: "/home/{{ ham_user }}/hamradio/SKCCLogger_Linux_32-Bit-ARM.zip"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Unarchive SKCCLogger (Raspberry Pi)
     become: yes
     unarchive:
-      src:  http://www.ac2c.net/downloads/Current_Releases/SKCCLogger_Linux_32-Bit-ARM.zip
+      src: "/home/{{ ham_user }}/hamradio/SKCCLogger_Linux_32-Bit-ARM.zip"
       dest: /usr/local/
       remote_src: yes
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
@@ -34,13 +41,25 @@
       warn: false
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
+  - name: Remove SKCCLogger from local file (ARM)
+    file:
+      path: "/home/{{ ham_user }}/hamradio/SKCCLogger_Linux_32-Bit-ARM.zip"
+      state: absent
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
 #
 # Xubuntu
 #
-  - name: Download and Unarchive SKCCLogger (Xubuntu)
+  - name: Copy SKCCLogger from local file (because developer moved download behind a login) (Xubuntu)
+    copy:
+      src: "{{ playbook_dir }}/../files/SKCCLogger_Linux_64-Bit.zip"
+      dest: "/home/{{ ham_user }}/hamradio/SKCCLogger_Linux_64-Bit.zip"
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
+  - name: Unarchive SKCCLogger (Xubuntu)
     become: yes
     unarchive:
-      src: http://www.ac2c.net/downloads/Current_Releases/SKCCLogger_Linux_64-Bit.zip
+      src: "/home/{{ ham_user }}/hamradio/SKCCLogger_Linux_64-Bit.zip"
       dest: /usr/local/
       remote_src: yes
     when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
@@ -60,3 +79,10 @@
     args:
       warn: false
     when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+
+  - name: Remove SKCCLogger from local file (Xubuntu)
+    file:
+      path: "/home/{{ ham_user }}/hamradio/SKCCLogger_Linux_64-Bit.zip"
+      state: absent
+    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+
