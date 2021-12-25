@@ -11,6 +11,24 @@
       path: /home/{{ ham_user }}/hamradio/
       state: directory
 
+  - name: Install Patmenu2 dependencies
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - ruby
+      - yad
+      - jq
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Install Patmenu2 Ruby gems
+    become: yes
+    command: gem install gpsd_client maidenhead
+
   - name: Git clone latest Patmenu2
     git:
       repo: 'https://github.com/km4ack/patmenu2.git'
