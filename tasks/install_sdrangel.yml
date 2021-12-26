@@ -52,7 +52,6 @@
       - libfftw3-dev
       - libusb-1.0-0-dev
       - libusb-dev
-      - qt5-default
       - qtbase5-dev
       - qtchooser
       - libqt5multimedia5-plugins
@@ -91,6 +90,17 @@
       - libavformat-dev
       - libopus-dev
       - graphviz
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Install dependent libraries (Raspberry Pi Buster)
+    become: yes
+    package:
+      name: qt5-default
+      state: present
+    when: is_rpi|bool and is_buster|bool
     retries: 5
     delay: 30
     register: result
