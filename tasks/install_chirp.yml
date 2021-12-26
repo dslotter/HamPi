@@ -12,7 +12,20 @@
       path: /home/{{ ham_user }}/hamradio/
       state: directory
 
-  - name: Install Chirp prerequisite packages
+  - include_tasks: ../library/install_buster_repo.yml
+
+  - name: Install Chirp prerequisite packages (Raspberry Pi Bullseye)
+    become: yes
+    package:
+      name: python2.7
+      state: present
+    when: is_rpi|bool and is_bullseye|bool
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Install Chirp prerequisite packages (Raspberry Pi Common)
     become: yes
     package:
       name: "{{ item }}"
@@ -21,13 +34,13 @@
       - python-libxml2
       - python-gtk2
       - python-serial
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: is_rpi|bool
     retries: 5
     delay: 30
     register: result
     until: result.failed == false
 
-  - name: Install Chirp prerequisite packages
+  - name: Install Chirp prerequisite packages (Xubuntu)
     become: yes
     package:
       name: "{{ item }}"
@@ -36,7 +49,7 @@
       - python-libxml2
       - python-wxgtk3.0
       - python3-serial
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    when: is_ubuntu|bool
     retries: 5
     delay: 30
     register: result
@@ -46,7 +59,7 @@
     become: yes
     apt:
       deb: http://archive.ubuntu.com/ubuntu/pool/universe/p/pygtk/python-gtk2_2.24.0-5.1ubuntu2_amd64.deb
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    when: is_ubuntu|bool
     retries: 5
     delay: 30
     register: result
@@ -82,7 +95,7 @@
     become: yes
     lineinfile:
       path: /usr/local/share/applications/chirp.desktop
-      regexp: '^Categories=Hamradio;Programming;Handheld;Radio;Amateur;Programmer'
+      regexp: '^Categories=Utility;HamRadio'
       line: Categories=HamRadio
 
   - name: Remove Chirp {{ download_date.stdout }} build directory
