@@ -1,0 +1,23 @@
+#
+# Copyright 2020 - 2021, Dave Slotter (W3DJS). All rights reserved.
+#
+
+  - name: Insert apt sources configuration for Buster repo (Python 2 packages)
+    become: yes
+    blockinfile:
+      dest: "/etc/apt/sources.list.d/hampi.list"
+      create: yes
+      block: |
+        # Access Buster repositories
+        deb http://raspbian.raspberrypi.org/raspbian/ buster main contrib non-free rpi
+    when: is_bullseye|bool
+
+  - name: Update package cache
+    become: yes
+    apt:
+      update_cache: yes
+    when: is_bullseye|bool
+    retries: 10
+    delay: 30
+    register: result
+    until: result.failed == false

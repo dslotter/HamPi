@@ -4,7 +4,7 @@
 
 ---
 
-- name: HamPi / HamPC v1.5 (September 2021) Playbook by W3DJS
+- name: HamPi / HamPC v2.0 (December 2021) Playbook by W3DJS
   hosts: all
   # hosts: nuc
   # hosts: vm
@@ -16,6 +16,7 @@
         msg: >
           "You must update Ansible to at least 2.9 to install this version of HamPi / HamPC by W3DJS."
 
+- import_playbook: ../library/set_facts.yml
 - import_playbook: init_task.yml
 - import_playbook: configuration_tasks.yml
 - import_playbook: install_menus.yml
