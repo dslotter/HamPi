@@ -17,7 +17,7 @@
       path: /home/{{ ham_user }}/hamradio
       state: directory
 
-  - name: Install dependent libraries
+  - name: Install dependent libraries (Common)
     become: yes
     package:
       name: "{{ item }}"
@@ -25,13 +25,27 @@
     with_items:
       - g++
       - libfftw3-dev
-      - qt5-default
       - libpulse-dev
       - libhamlib-dev
       - libasound2-dev
       - libv4l-dev
       - libopenjp2-7
       - libopenjp2-7-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Install dependent libraries (Raspberry Pi Buster)
+    become: yes
+    package:
+      name: qt5-default
+      state: present
+    when: is_rpi|bool and is_buster|bool
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Determine latest version of QSSTV on web
     shell: curl --silent "http://users.telenet.be/on4qz/qsstv/downloads/" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq | tail -n 1
