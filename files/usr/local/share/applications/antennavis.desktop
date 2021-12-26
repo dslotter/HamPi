@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Type=Application
+Name=Antenna Visualization Toolkit
+Exec=antennavis
+Terminal=false
+Comment=Antenna Visualization Toolkit
+Categories=HamRadio Antenna Analyzer
+Keywords=HamRadio

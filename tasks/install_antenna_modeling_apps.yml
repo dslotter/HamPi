@@ -21,6 +21,13 @@
       - xnecview
       - yagiuda
 
+  - name: Copy desktop file for Antenna Visualizer
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/antennavis.desktop"
+      dest: "/usr/local/share/applications/antennavis.desktop"
+
+
   # GTK Smith Chart Calculator
   - name: Modify categories for gsmc.desktop
     become: yes
