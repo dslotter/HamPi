@@ -54,14 +54,26 @@
         <exclusive_app>ar</exclusive_app>
         <exclusive_app>bison</exclusive_app>
         <exclusive_app>cc</exclusive_app>
+        <exclusive_app>cc1</exclusive_app>
         <exclusive_app>cc1plus</exclusive_app>
+        <exclusive_app>collect2</exclusive_app>
         <exclusive_app>c++</exclusive_app>
+        <exclusive_app>f951</exclusive_app>
         <exclusive_app>gcc</exclusive_app>
+        <exclusive_app>gcc-ar-10</exclusive_app>
+        <exclusive_app>gcc-ranlib-10</exclusive_app>
         <exclusive_app>g++</exclusive_app>
         <exclusive_app>gfortran</exclusive_app>
         <exclusive_app>gfortran-5</exclusive_app>
         <exclusive_app>cmake</exclusive_app>
+        <exclusive_app>cpack</exclusive_app>
+        <exclusive_app>ld</exclusive_app>
+        <exclusive_app>ldd</exclusive_app>
+        <exclusive_app>lto1</exclusive_app>
+        <exclusive_app>lto-wrapper</exclusive_app>
         <exclusive_app>make</exclusive_app>
+        <exclusive_app>moc</exclusive_app>
+        <exclusive_app>ranlib</exclusive_app>
         <exclusive_app>yacc</exclusive_app>
         <exclusive_app>MakeMKV</exclusive_app>
         <exclusive_app>obs</exclusive_app>
