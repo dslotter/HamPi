@@ -7,18 +7,50 @@
   gather_facts: no
   tasks:
 
-  - name: Install dependent Python components for D-Rats (Raspberry Pi)
+  - name: Create directory /usr/local/share/applications
+    become: yes
+    file:
+      path: /usr/local/share/applications
+      state: directory
+
+  - include_tasks: ../library/install_buster_repo.yml
+
+  - name: Install dependent Python components for D-Rats (Raspberry Pi Buster)
+    become: yes
+    package:
+      name: python
+      state: present
+    when: is_rpi|bool and is_debian|bool and is_buster|bool 
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Install dependent Python components for D-Rats (Raspberry Pi Bullseye)
     become: yes
     package:
       name: "{{ item }}"
       state: present
     with_items:
-      - python
+      - python2.7
+      - python-six
+    when: is_rpi|bool and is_debian|bool and is_bullseye|bool 
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Install dependent Python components for D-Rats (Raspberry Pi Common)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
       - python-glade2
       - python-libxml2
       - python-libxslt1
       - python-serial
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: is_rpi|bool and is_debian|bool 
     retries: 5
     delay: 30
     register: result
@@ -30,10 +62,10 @@
       name: "{{ item }}"
       state: present
     with_items:
-      - python-lxml
       - python
+      - python-lxml
       - python-libxml2
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    when: is_ubuntu|bool 
     retries: 5
     delay: 30
     register: result
@@ -43,7 +75,7 @@
     become: yes
     apt:
       deb: http://archive.ubuntu.com/ubuntu/pool/universe/p/pygtk/python-gtk2_2.24.0-5.1ubuntu2_amd64.deb
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    when: is_ubuntu|bool 
     retries: 5
     delay: 30
     register: result
@@ -53,7 +85,7 @@
     become: yes
     apt:
       deb: http://mirrors.kernel.org/ubuntu/pool/main/p/pyserial/python-serial_3.4-2_all.deb
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    when: is_ubuntu|bool 
     retries: 5
     delay: 30
     register: result
@@ -63,7 +95,7 @@
     become: yes
     apt:
       deb: http://archive.ubuntu.com/ubuntu/pool/universe/p/pygtk/python-glade2_2.24.0-5.1ubuntu2_amd64.deb
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    when: is_ubuntu|bool 
     retries: 5
     delay: 30
     register: result
@@ -73,7 +105,7 @@
     become: yes
     apt:
       deb: http://security.ubuntu.com/ubuntu/pool/main/libx/libxslt/python-libxslt1_1.1.29-5ubuntu0.2_amd64.deb
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    when: is_ubuntu|bool 
     retries: 5
     delay: 30
     register: result
@@ -88,21 +120,21 @@
     register: result
     until: result.failed == false
 
-  - name: Install D-Rats update script (ARM)
+  - name: Install D-Rats update script (Pi)
     become: yes
     copy:
       src: "{{ playbook_dir }}/../files/usr/local/bin/update_d-rats"
       dest: "/usr/local/bin/update_d-rats"
       mode: a+x
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: is_rpi|bool 
 
-  - name: Install D-Rats update script (x86)
+  - name: Install D-Rats update script (PC)
     become: yes
     copy:
       src: "{{ playbook_dir }}/../files/usr/local/bin/update_d-rats_linux"
       dest: "/usr/local/bin/update_d-rats"
       mode: a+x
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "i386" or ansible_architecture == "amd64")
+    when: is_pc|bool 
 
   - name: Run D-Rats update script (which builds and installs D-Rats from Git)
     command: /usr/local/bin/update_d-rats
