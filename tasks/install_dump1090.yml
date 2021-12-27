@@ -42,15 +42,6 @@
     register: result
     until: result.failed == false
 
-  - name: Checkout api3 branch of dump1090
-    command: git checkout api3
-    args:
-      chdir: /home/{{ ham_user }}/hamradio/dump1090
-    retries: 5
-    delay: 30
-    register: result
-    until: result.failed == false
-
   - name: Build dump1090
     command: make
     args:
