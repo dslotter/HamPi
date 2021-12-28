@@ -13,7 +13,6 @@
       name: "{{ item }}"
       state: present
     with_items:
-      - trustedqsl
       - tlf
       - klog
       - xlog
@@ -100,7 +99,7 @@
     package:
       name: tucnak2
       state: present
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and  ansible_distribution_major_version == "10" and (ansible_architecture == "armhf" or ansible_architecture == "armv7l")
+    when: is_rpi|bool and is_buster|bool
 
   - name: Modify categories for tucnak2.desktop (Raspberry Pi Buster)
     become: yes
@@ -108,7 +107,22 @@
       path: /usr/share/applications/tucnak2.desktop
       regexp: '^Categories=Utility;HamRadio'
       line: Categories=HamRadio Logging
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and  ansible_distribution_major_version == "10" and (ansible_architecture == "armhf" or ansible_architecture == "armv7l")
+    when: is_rpi|bool and is_buster|bool
+
+  - name: Install Tucnak (Raspberry Pi Bullseye)
+    become: yes
+    package:
+      name: tucnak
+      state: present
+    when: is_rpi|bool and is_bullseye|bool
+
+  - name: Modify categories for tucnak.desktop (Raspberry Pi Bullseye)
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/tucnak.desktop
+      regexp: '^Categories=Utility;HamRadio'
+      line: Categories=HamRadio Logging
+    when: is_rpi|bool and is_bullseye|bool
 
 #
 # Install PyQSO
