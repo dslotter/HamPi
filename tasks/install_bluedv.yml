@@ -31,6 +31,28 @@
     register: result
     until: result.failed == false
 
+  - name: Ensure the most recent ca certs are installed
+    become: yes
+    package:
+      name: ca-certificates
+      state: present
+    when: is_rpi|bool and is_bullseye|bool
+
+  - name: Remove the offending "Let's Encrypt" root cert from the root store
+    become: yes
+    command: mv /usr/share/ca-certificates/mozilla/DST_Root_CA_X3.crt /home/pi/DST_Root_CA_X3.crt 
+    when: is_rpi|bool and is_bullseye|bool
+
+  - name: Resolves warning in next step
+    become: yes
+    command: sed -i "/^mozilla\/DST_Root_CA_X3.crt/g" /etc/ca-certificates.conf
+    when: is_rpi|bool and is_bullseye|bool
+
+  - name: Update the root ca store -- this also updates mono
+    become: yes
+    command: update-ca-certificates
+    when: is_rpi|bool and is_bullseye|bool
+
   - name: Download and Unarchive BlueDV
     become: yes
     unarchive:
