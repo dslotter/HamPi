@@ -59,6 +59,7 @@
       path: /usr/local/share/applications/wsjtx.desktop
       regexp: '^Categories=AudioVideo;Audio;HamRadio;'
       line: Categories=HamRadio Weak Signal
+
 #
 # Raspbian ARM
 #
