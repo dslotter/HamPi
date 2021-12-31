@@ -1,8 +1,0 @@
-[Desktop Entry]
-GenericName=DUDE-Star
-Name=DUDE-Star
-Comment=DUDE-Star - Software to RX/TX D-STAR, DMR, Fusion YSF/FCS, NXDN, P25, M17, and IAX (AllStar client)
-Exec=/usr/local/bin/dudestar
-Terminal=false
-Type=Application
-Categories=HamRadio

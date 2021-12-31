@@ -1,0 +1,118 @@
+#
+# Copyright 2021, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install DroidStar - software to RX/TX D-Star, DMR, Fusion YSF/FCS, NXDN, P25, M17 and IAX (AllStar Client)
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - build-essential
+      - git
+      - libqt5multimedia5-plugins
+      - libqt5serialport5-dev
+      - qtmultimedia5-dev
+      - libqt5multimediawidgets5
+      - libqt5multimedia5
+      - qtquickcontrols2-5-dev
+      - pulseaudio
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+#
+# imbe-vocoder
+#
+  - name: Git clone latest DroidStar sources
+    git:
+      repo: https://github.com/nostar/imbe_vocoder.git
+      dest: /home/{{ ham_user }}/hamradio/imbe_vocoder
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Build imbe_vocoder
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/imbe_vocoder
+
+  - name: Install imbe_vocoder
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/imbe_vocoder
+
+  - name: Run ldconfig
+    become: yes
+    command: ldconfig
+
+#
+# DroidStar
+#
+  - name: Git clone latest DroidStar sources
+    git:
+      repo: https://github.com/nostar/droidstar.git
+      dest: /home/{{ ham_user }}/hamradio/droidstar
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Create directory droidstar/build
+    file:
+      path: /home/{{ ham_user }}/hamradio/droidstar/build
+      state: directory
+
+  - name: Build DroidStar Makefiles
+    command: qmake ../DroidStar.pro
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/droidstar/build
+
+  - name: Build DroidStar
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/droidstar/build
+
+  - name: Install DroidStar
+    become: yes
+    shell: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/droidstar/build
+
+  - name: Move DroidStar to /usr/local/bin
+    become: yes
+    command: mv /opt/DroidStar/bin/DroidStar /usr/local/bin
+
+  - name: Remove /opt/DroidStar
+    become: yes
+    file:
+      path: /opt/DroidStar
+      state: absent
+
+  - name: Copy DroidStar desktop file
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/DroidStar.desktop"
+      dest: "/usr/local/share/applications/DroidStar.desktop"
+
+  - name: Remove droidstar sources
+    file:
+      path: /home/{{ ham_user }}/hamradio/droidstar
+      state: absent
