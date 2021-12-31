@@ -287,6 +287,9 @@
 #    args:
 #      chdir: /home/{{ ham_user }}/hamradio/OpenDV/RepeaterExtras
 
+#
+# Common
+#
   - name: Remove OpenDV build directory
     file:
       path: /home/{{ ham_user }}/hamradio/OpenDV
