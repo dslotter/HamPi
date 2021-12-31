@@ -18,4 +18,4 @@
 
   - name: Disable Orca and make user enable it
     become: yes
-    command: gsettings set org.gnome.desktop.a11y.applications screen-reader-enabled false
+    command: sudo -E -u pi /usr/bin/gsettings set org.gnome.desktop.a11y.applications screen-reader-enabled false
