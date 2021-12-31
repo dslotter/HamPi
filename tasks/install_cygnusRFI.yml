@@ -12,19 +12,30 @@
       path: /home/{{ ham_user }}/hamradio
       state: directory
 
-  - name: Install dependent components for CygnusRFI
+  - name: Install dependent components for CygnusRFI (Buster)
     become: yes
     package:
       name: "{{ item }}"
       state: present
     with_items:
-      - python
       - gnuradio-dev
       - gr-osmosdr
     retries: 5
     delay: 30
     register: result
     until: result.failed == false
+    when: is_buster|bool
+
+  - name: Install dependent components for CygnusRFI (Bullseye)
+    become: yes
+    package:
+      name: python2.7
+      state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+    when: is_bullseye|bool
 
 #
 # Download CygnusRFI
