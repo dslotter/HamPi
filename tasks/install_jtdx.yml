@@ -29,6 +29,17 @@
 #    register: result
 #    until: result.failed == false
 
+  - name: Install dependent components (Raspberry Pi Bullseye)
+    become: yes
+    package:
+      name: libgfortran4
+      state: present
+    when: is_rpi|bool and is_bullseye|bool
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
 #
 # Raspbian (ARM)
 #
