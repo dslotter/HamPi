@@ -98,6 +98,14 @@
     args:
       chdir: /home/{{ ham_user }}/hamradio/tqsl-{{ tqsl_version.stdout }}
 
+  # TQSL 2.5.9 breaks the installation of the desktop file
+  - name: Copy tqsl.desktop to new location since TQSL 2.5.9 make install is broken
+    become: yes
+    copy:
+      src: "/home/{{ ham_user }}/hamradio/tqsl-{{ tqsl_version.stdout }}/apps/tqsl.desktop"
+      dest: /usr/share/applications/tqsl.desktop
+      remote_src: yes
+
   - name: Modify categories for tqsl.desktop
     become: yes
     lineinfile:
