@@ -36,7 +36,7 @@
 #
 
   - name: Determine latest version of GridTracker (ARM) on web
-    shell: curl --silent "https://tagloomis.com/downloads/" | grep -Po "https:\/\/.*GridTracker-.*-linux-arm32.tar.gz\"" | uniq | head -n 1 | grep -Po "https:\/\/.*GridTracker-.*-linux-arm32.tar.gz"
+    shell: curl --silent "https://download.gridtracker.org/latest_release.html" | grep -Po "https:\/\/.*GridTracker-.*-linux-arm32.tar.gz\"" | uniq | head -n 1 | grep -Po "https:\/\/.*GridTracker-.*-linux-arm32.tar.gz"
     args:
       warn: no
     register: download_file
@@ -45,7 +45,7 @@
     delay: 30
     until: download_file.failed == false
 
-  - name: Download and Unarchive GridTracker {{ download_file.stdout }} (ARM)
+  - name: Download and Unarchive GridTracker 1.21.1217 (ARM)
     become: yes
     unarchive:
       src: "{{ download_file.stdout }}"
