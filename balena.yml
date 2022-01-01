@@ -1,6 +1,7 @@
 name: HamPi and HamPC
 description: >-
-  a ham radio software distribution for the Raspberry Pi and x86_64 Linux PC
+  HamPi and HamPC are a ham radio software distribution
+  for the Raspberry Pi and x86_64 Linux PC
 version: 2.0.0
 type: sw.application
 assets:
