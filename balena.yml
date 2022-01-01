@@ -1,0 +1,23 @@
+name: HamPi and HamPC
+description: >-
+  a ham radio software distribution for the Raspberry Pi and x86_64 Linux PC
+version: 2.0.0
+type: sw.application
+assets:
+  repository:
+    type: blob.asset
+    data:
+      url: 'https://github.com/dslotter/hampi'
+  logo:
+    type: blob.asset
+    data:
+      url: 'https://raw.githubusercontent.com/dslotter/hampi/master/HamPi_Logo.png'
+data:
+  defaultDeviceType: raspberrypi4
+  supportedDeviceTypes:
+    - raspberrypi4
+    - raspberrypi3
+    - raspberrypizerow2
+    - raspberrypi400
+    - intel-nuc
+    - genericx86-64-ext
