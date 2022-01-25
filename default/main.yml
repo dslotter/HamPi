@@ -4,8 +4,6 @@
 # BlueDV version is current as of 2020-05-06
 bluedv_version: 09352
 gridtracker_md5sum_armf: ae526dc9855cc536f5ee3fc8f871ebf7
-# Hamlib version is current as of 2020-05-06
-hamlib_version: 4.0
 # SDRPlay RSP driver version is current as of 2020-05-22
 sdrplay_arm_version: 2.13.1
 sdrplay3_arm_version: 3.07.2
@@ -18,7 +16,7 @@ sdrplay3_x86_version: 3.07.1
 # and the version number format is not consistent, so coding the automatic
 # version determination is a "cat and mouse" game. It's just easier to
 # hard-code the version number going forward. - djs 2020-06-06
-wsjtx_version: 2.5.0
+wsjtx_version: 2.5.2
 wsjtx_212_md5sum_armf: 63a77f1875e274521f8c5e645e176657
 wsjtx_212_md5sum_amd64: cda3bc89a5386fe54e54d26013d38635
 wsjtx_212_md5sum_i386: e8dc2abe7160e7c3c74efdcb42c1b11f
@@ -37,3 +35,5 @@ wsjtx_240_md5sum_amd64: df77f5f515bad365788fb04af8de4a10
 wsjtx_240_md5sum_i386: ed278878eb2f2cf73c4465399705ec56
 wsjtx_250_md5sum_armf: c9f205e60c83a0ace9c2c3bd8e09aa27
 wsjtx_250_md5sum_amd64: aaf50618da5075d23a44eb10705962df
+wsjtx_252_md5sum_armf: f2b9e40be299e30fe3887623bfe2cc5c
+wsjtx_252_md5sum_amd64: 56e9b865b822200ee8912e5299e3e469
