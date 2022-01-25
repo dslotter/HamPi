@@ -30,6 +30,8 @@
       - qttools5-dev-tools
       - qtpositioning5-dev
       - libqt5serialport5-dev
+      - libyaml-cpp-dev
+      - libyaml-cpp0.6
     retries: 5
     delay: 30
     register: result
