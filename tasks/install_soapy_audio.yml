@@ -16,37 +16,6 @@
       path: /home/{{ ham_user }}/hamradio
       state: directory
 
-  - name: Download and Unarchive latest RTAudio
-    unarchive:
-      src: "http://www.music.mcgill.ca/~gary/rtaudio/release/rtaudio-5.1.0.tar.gz"
-      dest: "/home/{{ ham_user }}/hamradio/"
-      remote_src: yes
-    retries: 5
-    delay: 30
-    register: result
-    until: result.failed == false
-
-  - name: Configure RTAudio
-    command: ./configure
-    args:
-      chdir: /home/{{ ham_user }}/hamradio/rtaudio-5.1.0
-
-  - name: Build RTAudio
-    command: make all
-    args:
-      chdir: /home/{{ ham_user }}/hamradio/rtaudio-5.1.0
-
-  - name: Install RTAudio
-    become: yes
-    command: make install
-    args:
-      chdir: /home/{{ ham_user }}/hamradio/rtaudio-5.1.0
-
-  - name: Remove RTAudio 5.1.0 build directory
-    file:
-      path: /home/{{ ham_user }}/hamradio/rtaudio-5.1.0
-      state: absent
-
   - name: Download latest SoapyAudio sources
     git:
       repo: https://github.com/pothosware/SoapyAudio.git

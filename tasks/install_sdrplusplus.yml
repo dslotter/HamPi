@@ -27,7 +27,6 @@
       - libglew-dev
       - libiio-dev
       - libad9361-dev
-      - librtaudio-dev
     retries: 5
     delay: 30
     register: result

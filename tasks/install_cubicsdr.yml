@@ -35,61 +35,6 @@
     until: result.failed == false
 
 #
-# Build and install rtaudio (CMake 3.10 is a pre-requisite for building RtAudio)
-#
-
-  - name: Install dependent libraries
-    become: yes
-    package:
-      name: "{{ item }}"
-      state: present
-    with_items:
-      - libjack0
-      - libjack-dev
-      - libpulse-dev
-      - libasound2-dev
-      - libfftw3-dev
-    retries: 5
-    delay: 30
-    register: result
-    until: result.failed == false
-
-  - name: Download latest RtAudio sources
-    git:
-      repo: https://github.com/thestk/rtaudio.git
-      dest: /home/{{ ham_user }}/hamradio/rtaudio
-    retries: 5
-    delay: 30
-    register: result
-    until: result.failed == false
-
-  - name: Create directory rtaudio/build
-    file:
-      path: /home/{{ ham_user }}/hamradio/rtaudio/build
-      state: directory
-
-  - name: Build rtaudio CMakeFiles
-    command: cmake ..
-    args:
-      chdir: /home/{{ ham_user }}/hamradio/rtaudio/build
-
-  - name: Build RtAudio
-    command: make
-    args:
-      chdir: /home/{{ ham_user }}/hamradio/rtaudio/build
-
-  - name: Install RtAudio
-    become: yes
-    command: make install
-    args:
-      chdir: /home/{{ ham_user }}/hamradio/rtaudio/build
-
-  - name: Remove rtaudio build directory
-    file:
-      path: /home/{{ ham_user }}/hamradio/rtaudio
-      state: absent
-
-#
 # Build and install liquid-dsp
 #
 
