@@ -16,18 +16,41 @@
         path: /home/{{ ham_user }}/hamradio
         state: directory
 
-    - name: Create directory for library
-      file:
-        path: /home/{{ ham_user }}/hamradio/hamlib-{{ hamlib_version }}
-        state: directory
+    - name: Install dependent libraries (Raspberry Pi Buster)
+      become: yes
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - python
+        - python-dev
+      when: is_rpi|bool and is_buster|bool
+      retries: 5
+      delay: 30
+      register: result
 
-    - name: Install dependent libraries
+    - name: Install dependent libraries (Raspberry Pi Bullseye)
+      become: yes
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - libnova-dev
+        - libindi-dev
+      when: is_rpi|bool and is_bullseye|bool
+      retries: 5
+      delay: 30
+      register: result
+      until: result.failed == false
+
+    - name: Install dependent libraries (Common)
       become: yes
       package:
         name: "{{ item }}"
         state: present
       with_items:
         - build-essential
+        - git
         - libfltk1.3-dev
         - libsamplerate0-dev
         - portaudio19-dev
@@ -42,22 +65,12 @@
         - libreadline-dev
         - libxml2-dev
         - libgd-dev
-        - python-dev
-        - git
       retries: 5
       delay: 30
       register: result
       until: result.failed == false
 
-#    - name: Download and Unarchive Hamlib {{ hamlib_version }}
-#      unarchive:
-#        src: "https://downloads.sourceforge.net/project/hamlib/hamlib/{{ hamlib_version }}/hamlib-{{ hamlib_version }}.tar.gz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fhamlib%2Ffiles%2Fhamlib%2F{{ hamlib_version }}%2Fhamlib-{{ hamlib_version }}.tar.gz%2Fdownload%3Fuse_mirror%3Dnewcontinuum&ts=1578415351"
-#        #        src: "https://downloads.sourceforge.net/project/hamlib/hamlib/{{ hamlib_version }}/hamlib-{{ hamlib_version }}.tar.gz"
-#        dest: "/home/{{ ham_user }}/hamradio/"
-#        remote_src: yes
-#        validate_certs: no
-
-    - name: Git clone latest Hamlib {{ hamlib_version }} sources
+    - name: Git clone latest Hamlib sources
       git:
         repo: https://github.com/Hamlib/Hamlib.git
         dest: /home/{{ ham_user }}/hamradio/hamlib
@@ -66,33 +79,40 @@
       register: result
       until: result.failed == false
 
-    - name: Bootstrap Hamlib {{ hamlib_version }}
+    - name: Bootstrap Hamlib
       command: ./bootstrap
       args:
         chdir: /home/{{ ham_user }}/hamradio/hamlib
 
-    - name: Configure Hamlib {{ hamlib_version }}
+    - name: Configure Hamlib (Buster)
       command: ./configure --with-python-binding --with-xml-support
       args:
         chdir: /home/{{ ham_user }}/hamradio/hamlib
+      when: is_buster|bool
 
-    - name: Build Hamlib {{ hamlib_version }}
+    - name: Configure Hamlib (Bullseye)
+      command: ./configure PYTHON_VERSION='3.9' --with-python-binding --with-xml-support
+      args:
+        chdir: /home/{{ ham_user }}/hamradio/hamlib
+      when: is_rpi|bool and is_bullseye|bool
+
+    - name: Build Hamlib
       command: make all
       args:
         chdir: /home/{{ ham_user }}/hamradio/hamlib
 
-    - name: Install Hamlib {{ hamlib_version }}
+    - name: Install Hamlib
       become: yes
       command: make install
       args:
         chdir: /home/{{ ham_user }}/hamradio/hamlib
 
-    - name: Build Hamlib {{ hamlib_version }} Python bindings
+    - name: Build Hamlib Python bindings
       command: make
       args:
         chdir: /home/{{ ham_user }}/hamradio/hamlib/bindings
 
-    - name: Install Hamlib {{ hamlib_version }} Python bindings
+    - name: Install Hamlib Python bindings
       become: yes
       command: make install
       args:
@@ -102,12 +122,7 @@
       become: yes
       command: ldconfig
 
-    - name: Remove Hamlib {{ hamlib_version }} build directory
+    - name: Remove Hamlib build directory
       file:
         path: /home/{{ ham_user }}/hamradio/hamlib
-        state: absent
-
-    - name: Remove Hamlib {{ hamlib_version }} directory
-      file:
-        path: /home/{{ ham_user }}/hamradio/hamlib-{{ hamlib_version }}
         state: absent
