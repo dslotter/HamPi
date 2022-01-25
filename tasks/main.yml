@@ -51,7 +51,6 @@
 - import_playbook: install_soapy_redpitaya.yml
 - import_playbook: install_soapy_rtlsdr.yml
 # Fails to build under aarch64:
-- import_playbook: install_soapy_sdrplay.yml
 - import_playbook: install_soapy_sdrplay3.yml
 # Fails to build under aarch64:
 - import_playbook: install_soapy_volkconverters.yml
@@ -74,7 +73,6 @@
 - import_playbook: install_flpost.yml
 - import_playbook: install_flwkey.yml
 - import_playbook: install_flwrap.yml
-- import_playbook: install_pi34statsmonitor.yml
 # ^^^ This part takes about 20 minutes to build on a RPi 4 ^^^
 
 #
@@ -139,7 +137,7 @@
 - import_playbook: install_reverse_beacon_network_client.yml
 - import_playbook: install_qdmr_gui_dmr_radio_programmer.yml
 - import_playbook: install_wfview.yml
-- import_playbook: install_dudestar.yml
+- import_playbook: install_droidstar.yml
 - import_playbook: install_ladyheather.yml
 - import_playbook: install_cqrprop.yml
 - import_playbook: install_tentenqsologger.yml
