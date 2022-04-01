@@ -54,7 +54,7 @@
     copy:
       src: "{{ playbook_dir }}/../files/SKCCLogger_Linux_64-Bit.zip"
       dest: "/home/{{ ham_user }}/hamradio/SKCCLogger_Linux_64-Bit.zip"
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
 
   - name: Unarchive SKCCLogger (Xubuntu)
     become: yes
