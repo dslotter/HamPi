@@ -4,7 +4,7 @@
 
 ---
 
-- name: HamPi / HamPC v2.0 (December 2021) Playbook by W3DJS
+- name: HamPi 64-bit / HamPC v2.1 (March 2021) Playbook by W3DJS
   hosts: all
   # hosts: nuc
   # hosts: vm
@@ -23,7 +23,6 @@
 - import_playbook: install_wallpaper.yml
 - import_playbook: upgrade_debian_packages.yml
 - import_playbook: install_bookmarks.yml
-- import_playbook: install_orca.yml
 - import_playbook: install_cmake.yml
 - import_playbook: install_wxwidgets.yml
 # ^^^ This part takes about 1 hour to build on a RPi 4 ^^^
@@ -89,7 +88,6 @@
 - import_playbook: install_lopora.yml
 - import_playbook: install_morsecode_apps.yml
 - import_playbook: install_satellite_tracking.yml
-# Fails to build under aarch64:
 - import_playbook: install_wsjtx.yml
 # Fails to build under aarch64:
 - import_playbook: install_js8call.yml
@@ -132,6 +130,7 @@
 - import_playbook: install_leansdr.yml
 - import_playbook: install_cygnusRFI.yml
 - import_playbook: install_uhrr.yml
+# Build broken on AMD64 by change to glibc:
 - import_playbook: install_qrsspig.yml
 - import_playbook: install_skcclogger.yml
 - import_playbook: install_radioexplorer.yml
@@ -149,7 +148,8 @@
 - import_playbook: install_lysdr.yml
 - import_playbook: install_cubicsdr.yml
 - import_playbook: install_sdrplusplus.yml
-- import_playbook: install_sdrangel.yml
+
+#- import_playbook: install_sdrangel.yml
 # ^^^ SDRAngel takes about 65 minutes to build on a RPi 4 and 42 minutes on a x86_64 ^^^
 
 # Final tasks

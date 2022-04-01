@@ -1,0 +1,19 @@
+#!/usr/bin/expect -f
+# Copyright 2020 - 2022, Dave Slotter, W3DJS
+
+set timeout 120
+match_max 100000
+
+spawn ./SDRplay_RSP_API-Linux-3.07.1.run
+
+expect {
+        -- "--More--" {
+                send -- " "
+                exp_continue
+        }
+
+        "\[y/n\] " {
+                send -- "y\r"
+                exp_continue
+        }
+}

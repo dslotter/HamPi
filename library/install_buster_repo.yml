@@ -12,6 +12,15 @@
         deb http://raspbian.raspberrypi.org/raspbian/ buster main contrib non-free rpi
     when: is_bullseye|bool
 
+  - name: Add repository key
+    become: yes
+    command: apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 9165938D90FDDD2E
+    when: is_bullseye|bool
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
   - name: Update package cache
     become: yes
     apt:

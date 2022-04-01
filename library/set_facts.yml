@@ -41,7 +41,13 @@
     set_fact:
       is_buster: False
       is_bullseye: True
-    when: (is_debian|bool or is_ubuntu|bool ) and ansible_distribution_major_version == "11"
+    when: (is_debian|bool or is_ubuntu|bool ) and ansible_distribution_release == "bullseye"
+
+  - name: Set facts for Debian Bullseye on Ubuntu
+    set_fact:
+      is_buster: False
+      is_bullseye: True
+    when: (is_debian|bool or is_ubuntu|bool ) and ansible_distribution_major_version == "21"
 
   - name: Set facts for Raspberry Pi
     set_fact:
