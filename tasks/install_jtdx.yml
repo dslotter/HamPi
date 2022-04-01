@@ -40,6 +40,17 @@
     register: result
     until: result.failed == false
 
+  - name: Install dependent components (AMD64 Xubuntu/Ubuntu 20)
+    become: yes
+    package:
+      name: libqt5websockets5
+      state: present
+    when: (ansible_architecture == "x86_64" or ansible_architecture == "amd64") and ansible_distribution_major_version >= "20"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
 #
 # Raspbian (ARM)
 #
@@ -156,21 +167,36 @@
 # AMD64
 #
 
+# Commenting out because these depend on hamlib package being installed through package manager which we do not do (when I have time, I suppose I should try this:
+# https://askubuntu.com/questions/18192/how-to-fake-a-package-version-installed
+#
+#  - name: Determine correct JTDX version for Xubuntu/Ubuntu >= version 20
+#    set_fact: jtdx_installer="jtdx_2.2.158_amd64.deb"
+#    when: (ansible_architecture == "x86_64" or ansible_architecture == "amd64") and ansible_distribution_major_version >= "20"
+#
+#  - name: Determine correct JTDX version for Xubuntu/Ubuntu == version 18
+#    set_fact: jtdx_installer="jtdx_2.2.158_amd64_ub18.deb"
+#    when: (ansible_architecture == "x86_64" or ansible_architecture == "amd64") and ansible_distribution_major_version == "18"
+
+  - name: Determine correct JTDX version for Xubuntu/Ubuntu
+    set_fact: jtdx_installer="jtdx-2.2.0-rc155_2004_amd64.deb"
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
   - name: Copy JTDX from local file (because automated downloads don't work reliably) (AMD64)
     copy:
-      src: "{{ playbook_dir }}/../files/jtdx-2.2.0-rc155_2004_amd64.deb"
-      dest: "/home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc155_2004_amd64.deb"
+      src: "{{ playbook_dir }}/../files/{{ jtdx_installer }}"
+      dest: "/home/{{ ham_user }}/hamradio/{{ jtdx_installer }}"
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
   - name: Install JTDX from local file (because automated downloads don't work reliably) (AMD64)
     become: yes
     apt:
-      deb: /home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc155_2004_amd64.deb
+      deb: /home/{{ ham_user }}/hamradio/{{ jtdx_installer }}"
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
   - name: Remove JTDX installer from local file (because automated downloads don't work reliably) (AMD64)
     file:
-      path: /home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc155_2004_amd64.deb
+      path: /home/{{ ham_user }}/hamradio/{{ jtdx_installer }}"
       state: absent
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
