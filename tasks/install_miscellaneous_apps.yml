@@ -278,6 +278,16 @@
     register: result
     until: result.failed == false
 
+  - name: Install prerequisite for update_wsjtx_log
+    become: yes
+    command: pip3 install watchdog
+    args:
+      chdir: /home/{{ ham_user }}/hamradio
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
   - name: Download update_wsjtx_log.py executable by W3DJS
     get_url:
       url: https://raw.githubusercontent.com/dslotter/ham_radio_scripts/main/update_wsjtx_log.py
