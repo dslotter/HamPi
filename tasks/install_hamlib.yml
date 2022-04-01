@@ -94,7 +94,7 @@
       command: ./configure PYTHON_VERSION='3.9' --with-python-binding --with-xml-support
       args:
         chdir: /home/{{ ham_user }}/hamradio/hamlib
-      when: is_rpi|bool and is_bullseye|bool
+      when: is_bullseye|bool
 
     - name: Build Hamlib
       command: make all
