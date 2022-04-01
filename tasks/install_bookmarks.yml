@@ -29,6 +29,7 @@
 # https://mike.kaply.com/2012/03/26/customizing-firefox-distribution-ini/
 #
   - name: Create directory /usr/lib/firefox/distribution for Xubuntu
+    become: yes
     file:
       path: /usr/lib/firefox/distribution
       state: directory
