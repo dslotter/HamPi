@@ -63,6 +63,11 @@
     become: yes
     command: ldconfig
 
+  - name: Remove imbe_vocoder sources
+    file:
+      path: /home/{{ ham_user }}/hamradio/imbe_vocoder
+      state: absent
+
 #
 # DroidStar
 #
