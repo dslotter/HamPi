@@ -63,6 +63,18 @@
     register: result
     until: result.failed == false
 
+  - name: Install dependent libraries (aarch64)
+    become: yes
+    package:
+      name: liblmdb-dev
+      state: present
+    when: ansible_architecture == "aarch64"
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+
   - name: Determine latest version of TQSL on web
     shell: curl --silent "http://www.arrl.org/tqsl-download" | grep -Po "TQSL [0-9]+\.[0-9]+\.[0-9]+ for Linux" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+"
     args:
