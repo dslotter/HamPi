@@ -1,4 +1,12 @@
+.idea
 ansible-*output*.txt
+files/GridTracker-1.21.1217-linux-arm32.tar.gz
+files/SKCCLogger_Linux_32-Bit-ARM.zip
+files/SKCCLogger_Linux_32-Bit.zip
+files/SKCCLogger_Linux_64-Bit.zip
+files/jtdx_2.2.158_amd64.deb
+files/jtdx_2.2.158_amd64_ub18.deb
+files/usr/local/bluedv/BlueDV_v1_0_0_9609.zip
 files/usr/share/wallpapers/2300H_1600x1200_AM.jpg
 files/usr/share/wallpapers/7300_Wallpaper_1600x1200.jpg
 files/usr/share/wallpapers/7610_Wallpaper_1600x1200.jpg
