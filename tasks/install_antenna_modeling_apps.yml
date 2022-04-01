@@ -14,12 +14,18 @@
       state: present
     with_items:
       - antennavis
-      - gsmc
       - nec2c
       - splat
       - xnec2c
       - xnecview
       - yagiuda
+
+  - name: Install Antenna Modeling Packages (not 64-bit ARM)
+    become: yes
+    package:
+      name: gsmc
+      state: present
+    when: ansible_architecture != "aarch64"
 
   - name: Copy desktop file for Antenna Visualizer
     become: yes
@@ -27,14 +33,14 @@
       src: "{{ playbook_dir }}/../files/usr/local/share/applications/antennavis.desktop"
       dest: "/usr/local/share/applications/antennavis.desktop"
 
-
-  # GTK Smith Chart Calculator
+  # GTK Smith Chart Calculator (not 64-bit ARM)
   - name: Modify categories for gsmc.desktop
     become: yes
     lineinfile:
       path: /usr/share/applications/gsmc.desktop
       regexp: '^Categories=Education;HamRadio;'
       line: Categories=HamRadio Calculators
+    when: ansible_architecture != "aarch64"
 
   - name: Modify categories for nec2c.desktop
     become: yes
