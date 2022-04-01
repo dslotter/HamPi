@@ -108,13 +108,13 @@
   - name: Modify categories for gqrx.desktop
     become: yes
     lineinfile:
-      path: /home/{{ ham_user }}/hamradio/gqrx-source/gqrx.desktop
+      path: /home/{{ ham_user }}/hamradio/gqrx-source/dk.gqrx.gqrx.desktop
       regexp: '^Categories=Network;HamRadio;'
       line: Categories=HamRadio SDR
 
   - name: Install GQRX desktop
     become: yes
-    command: cp gqrx.desktop /usr/local/share/applications/gqrx.desktop
+    command: cp dk.gqrx.gqrx.desktop /usr/local/share/applications/gqrx.desktop
     args:
       chdir: /home/{{ ham_user }}/hamradio/gqrx-source
 
