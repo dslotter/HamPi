@@ -71,6 +71,7 @@
       chdir: /home/{{ ham_user }}/hamradio/libiio/build
 
   - name: Clean LibIIO
+    become: yes
     command: make clean
     args:
       chdir: /home/{{ ham_user }}/hamradio/libiio/build
