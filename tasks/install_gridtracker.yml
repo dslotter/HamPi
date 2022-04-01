@@ -45,7 +45,7 @@
     delay: 30
     until: download_file.failed == false
 
-  - name: Download and Unarchive GridTracker 1.21.1217 (ARM)
+  - name: Download and Unarchive GridTracker (ARM)
     become: yes
     unarchive:
       src: "{{ download_file.stdout }}"
@@ -91,7 +91,7 @@
 #
 
   - name: Determine latest version of GridTracker (x86) on web
-    shell: curl --silent "https://tagloomis.com/downloads/" | grep -Po "https:\/\/.*GridTracker-linux-x86-.*.tar.gz\?dl=1"
+    shell: curl --silent "https://download.gridtracker.org/latest_release.html" | grep -Po "https:\/\/.*GridTracker-linux-x86-.*.tar.gz\?dl=1"
     args:
       warn: no
     register: download_file
@@ -100,7 +100,7 @@
     delay: 30
     until: download_file.failed == false
 
-  - name: Download and Unarchive GridTracker {{ download_file.stdout }} (x86)
+  - name: Download and Unarchive GridTracker (x86)
     become: yes
     unarchive:
       src: "{{ download_file.stdout }}"
@@ -141,7 +141,7 @@
 #
 
   - name: Determine latest version of GridTracker (AMD64) on web
-    shell: curl --silent "https://tagloomis.com/downloads/" | grep -Po "https:\/\/.*GridTracker-.*-linux-x64.tar.gz\"" | uniq | head -n 1 | grep -Po "https:\/\/.*GridTracker-.*-linux-x64.tar.gz"
+    shell: curl --silent "https://download.gridtracker.org/latest_release.html" | grep -Po "https:\/\/.*GridTracker-.*-linux-x64.tar.gz\"" | uniq | head -n 1 | grep -Po "https:\/\/.*GridTracker-.*-linux-x64.tar.gz"
     args:
       warn: no
     register: download_file
@@ -150,7 +150,7 @@
     delay: 30
     until: download_file.failed == false
 
-  - name: Download and Unarchive GridTracker {{ download_file.stdout }} (AMD64)
+  - name: Download and Unarchive GridTracker (AMD64)
     become: yes
     unarchive:
       src: "{{ download_file.stdout }}"
