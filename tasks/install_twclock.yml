@@ -32,7 +32,6 @@
     until: result.failed == false
 
   - name: Download and Unarchive TwClock {{ twclock_version }}
-    become: yes
     unarchive:
       src: http://wa0eir.bcts.info/src/twclock-{{ twclock_version }}.src.tar.gz
       dest: /home/{{ ham_user }}/hamradio
