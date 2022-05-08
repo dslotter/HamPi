@@ -1,0 +1,53 @@
+#
+# Copyright 2020 - 2022, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Meteor Decoder Software
+  hosts: all
+  gather_facts: no
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent packages
+    become: yes
+    package:
+      name: fpc
+      state: present
+
+  - name: Git clone latest meteor_decoder sources
+    git:
+      repo: https://github.com/artlav/meteor_decoder.git
+      dest: /home/{{ ham_user }}/hamradio/meteor_decoder
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Set build script to executable
+    file: dest=/home/{{ ham_user }}/hamradio/meteor_decoder/build_medet.sh mode=a+x
+
+  - name: Build meteor_decoder
+    command: ./build_medet.sh
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/meteor_decoder
+
+  - name: Install meteor_decoder (medet)
+    become: yes
+    command: mv medet /usr/local/bin
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/meteor_decoder
+
+  - name: Remove source directory
+    become: yes
+    file:
+      path: /home/{{ ham_user }}/hamradio/meteor_decoder
+      state: absent

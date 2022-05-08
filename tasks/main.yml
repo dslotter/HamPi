@@ -141,6 +141,7 @@
 - import_playbook: install_ladyheather.yml
 - import_playbook: install_cqrprop.yml
 - import_playbook: install_tentenqsologger.yml
+- import_playbook: install_meteor_decoder.yml
 - import_playbook: install_noaa_apt.yml
 
 # Install SDR GUI apps after all pre-requisite SDR drivers are installed
