@@ -83,6 +83,7 @@
         <exclusive_app>apt-get</exclusive_app>
         <exclusive_app>dpkg</exclusive_app>
         <exclusive_app>dpkg-deb</exclusive_app>
+        <exclusive_app>rustc</exclusive_app>
         <exit_after_finish>0</exit_after_finish>
         <exit_before_start>0</exit_before_start>
         <exit_when_idle>0</exit_when_idle>
