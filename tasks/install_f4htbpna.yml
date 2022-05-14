@@ -1,0 +1,62 @@
+#
+# Copyright 2020 - 2022, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install IQ Receiver Panadaptor Software (like KX3)
+  hosts: all
+  gather_facts: no
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent libraries (Common)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libfftw3-dev
+      - libasound2-dev
+
+  - name: Git clone F4HTBPanadapter
+    git:
+      repo: https://github.com/F4HTB/F4HTBPanadapter.git
+      dest: /home/{{ ham_user }}/hamradio/F4HTBPanadapter
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Build F4HTBPanadapter
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/F4HTBPanadapter
+
+  - name: Pre-clean F4HTBPanadapter
+    command: make clean
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/F4HTBPanadapter
+
+  - name: Build F4HTBPanadapter
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/F4HTBPanadapter
+
+  - name: Install F4HTBPanadapter
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/F4HTBPanadapter
+
+  - name: Remove F4HTBPanadapter build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/F4HTBPanadapter
+      state: absent
