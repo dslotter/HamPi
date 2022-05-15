@@ -1,12 +1,13 @@
 #
-# Copyright 2020 - 2021, Dave Slotter (W3DJS). All rights reserved.
+# Copyright 2020 - 2022, Dave Slotter (W3DJS). All rights reserved.
 #
 
 [all]
 #127.0.0.1
+hampi.lan
 
 [nuc]
-192.168.1.190
+#nuc.lan
 
 [vm]
 #127.0.0.1
@@ -15,12 +16,10 @@
 #192.168.1.136
 
 [all:vars]
-#ansible_user=pi
-#ansible_password=raspberry
-#ansible_port=22
+ansible_port=22
 ansible_user=hampi
 ansible_password=hampi
-ansible_port=9022
+ansible_sudo_pass=hampi
 ansible_python_interpreter=/usr/bin/python3
 
 [nuc:vars]
