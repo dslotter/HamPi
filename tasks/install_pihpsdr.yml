@@ -1,0 +1,76 @@
+#
+# Copyright 2020 - 2022, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install pihpsdr Software
+  hosts: all
+  gather_facts: no
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+
+#
+# Build and install wdsp
+#
+
+  - name: Download latest wdsp sources
+    git:
+      repo: https://github.com/g0orx/wdsp
+      dest: /home/{{ ham_user }}/hamradio/wdsp
+
+  - name: Build wdsp
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/wdsp
+
+  - name: Install wdsp
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/wdsp
+
+  - name: Remove wdsp sources
+    file:
+      path: /home/{{ ham_user }}/hamradio/wdsp
+      state: absent
+
+
+#
+# Build and install pihpsdr
+#
+
+  - name: Download latest pihpsdr sources
+    git:
+      repo: https://github.com/g0orx/pihpsdr
+      dest: /home/{{ ham_user }}/hamradio/pihpsdr
+
+  - name: Build pihpsdr
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/pihpsdr
+
+  - name: Install pihpsdr
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/pihpsdr
+
+  - name: Remove pihpsdr sources
+    file:
+      path: /home/{{ ham_user }}/hamradio/pihpsdr
+      state: absent
+
+  - name: Copy pihpsdr.desktop to /usr/local/share/applications
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/pihpsdr.desktop"
+      dest: /usr/local/share/applications/pihpsdr.desktop

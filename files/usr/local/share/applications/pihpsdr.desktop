@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=PiHPSDR
+GenericName=PiHPSDR
+Comment=High Performance Software Defined Radio
+Exec=pihpsdr
+Terminal=false
+Type=Application
+Categories=HamRadio SDR

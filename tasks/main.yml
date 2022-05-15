@@ -142,6 +142,7 @@
 - import_playbook: install_ladyheather.yml
 - import_playbook: install_cqrprop.yml
 - import_playbook: install_tentenqsologger.yml
+- import_playbook: install_pihpsdr.yml
 - import_playbook: install_meteor_decoder.yml
 - import_playbook: install_noaa_apt.yml
 - import_playbook: install_f4htbpna.yml
