@@ -6,6 +6,22 @@
   hosts: all
   tasks:
 
+  - name: Create /etc/sudoers.d/010_{{ ham_user }}-nopasswd file
+    become: yes
+    copy:
+      content: ""
+      dest: /etc/sudoers.d/010_{{ ham_user }}-nopasswd
+      group: root
+      owner: root
+      mode: 0440
+
+  - name: Enable passwordless sudo for HamPi / HamPC
+    become: yes
+    blockinfile:
+      dest: /etc/sudoers.d/010_{{ ham_user }}-nopasswd
+      block: |
+        {{ ham_user }} ALL=(ALL) NOPASSWD: ALL
+
   - name: Change hostname to {{ ham_user }} (for current session)
     become: yes
     command: hostname -b {{ ham_user }}
@@ -141,24 +157,6 @@
       path: /etc/xdg/pcmanfm/LXDE-pi
       state: directory
     when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
-
-  - name: Create /etc/sudoers.d/010_hampc-nopasswd file for Xubuntu
-    become: yes
-    copy:
-      content: ""
-      dest: /etc/sudoers.d/010_hampc-nopasswd
-      group: root
-      owner: root
-      mode: 0440
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
-
-  - name: Enable passwordless sudo for HamPC
-    become: yes
-    blockinfile:
-      dest: /etc/sudoers.d/010_hampc-nopasswd
-      block: |
-        hampc ALL=(ALL) NOPASSWD: ALL
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
 
   - name: Create HamPi desktop config 0 for Raspberry Pi OS in /etc/xdg/pcmanfm/LXDE-pi
     become: yes
