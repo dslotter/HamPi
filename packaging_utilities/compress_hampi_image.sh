@@ -6,7 +6,7 @@ echo $start_time
 # Compute the seconds since epoch for start date
 t1=`date --date="$start_time" +%s`
 
-VERSION=1.0
+VERSION=3.0
 
 # Compress image using XZ format
 pxz "HamPi v${VERSION} by W3DJS/HamPi_v${VERSION}.img"

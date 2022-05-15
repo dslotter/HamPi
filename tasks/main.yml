@@ -4,7 +4,7 @@
 
 ---
 
-- name: HamPi 64-bit / HamPC v2.1 (March 2021) Playbook by W3DJS
+- name: HamPi 64-bit / HamPC v3.0 (May 2021) Playbook by W3DJS
   hosts: all
   # hosts: nuc
   # hosts: vm
@@ -20,6 +20,7 @@
 - import_playbook: init_task.yml
 - import_playbook: configuration_tasks.yml
 - import_playbook: install_menus.yml
+- import_playbook: install_about.yml
 - import_playbook: install_wallpaper.yml
 - import_playbook: upgrade_debian_packages.yml
 - import_playbook: install_bookmarks.yml

@@ -6,57 +6,27 @@
   hosts: all
   tasks:
 
-  - name: Change hostname to hampi (for current session)
+  - name: Change hostname to {{ ham_user }} (for current session)
     become: yes
-    command: hostname -b hampi
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    command: hostname -b {{ ham_user }}
 
-  - name: Change hostname to hampc (for current session)
-    become: yes
-    command: hostname -b hampc
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
-
-  - name: Change hostname to hampi (permanently)
+  - name: Change hostname to {{ ham_user }} (permanently)
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/etc/hostname_hampi"
+      src: "{{ playbook_dir }}/../files/etc/hostname_{{ ham_user }}"
       dest: "/etc/hostname"
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
 
-  - name: Change hostname to hampc (permanently)
+  - name: Change hostname to {{ ham_user }} (for hosts file)
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/etc/hostname_hampc"
-      dest: "/etc/hostname"
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
-
-  - name: Change hostname to hampi (for hosts file)
-    become: yes
-    copy:
-      src: "{{ playbook_dir }}/../files/etc/hosts_hampi"
+      src: "{{ playbook_dir }}/../files/etc/hosts_{{ ham_user }}"
       dest: "/etc/hosts"
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
-
-  - name: Change hostname to hampi (for hosts file)
-    become: yes
-    copy:
-      src: "{{ playbook_dir }}/../files/etc/hosts_hampc"
-      dest: "/etc/hosts"
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
 
   - name: Store a basic version file in public location
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/etc/hampi-release"
-      dest: "/etc/hampi-release"
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
-
-  - name: Store a basic version file in public location
-    become: yes
-    copy:
-      src: "{{ playbook_dir }}/../files/etc/hampc-release"
-      dest: "/etc/hampc-release"
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+      src: "{{ playbook_dir }}/../files/etc/{{ ham_user }}-release"
+      dest: "/etc/{{ ham_user }}-release"
 
   - name: Check that the /boot/cmdline.txt exists
     stat:
@@ -108,7 +78,7 @@
     lineinfile:
       path: /etc/apt/apt.conf.d/50unattended-upgrades
       regexp: '^\/\/Unattended-Upgrade::Mail \"\";'
-      line: Unattended-Upgrade::Mail "pi";
+      line: Unattended-Upgrade::Mail "{{ ham_user }}";
 
   - name: Add the user account to group of 'dialout'
     become: yes

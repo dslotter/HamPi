@@ -74,7 +74,7 @@
     become: yes
     replace:
       path: /usr/local/share/applications/GridTracker.desktop
-      regexp: '\/home\/pi\/Downloads'
+      regexp: "/home/{{ ham_user }}/Downloads"
       replace: '/usr/local'
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
 
@@ -182,7 +182,7 @@
     become: yes
     replace:
       path: /usr/local/share/applications/GridTracker.desktop
-      regexp: '/home/pi/Downloads'
+      regexp: '/home/{{ ham_user }}/Downloads'
       replace: '/usr/local'
 
   - name: Modify categories for GridTracker.desktop

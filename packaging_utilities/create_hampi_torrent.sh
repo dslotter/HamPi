@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION=1.0
+VERSION=3.0
 
 transmission-create -o "HamPi Image Beta v${VERSION} (compressed).torrent" \
 -t udp://tracker.opentrackr.org:1337/announce \

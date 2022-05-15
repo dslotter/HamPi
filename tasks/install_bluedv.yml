@@ -40,7 +40,7 @@
 
   - name: Remove the offending "Let's Encrypt" root cert from the root store
     become: yes
-    command: mv /usr/share/ca-certificates/mozilla/DST_Root_CA_X3.crt /home/pi/DST_Root_CA_X3.crt 
+    command: mv /usr/share/ca-certificates/mozilla/DST_Root_CA_X3.crt /home/{{ ham_user }}/DST_Root_CA_X3.crt 
     when: is_rpi|bool and is_bullseye|bool
 
   - name: Resolves warning in next step

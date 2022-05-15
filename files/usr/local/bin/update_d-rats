@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cd /home/pi/hamradio/D-Rats/
+cd /home/hampi/hamradio/D-Rats/
 if [ $? != 0 ]; then
   echo "Updating D-Rats failed. (cd)"
   exit $?

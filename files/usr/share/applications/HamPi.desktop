@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Type=Application
+Name=About HamPi
+Exec=/usr/bin/about_hampi
+Terminal=false
+Comment=About HamPi
+Icon=hampi
+Categories=HamRadio
+Keywords=HamRadio

@@ -1,0 +1,88 @@
+#
+# Copyright 2020 - 2022, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: About HamPi menu
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Create /usr/share/icons/{{ ham_user }}/[RESOLUTION] directory
+    become: yes
+    file:
+      path: /usr/share/icons/{{ ham_user }}/{{ item }}
+      state: directory
+      mode: 644
+    with_items:
+      - 256x256
+      - 128x128
+      - 64x64
+      - 48x48
+      - 32x32
+
+  - name: Create HamPi icon in /usr/share/icons
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/icons/{{ ham_user }}.png"
+      dest: "/usr/share/icons/{{ ham_user }}.png"
+      mode: 644
+
+  - name: Create HamPi icon in /usr/share/icons/{{ ham_user }}/[RESOLUTION]
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/icons/{{ ham_user }}/{{ ham_user }}.png"
+      dest: "/usr/share/icons/{{ ham_user }}/{{ item }}/{{ ham_user }}.png"
+      mode: 644
+    with_items:
+      - 256x256
+      - 128x128
+      - 64x64
+      - 48x48
+      - 32x32
+
+  - name: Create /usr/share/pixmaps/{{ ham_user }}/[RESOLUTION] directory
+    become: yes
+    file:
+      path: /usr/share/pixmaps/{{ ham_user }}/{{ item }}
+      state: directory
+      mode: 644
+    with_items:
+      - 256x256
+      - 128x128
+      - 64x64
+      - 48x48
+      - 32x32
+
+  - name: Create HamPi icon in /usr/share/pixmaps
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/pixmaps/{{ ham_user }}.png"
+      dest: "/usr/share/pixmaps/{{ ham_user }}.png"
+      mode: 644
+
+  - name: Create HamPi icon in /usr/share/pixmaps/{{ ham_user }}/[RESOLUTION]
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/pixmaps/{{ ham_user }}/{{ ham_user }}.png"
+      dest: "/usr/share/pixmaps/{{ ham_user }}/{{ item }}/{{ ham_user }}.png"
+      mode: 644
+    with_items:
+      - 256x256
+      - 128x128
+      - 64x64
+      - 48x48
+      - 32x32
+
+  - name: Create HamPi desktop file in /usr/share/applications
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/applications/HamPi.desktop"
+      dest: "/usr/share/applications/HamPi.desktop"
+      mode: 644
+
+  - name: Create HamPi script in /usr/bin
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/bin/about_{{ ham_user }}"
+      dest: "/usr/bin/about_{{ ham_user }}"
+      mode: 755
