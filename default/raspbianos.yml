@@ -1,6 +1,6 @@
 ---
 
-ham_user: hampi
+ham_user: pi
 wallpaper_prefix: /usr/share/rpd-wallpaper/
 
 # Ettus Research UHD Build-Time Tuning for Raspberry Pi 4:
