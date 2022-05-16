@@ -2,9 +2,9 @@
 Name=NOAA Apt Image Decoder
 GenericName=NOAA Apt Image Decoder
 Comment=Image decoder for APT signals from NOAA satellites
-Exec=/home/hampi/hamradio/noaa-apt/target/release/noaa-apt
-Path=/home/hampi/hamradio/noaa-apt
-Icon=/home/hampi/hamradio/noaa-apt/res/icon.png
+Exec=/home/pi/hamradio/noaa-apt/target/release/noaa-apt
+Path=/home/pi/hamradio/noaa-apt
+Icon=/home/pi/hamradio/noaa-apt/res/icon.png
 Terminal=false
 Type=Application
 Categories=HamRadio
