@@ -36,6 +36,7 @@
       - libqcustomplot-doc
       - libqcustomplot-dev
       - libopus-dev
+      - libeigen3-dev
     retries: 5
     delay: 30
     register: result
