@@ -17,6 +17,14 @@
       path: /home/{{ ham_user }}/hamradio
       state: directory
 
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libi2c-dev
+      - libgpiod-dev
 
 #
 # Build and install wdsp
