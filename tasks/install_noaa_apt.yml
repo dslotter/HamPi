@@ -47,7 +47,7 @@
     until: result.failed == false
 
   - name: Build noaa-apt
-    command: cargo build --release
+    command: /home/{{ ham_user }}/.cargo/bin/cargo build --release
     args:
       chdir: /home/{{ ham_user }}/hamradio/noaa-apt
 
