@@ -52,15 +52,18 @@
     register: result
     until: result.failed == false
 
-  - name: Install gmfsk Package (Program for reception and transmission of HF conversation modes MFSK, OLIVIA, RTTY, THROB, PSK31, MT63 and FeldHell)
-    become: yes
-    package:
-      name: gmfsk
-      state: present
-    retries: 5
-    delay: 30
-    register: result
-    until: result.failed == false
+#
+# WTH? This was available earlier...
+#
+#  - name: Install gmfsk Package (Program for reception and transmission of HF conversation modes MFSK, OLIVIA, RTTY, THROB, PSK31, MT63 and FeldHell)
+#    become: yes
+#    package:
+#      name: gmfsk
+#      state: present
+#    retries: 5
+#    delay: 30
+#    register: result
+#    until: result.failed == false
 
   - name: Install fbb Package (Packet radio mailbox and utilities)
     become: yes
