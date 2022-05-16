@@ -4,7 +4,7 @@
 
 [all]
 #127.0.0.1
-hampi.lan
+hampi
 
 [nuc]
 #nuc.lan
@@ -17,9 +17,12 @@ hampi.lan
 
 [all:vars]
 ansible_port=22
-ansible_user=hampi
-ansible_password=hampi
-ansible_sudo_pass=hampi
+ansible_user=pi
+ansible_password=raspberry
+ansible_become_pass=raspberry
+#ansible_user=hampi
+#ansible_password=hampi
+#ansible_sudo_pass=hampi
 ansible_python_interpreter=/usr/bin/python3
 
 [nuc:vars]

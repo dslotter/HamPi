@@ -22,27 +22,57 @@
       block: |
         {{ ham_user }} ALL=(ALL) NOPASSWD: ALL
 
-  - name: Change hostname to {{ ham_user }} (for current session)
+  - name: Change hostname to hampi (for current session)
     become: yes
-    command: hostname -b {{ ham_user }}
+    command: hostname -b hampi
+    when: is_rpi|bool
 
-  - name: Change hostname to {{ ham_user }} (permanently)
+  - name: Change hostname to hampc (for current session)
+    become: yes
+    command: hostname -b hampc
+    when: is_pc|bool
+
+  - name: Change hostname to hampi (permanently)
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/etc/hostname_{{ ham_user }}"
+      src: "{{ playbook_dir }}/../files/etc/hostname_hampi"
       dest: "/etc/hostname"
+    when: is_rpi|bool
 
-  - name: Change hostname to {{ ham_user }} (for hosts file)
+  - name: Change hostname to hampc (permanently)
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/etc/hosts_{{ ham_user }}"
+      src: "{{ playbook_dir }}/../files/etc/hostname_hampc"
+      dest: "/etc/hostname"
+    when: is_pc|bool
+
+  - name: Change hostname to hampi (for hosts file)
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/hosts_hampi"
       dest: "/etc/hosts"
+    when: is_rpi|bool
+
+  - name: Change hostname to hampc (for hosts file)
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/hosts_hampc"
+      dest: "/etc/hosts"
+    when: is_pc|bool
 
   - name: Store a basic version file in public location
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/etc/{{ ham_user }}-release"
+      src: "{{ playbook_dir }}/../files/etc/hampi-release"
       dest: "/etc/{{ ham_user }}-release"
+    when: is_rpi|bool
+
+  - name: Store a basic version file in public location
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/etc/hampc-release"
+      dest: "/etc/hampc-release"
+    when: is_pc|bool
 
   - name: Check that the /boot/cmdline.txt exists
     stat:

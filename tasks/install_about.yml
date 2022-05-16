@@ -7,10 +7,10 @@
   gather_facts: no
   tasks:
 
-  - name: Create /usr/share/icons/{{ ham_user }}/[RESOLUTION] directory
+  - name: Create /usr/share/icons/hampi/[RESOLUTION] directory
     become: yes
     file:
-      path: /usr/share/icons/{{ ham_user }}/{{ item }}
+      path: /usr/share/icons/hampi/{{ item }}
       state: directory
       mode: 644
     with_items:
@@ -23,15 +23,15 @@
   - name: Create HamPi icon in /usr/share/icons
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/usr/share/icons/{{ ham_user }}.png"
-      dest: "/usr/share/icons/{{ ham_user }}.png"
+      src: "{{ playbook_dir }}/../files/usr/share/icons/hampi.png"
+      dest: "/usr/share/icons/hampi.png"
       mode: 644
 
-  - name: Create HamPi icon in /usr/share/icons/{{ ham_user }}/[RESOLUTION]
+  - name: Create HamPi icon in /usr/share/icons/hampi/[RESOLUTION]
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/usr/share/icons/{{ ham_user }}/{{ ham_user }}.png"
-      dest: "/usr/share/icons/{{ ham_user }}/{{ item }}/{{ ham_user }}.png"
+      src: "{{ playbook_dir }}/../files/usr/share/icons/hampi/hampi.png"
+      dest: "/usr/share/icons/hampi/{{ item }}/hampi.png"
       mode: 644
     with_items:
       - 256x256
@@ -40,10 +40,10 @@
       - 48x48
       - 32x32
 
-  - name: Create /usr/share/pixmaps/{{ ham_user }}/[RESOLUTION] directory
+  - name: Create /usr/share/pixmaps/hampi/[RESOLUTION] directory
     become: yes
     file:
-      path: /usr/share/pixmaps/{{ ham_user }}/{{ item }}
+      path: /usr/share/pixmaps/hampi/{{ item }}
       state: directory
       mode: 644
     with_items:
@@ -56,15 +56,15 @@
   - name: Create HamPi icon in /usr/share/pixmaps
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/usr/share/pixmaps/{{ ham_user }}.png"
-      dest: "/usr/share/pixmaps/{{ ham_user }}.png"
+      src: "{{ playbook_dir }}/../files/usr/share/pixmaps/hampi.png"
+      dest: "/usr/share/pixmaps/hampi.png"
       mode: 644
 
-  - name: Create HamPi icon in /usr/share/pixmaps/{{ ham_user }}/[RESOLUTION]
+  - name: Create HamPi icon in /usr/share/pixmaps/hampi/[RESOLUTION]
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/usr/share/pixmaps/{{ ham_user }}/{{ ham_user }}.png"
-      dest: "/usr/share/pixmaps/{{ ham_user }}/{{ item }}/{{ ham_user }}.png"
+      src: "{{ playbook_dir }}/../files/usr/share/pixmaps/hampi/hampi.png"
+      dest: "/usr/share/pixmaps/hampi/{{ item }}/hampi.png"
       mode: 644
     with_items:
       - 256x256
@@ -83,6 +83,6 @@
   - name: Create HamPi script in /usr/bin
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/usr/bin/about_{{ ham_user }}"
-      dest: "/usr/bin/about_{{ ham_user }}"
+      src: "{{ playbook_dir }}/../files/usr/bin/about_hampi"
+      dest: "/usr/bin/about_hampi"
       mode: 755
