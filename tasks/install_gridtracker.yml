@@ -4,6 +4,7 @@
 
 - name: Install GridTracker
   hosts: all
+  gather_facts: no
   tasks:
 
   - name: Create directory hamradio
@@ -35,20 +36,21 @@
 # Raspbian ARM
 #
 
-  - name: Determine latest version of GridTracker (ARM) on web
-    shell: curl --silent "https://download.gridtracker.org/latest_release.html" | grep -Po "https:\/\/.*GridTracker-.*-linux-arm32.tar.gz\"" | uniq | head -n 1 | grep -Po "https:\/\/.*GridTracker-.*-linux-arm32.tar.gz"
-    args:
-      warn: no
-    register: download_file
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
-    retries: 5
-    delay: 30
-    until: download_file.failed == false
+#  - name: Determine latest version of GridTracker (ARM) on web
+#    shell: curl --silent "https://gridtracker.org/downloads" | grep -Po "https:\/\/.*GridTracker-.*-linux-arm32.tar.gz\"" | uniq | head -n 1 | grep -Po "https:\/\/.*GridTracker-.*-linux-arm32.tar.gz"
+#    args:
+#      warn: no
+#    register: download_file
+#    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+#    retries: 5
+#    delay: 30
+#    until: download_file.failed == false
 
   - name: Download and Unarchive GridTracker (ARM)
     become: yes
     unarchive:
-      src: "{{ download_file.stdout }}"
+#      src: "{{ download_file.stdout }}"
+      src: "https://storage.googleapis.com/gt_download/v1.21.0503-2/GridTracker-1.22.0503-linux-arm32.tar.gz"
       dest: /usr/local
       remote_src: yes
     when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
@@ -90,20 +92,21 @@
 # Raspbian x86
 #
 
-  - name: Determine latest version of GridTracker (x86) on web
-    shell: curl --silent "https://download.gridtracker.org/latest_release.html" | grep -Po "https:\/\/.*GridTracker-linux-x86-.*.tar.gz\?dl=1"
-    args:
-      warn: no
-    register: download_file
-    when: ansible_architecture == "i386"
-    retries: 5
-    delay: 30
-    until: download_file.failed == false
+#  - name: Determine latest version of GridTracker (x86) on web
+#    shell: curl --silent "https://download.gridtracker.org/latest_release.html" | grep -Po "https:\/\/.*GridTracker-linux-x86-.*.tar.gz\?dl=1"
+#    args:
+#      warn: no
+#    register: download_file
+#    when: ansible_architecture == "i386"
+#    retries: 5
+#    delay: 30
+#    until: download_file.failed == false
 
   - name: Download and Unarchive GridTracker (x86)
     become: yes
     unarchive:
-      src: "{{ download_file.stdout }}"
+#      src: "{{ download_file.stdout }}"
+      src: "https://storage.googleapis.com/gt_download/v1.21.0503-2/GridTracker-1.22.0503-linux-x86.tar.gz"
       dest: /usr/local
       remote_src: yes
     when: ansible_architecture == "i386"
@@ -140,20 +143,21 @@
 # AMD64
 #
 
-  - name: Determine latest version of GridTracker (AMD64) on web
-    shell: curl --silent "https://download.gridtracker.org/latest_release.html" | grep -Po "https:\/\/.*GridTracker-.*-linux-x64.tar.gz\"" | uniq | head -n 1 | grep -Po "https:\/\/.*GridTracker-.*-linux-x64.tar.gz"
-    args:
-      warn: no
-    register: download_file
-    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
-    retries: 5
-    delay: 30
-    until: download_file.failed == false
+#  - name: Determine latest version of GridTracker (AMD64) on web
+#    shell: curl --silent "https://download.gridtracker.org/latest_release.html" | grep -Po "https:\/\/.*GridTracker-.*-linux-x64.tar.gz\"" | uniq | head -n 1 | grep -Po "https:\/\/.*GridTracker-.*-linux-x64.tar.gz"
+#    args:
+#      warn: no
+#    register: download_file
+#    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+#    retries: 5
+#    delay: 30
+#    until: download_file.failed == false
 
   - name: Download and Unarchive GridTracker (AMD64)
     become: yes
     unarchive:
-      src: "{{ download_file.stdout }}"
+#      src: "{{ download_file.stdout }}"
+      src: "https://storage.googleapis.com/gt_download/v1.21.0503-2/GridTracker-1.22.0503-linux-x64.tar.gz"
       dest: /usr/local
       remote_src: yes
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
