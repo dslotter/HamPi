@@ -77,7 +77,7 @@
   - name: Download and Unarchive latest YAAC from KA2DDO
     become: yes
     unarchive:
-      src: https://www.ka2ddo.org/ka2ddo/YAAC.zip
+      src: https://sourceforge.net/projects/yetanotheraprsc/files/latest/download
       dest: /usr/local/YAAC
       remote_src: yes
       validate_certs: no
@@ -89,7 +89,7 @@
   - name: Download and Unarchive latest YAAC plugin callsigndb.jar from KA2DDO
     become: yes
     unarchive:
-      src: https://www.ka2ddo.org/ka2ddo/callsigndb.jar
+      src: https://sourceforge.net/projects/yetanotheraprsc/files/callsigndb.jar/download
       dest: /usr/local/YAAC/plugins
       remote_src: yes
       validate_certs: no
