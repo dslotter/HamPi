@@ -61,6 +61,9 @@
 
   - name: Copy Lopora desktop file
     become: yes
-    copy:
-      src: "{{ playbook_dir }}/../files/usr/local/share/applications/lopora.desktop"
+    template:
+      src: "{{ playbook_dir }}/../templates/usr/local/share/applications/lopora.desktop.j2"
       dest: "/usr/local/share/applications/lopora.desktop"
+      owner: root
+      group: root
+      mode: 0644

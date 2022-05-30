@@ -53,9 +53,12 @@
 
   - name: Copy noaa-apt desktop file
     become: yes
-    copy:
-      src: "{{ playbook_dir }}/../files/usr/local/share/applications/noaa-apt.desktop"
+    template:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/noaa-apt.desktop.j2"
       dest: "/usr/local/share/applications/noaa-apt.desktop"
+      owner: root
+      group: root
+      mode: 0644
 
   - name: Remove RUST installer
     file: dest=/tmp/initrust.sh state=absent
