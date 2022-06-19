@@ -35,9 +35,10 @@
     register: result
     until: result.failed == false
 
-  - name: Build F4HTBPanadapter
-    command: make
+  - name: Fix Makefile to work around "breakage"
+    command: sed 's/CFLAGS += -Wall -Wextra -g -O0/CFLAGS += -Wall -Wextra -g -O0 -fpermissive/' -i Makefile
     args:
+      warn: no
       chdir: /home/{{ ham_user }}/hamradio/F4HTBPanadapter
 
   - name: Pre-clean F4HTBPanadapter
