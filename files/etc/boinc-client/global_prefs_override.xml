@@ -25,7 +25,7 @@
    <ram_max_used_idle_pct>90.000000</ram_max_used_idle_pct>
    <max_bytes_sec_up>0.000000</max_bytes_sec_up>
    <max_bytes_sec_down>0.000000</max_bytes_sec_down>
-   <cpu_usage_limit>80.000000</cpu_usage_limit>
+   <cpu_usage_limit>75.000000</cpu_usage_limit>
    <daily_xfer_limit_mb>0.000000</daily_xfer_limit_mb>
    <daily_xfer_period_days>0</daily_xfer_period_days>
 </global_preferences>
