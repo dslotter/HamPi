@@ -51,6 +51,11 @@
     args:
       chdir: /home/{{ ham_user }}/hamradio/noaa-apt
 
+  - name: Copy resource directory
+    command: cp -a res target/
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/noaa-apt
+
   - name: Copy noaa-apt desktop file
     become: yes
     template:
