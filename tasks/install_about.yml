@@ -12,7 +12,7 @@
     file:
       path: /usr/share/icons/hampi/{{ item }}
       state: directory
-      mode: 0644
+      mode: 0755
     with_items:
       - 256x256
       - 128x128
@@ -45,7 +45,7 @@
     file:
       path: /usr/share/pixmaps/hampi/{{ item }}
       state: directory
-      mode: 0644
+      mode: 0755
     with_items:
       - 256x256
       - 128x128
