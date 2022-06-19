@@ -29,12 +29,22 @@
 #    register: result
 #    until: result.failed == false
 
+  - name: Install dependent components (Raspberry Pi Bullseye ARM)
+    become: yes
+    package:
+      name: libgfortran5
+      state: present
+    when: is_rpi|bool and is_bullseye|bool and is_arm|bool
+    retries: 5
+    delay: 30
+    register: result
+
   - name: Install dependent components (Raspberry Pi Bullseye)
     become: yes
     package:
       name: libgfortran4
       state: present
-    when: is_rpi|bool and is_bullseye|bool
+    when: is_rpi|bool and is_bullseye|bool and not is_arm|bool
     retries: 5
     delay: 30
     register: result
