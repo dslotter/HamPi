@@ -141,7 +141,7 @@
     package:
       name: acfax
       state: present
-    when: ansible_architecture != "aarch64"
+    when: ansible_architecture != "aarch64" and not is_jammy|bool
     retries: 5
     delay: 30
     register: result
