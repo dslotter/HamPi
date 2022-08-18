@@ -43,6 +43,21 @@
       register: result
       until: result.failed == false
 
+    - name: Install dependent libraries (Jammy)
+      become: yes
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - python3-dev
+        - libnova-dev
+        - libindi-dev
+      when: is_jammy|bool
+      retries: 5
+      delay: 30
+      register: result
+      until: result.failed == false
+
     - name: Install dependent libraries (Common)
       become: yes
       package:
@@ -88,13 +103,19 @@
       command: ./configure --with-python-binding --with-xml-support
       args:
         chdir: /home/{{ ham_user }}/hamradio/hamlib
-      when: is_buster|bool
+      when: is_buster|bool and not is_jammy|bool
 
     - name: Configure Hamlib (Bullseye)
       command: ./configure PYTHON_VERSION='3.9' --with-python-binding --with-xml-support
       args:
         chdir: /home/{{ ham_user }}/hamradio/hamlib
-      when: is_bullseye|bool
+      when: is_bullseye|bool and not is_buster|bool and not is_jammy|bool
+
+    - name: Configure Hamlib (Jammy)
+      command: ./configure PYTHON_VERSION='3.10' --with-python-binding --with-xml-support
+      args:
+        chdir: /home/{{ ham_user }}/hamradio/hamlib
+      when: is_jammy|bool
 
     - name: Build Hamlib
       command: make all
