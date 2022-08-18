@@ -47,7 +47,7 @@
       until: result.failed == false
 
     - name: Configure flpost {{ download_date.stdout }}
-      command: ./configure
+      command: ./configure --without-flxmlrpc
       args:
         chdir: /home/{{ ham_user }}/hamradio/flpost-{{ download_date.stdout }}
 
