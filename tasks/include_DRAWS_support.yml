@@ -108,7 +108,7 @@
       - python-gi-dev
       - python-cairo
       - python3-serial
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and ansible_distribution_release != "impish" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and ansible_distribution_release != "impish" and ansible_distribution_release != "jammy" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
     retries: 5
     delay: 30
     register: result
