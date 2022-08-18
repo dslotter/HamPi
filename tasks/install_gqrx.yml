@@ -69,7 +69,22 @@
     with_items:
       - libgnuradio-osmosdr0.2.0
       - libgnuradio-iqbalance3.8.0
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and ansible_distribution_release == "impish" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Install dependent libraries for GQRX (Jammy)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - qtbase5-dev
+      - libgnuradio-osmosdr0.2.0
+      - libgnuradio-iqbalance3.9.0
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and ansible_distribution_release == "jammy" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
     retries: 5
     delay: 30
     register: result
