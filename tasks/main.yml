@@ -4,7 +4,7 @@
 
 ---
 
-- name: HamPi 64-bit / HamPC v3.0.1 (June 2022) Playbook by W3DJS
+- name: HamPi 64-bit / HamPC v3.0.1 (August 2022) Playbook by W3DJS
   hosts: all
   # hosts: nuc
   # hosts: vm
@@ -94,7 +94,7 @@
 - import_playbook: install_adifmerg.yml
 - import_playbook: install_antenna_modeling_apps.yml
 - import_playbook: install_aprs_apps.yml
-# ARM64 Fail- import_playbook: install_d-rats_maurizioandreotti.yml
+- import_playbook: install_d-rats_maurizioandreotti.yml
 - import_playbook: install_echolink_apps.yml
 - import_playbook: install_ham_training_apps.yml
 - import_playbook: install_logging_apps.yml
@@ -114,23 +114,23 @@
 - import_playbook: install_ax25.yml
 - import_playbook: install_linpac.yml
 - import_playbook: install_bluedv.yml
-# ARM64 Fail- import_playbook: install_chirp.yml
+- import_playbook: install_chirp.yml
 - import_playbook: install_pat.yml
-#- import_playbook: install_ardop_utils.yml
-#- import_playbook: install_HamClock_by_WB0OEW.yml
-#- import_playbook: install_qsstv.yml
-#- import_playbook: install_quisk.yml
-#- import_playbook: install_pmon.yml
-#- import_playbook: install_pybombs.yml
-#- import_playbook: install_tqsl.yml
-#- import_playbook: install_boinc.yml
-#- import_playbook: install_qslware.yml
-#- import_playbook: install_twclock.yml
-#- import_playbook: install_twhamqth.yml
-#- import_playbook: install_wxtoimg.yml
-#- import_playbook: install_freedv.yml
-#- import_playbook: install_dump1090.yml
-#- import_playbook: install_acarsdec.yml
+- import_playbook: install_ardop_utils.yml
+- import_playbook: install_HamClock_by_WB0OEW.yml
+- import_playbook: install_qsstv.yml
+- import_playbook: install_quisk.yml
+- import_playbook: install_pmon.yml
+- import_playbook: install_pybombs.yml
+- import_playbook: install_tqsl.yml
+- import_playbook: install_boinc.yml
+- import_playbook: install_qslware.yml
+- import_playbook: install_twclock.yml
+- import_playbook: install_twhamqth.yml
+- import_playbook: install_wxtoimg.yml
+- import_playbook: install_freedv.yml
+- import_playbook: install_dump1090.yml
+- import_playbook: install_acarsdec.yml
 # Fails to build under aarch64:
 - import_playbook: install_voacapl.yml
 # DJS FIX Makefile's NEON ARGS FOR ARM64- import_playbook: install_openwebrx.yml
@@ -139,7 +139,7 @@
 # some of them have been worked around.
 - import_playbook: install_cygnusRFI.yml
 - import_playbook: install_uhrr.yml
-# ARM64 Fail- import_playbook: install_wfview.yml
+- import_playbook: install_wfview.yml
 # Build broken on AMD64 by change to glibc:
 - import_playbook: install_qrsspig.yml
 - import_playbook: install_skcclogger.yml
@@ -148,7 +148,7 @@
 - import_playbook: install_qdmr_gui_dmr_radio_programmer.yml
 - import_playbook: install_cqrprop.yml
 - import_playbook: install_pihpsdr.yml
-# ARM64 broken?- import_playbook: install_meteor_decoder.yml
+- import_playbook: install_meteor_decoder.yml
 - import_playbook: install_f4htbpna.yml
 - import_playbook: install_noaa_apt.yml
 - import_playbook: install_tentenqsologger.yml
