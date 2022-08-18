@@ -16,7 +16,7 @@
       path: /home/{{ ham_user }}/hamradio
       state: directory
 
-  - name: Install dependent libraries
+  - name: Install dependent libraries (Common)
     become: yes
     package:
       name: "{{ item }}"
@@ -31,7 +31,32 @@
       - qtpositioning5-dev
       - libqt5serialport5-dev
       - libyaml-cpp-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
       - libyaml-cpp0.6
+    when: not is_jammy|bool
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Install dependent libraries (Jammy)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libyaml-cpp0.7
+    when: is_jammy|bool
     retries: 5
     delay: 30
     register: result
