@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=GridTracker
+Comment=GridTracker
+GenericName=GridTracker, An Amateur Radio Companion
+Exec=/usr/local/GridTracker/GridTracker
+Icon=/usr/local/GridTracker/gridtracker.png
+Path=/usr/local/GridTracker
+Type=Application
+Encoding=UTF-8
+Terminal=false
+Categories=HamRadio Weak Signal

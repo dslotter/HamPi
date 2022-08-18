@@ -157,7 +157,7 @@
     become: yes
     unarchive:
 #      src: "{{ download_file.stdout }}"
-      src: "https://storage.googleapis.com/gt_download/v1.21.0503-2/GridTracker-1.22.0503-linux-x64.tar.gz"
+      src: "https://storage.googleapis.com/gt_download/v1.22.0725/GridTracker-1.22.0725-linux-x64.tar.gz"
       dest: /usr/local
       remote_src: yes
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
@@ -172,7 +172,7 @@
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
 #
-# Common
+# GridTracker Desktop file
 #
 
   - name: Copy GridTracker Desktop file
@@ -181,6 +181,14 @@
       src: /usr/local/GridTracker/GridTracker.desktop
       dest: /usr/local/share/applications/GridTracker.desktop
       remote_src: yes
+    when: not is_jammy|bool
+
+  - name: Copy GridTracker desktop file (Jammy)
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/YAAC.desktop"
+      dest: "/usr/local/share/applications/GridTracker.desktop"
+    when: is_jammy|bool
 
   - name: Fix the lazy path that GridTracker uses to what we're using
     become: yes
@@ -188,6 +196,7 @@
       path: /usr/local/share/applications/GridTracker.desktop
       regexp: '/home/{{ ham_user }}/Downloads'
       replace: '/usr/local'
+    when: not is_jammy|bool
 
   - name: Modify categories for GridTracker.desktop
     become: yes
@@ -195,3 +204,4 @@
       path: /usr/local/share/applications/GridTracker.desktop
       regexp: '^Categories=None;'
       line: Categories=HamRadio Weak Signal
+    when: not is_jammy|bool
