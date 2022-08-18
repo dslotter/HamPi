@@ -35,13 +35,22 @@
     set_fact:
       is_buster: True
       is_bullseye: False
+      is_jammy: False
     when: (is_debian|bool or is_ubuntu|bool ) and ansible_distribution_major_version == "10"
 
   - name: Set facts for Debian Bullseye
     set_fact:
       is_buster: False
       is_bullseye: True
+      is_jammy: False
     when: (is_debian|bool or is_ubuntu|bool ) and ansible_distribution_release == "bullseye"
+
+  - name: Set facts for Ubuntu Jammy
+    set_fact:
+      is_buster: False
+      is_bullseye: True
+      is_jammy: True
+    when: (is_debian|bool or is_ubuntu|bool ) and ansible_distribution_release == "jammy"
 
   - name: Set facts for Debian Bullseye on Ubuntu
     set_fact:
@@ -73,11 +82,11 @@
       fail_msg:
         - "Both is_debian and is_ubuntu cannot match"
 
-  - name: Confirm Debian version is consistent
-    assert:
-      that: is_buster != is_bullseye
-      fail_msg:
-        - "Both is_buster and is_bullseye cannot match"
+#  - name: Confirm Debian version is consistent
+#    assert:
+#      that: is_buster != is_bullseye
+#      fail_msg:
+#        - "Both is_buster and is_bullseye cannot match"
 
   - name: Confirm Platform is consistent
     assert:

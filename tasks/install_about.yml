@@ -79,6 +79,7 @@
       src: "{{ playbook_dir }}/../files/usr/share/applications/HamPi.desktop"
       dest: "/usr/share/applications/HamPi.desktop"
       mode: 0644
+    when: is_rpi|bool
 
   - name: Create HamPi script in /usr/bin
     become: yes
@@ -86,3 +87,20 @@
       src: "{{ playbook_dir }}/../files/usr/bin/about_hampi"
       dest: "/usr/bin/about_hampi"
       mode: 0755
+    when: is_rpi|bool
+
+  - name: Create HamPC desktop file in /usr/share/applications
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/applications/HamPC.desktop"
+      dest: "/usr/share/applications/HamPC.desktop"
+      mode: 0644
+    when: is_pc|bool
+
+  - name: Create HamPC script in /usr/bin
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/bin/about_hampc"
+      dest: "/usr/bin/about_hampc"
+      mode: 0755
+    when: is_pc|bool

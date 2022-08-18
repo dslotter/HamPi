@@ -36,6 +36,6 @@ Usage of this image means that you freely give your consent to running the Berke
 
 We assume no responsibility for errors or omissions in the software or documentation available from its web site. In no event shall we be liable to you or any third parties for any special, punitive, incidental, indirect or consequential damages of any kind, or any damages whatsoever, including, without limitation, those resulting from loss of use, data or profits, and on any theory of liability, arising out of or in connection with the use of this software.
 
-This Agreement and software image are protected by copyright. © HamPi / HamPC, 2020-2021. All rights reserved.
+This Agreement and software image are protected by copyright. © HamPi / HamPC, 2020-2022. All rights reserved.
 
-Last updated: December 31, 2021
+Last updated: August 18, 2022
