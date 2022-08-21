@@ -24,7 +24,6 @@
     with_items:
       - libfltk1.3-dev
       - subversion
-      - portaudio19-dev
       - libusb-1.0-0-dev
       - libsamplerate0-dev
       - libasound2-dev
@@ -37,6 +36,7 @@
       - libspeex-dev
       - libspeexdsp-dev
       - libsndfile-dev
+      - libpulse-dev
       - sox
 #        - libjpeg9-dev
     retries: 5
@@ -96,7 +96,7 @@
       warn: no
 
   - name: Build freedv-gui Binaries
-    command: ./build_linux.sh
+    command: ./build_linux.sh pulseaudio
     args:
       chdir: /home/{{ ham_user }}/hamradio/freedv-gui
 
@@ -135,6 +135,36 @@
     register: result
     until: result.failed == false
 
+  - name: Git clone latest LPCNet sources
+    git:
+      repo: https://github.com/drowe67/LPCNet
+      dest: /home/{{ ham_user }}/hamradio/LPCNet
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Create directory LPCNet/build
+    file:
+      path: /home/{{ ham_user }}/hamradio/LPCNet/build
+      state: directory
+
+  - name: Build LPCNet CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/LPCNet/build
+
+  - name: Build LPCNet
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/LPCNet/build
+
+  - name: Install LPCNet
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/LPCNet/build
+      
   - name: Git clone latest Codec2 sources
     git:
       repo: https://github.com/drowe67/codec2.git
@@ -150,7 +180,7 @@
       state: directory
 
   - name: Build Codec2 CMakeFiles
-    command: cmake -Wno-dev ..
+    command: cmake -Wno-dev -DLPCNET_BUILD_DIR=/home/{{ ham_user }}/hamradio/LPCNet/build ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/codec2/build
 
@@ -164,36 +194,6 @@
     command: make install
     args:
       chdir: /home/{{ ham_user }}/hamradio/codec2/build
-
-  - name: Git clone latest Codec2 sources
-    git:
-      repo: https://github.com/drowe67/LPCNet
-      dest: /home/{{ ham_user }}/hamradio/LPCNet
-    retries: 5
-    delay: 30
-    register: result
-    until: result.failed == false
-
-  - name: Create directory LPCNet/build
-    file:
-      path: /home/{{ ham_user }}/hamradio/LPCNet/build
-      state: directory
-
-  - name: Build LPCNet CMakeFiles
-    command: cmake -DCODEC2_BUILD_DIR=/home/{{ ham_user }}/hamradio/codec2/build ..
-    args:
-      chdir: /home/{{ ham_user }}/hamradio/LPCNet/build
-
-  - name: Build LPCNet
-    command: make
-    args:
-      chdir: /home/{{ ham_user }}/hamradio/LPCNet/build
-
-  - name: Install LPCNet
-    become: yes
-    command: make install
-    args:
-      chdir: /home/{{ ham_user }}/hamradio/LPCNet/build
 
   - name: Configure dynamic linker run-time bindings
     become: yes
