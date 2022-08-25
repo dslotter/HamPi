@@ -14,7 +14,9 @@ Please report all relevant details to help us locate and correct the
 security vulnerability. This should include project name (HamPi or
 HamPC) plus version information for the distribution. If the
 vulnerability is in the HamPi / HamPC sources itself, reference the
-source code file and/or git commit information or release tag.
+source code file and/or git commit information or release tag. Also
+include the specifics of the vulnerability and/or reference any
+external sources, such as CVE number or weblinks.
 
 Reporting a vulnerability which is confirmed by staff will result in
 reporters receiving a credit plus a HamPi sticker being mailed to
