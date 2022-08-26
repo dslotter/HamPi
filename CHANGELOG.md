@@ -22,6 +22,7 @@ Add support for Xubuntu 22 for HamPC
 - acfax is missing from Xubuntu 22 (Jammy) for HamPC
 - Update QDMR dependencies for Xubuntu 22 (Jammy) for HamPC
 - Update build date for Xubuntu 22 (Jammy) for HamPC
+- Install on xubuntu/ubuntu updated to build jtdx from source
 
 ### Removed
 
