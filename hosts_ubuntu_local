@@ -1,0 +1,12 @@
+#
+# Copyright 2020 - 2021, Dave Slotter (W3DJS). All rights reserved.
+#
+
+[all]
+127.0.0.1 ansible_user=hampi
+
+[all:vars]
+ansible_user=hampi
+ansible_password=hampi
+ansible_port=9022
+is_local_install=True

@@ -30,7 +30,7 @@
   - name: Change hostname to hampc (for current session)
     become: yes
     command: hostname -b hampc
-    when: is_pc|bool
+    when: is_pc|bool and not is_local_install|bool
 
   - name: Change hostname to hampi (permanently)
     become: yes
@@ -44,7 +44,7 @@
     copy:
       src: "{{ playbook_dir }}/../files/etc/hostname_hampc"
       dest: "/etc/hostname"
-    when: is_pc|bool
+    when: is_pc|bool and not is_local_install|bool
 
   - name: Change hostname to hampi (for hosts file)
     become: yes
@@ -58,7 +58,7 @@
     copy:
       src: "{{ playbook_dir }}/../files/etc/hosts_hampc"
       dest: "/etc/hosts"
-    when: is_pc|bool
+    when: is_pc|bool and not is_local_install|bool
 
   - name: Store a basic version file in public location
     become: yes
@@ -207,7 +207,7 @@
     copy:
       src: "{{ playbook_dir }}/../files/etc/xdg/xdg-xubuntu/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml"
       dest: "/etc/xdg/xdg-xubuntu/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml"
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64") and not is_local_install|bool
 
   - name: Create /home/{{ ham_user }}/.config/pcmanfm/LXDE-pi directory
     file:
