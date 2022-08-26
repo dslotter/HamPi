@@ -25,12 +25,12 @@ Add support for Xubuntu 22 for HamPC
 
 ### Removed
 
-flxmlrpc for now (Contacting Developer)
+- flxmlrpc for now (Contacting Developer)
 
 ### Fixed
 
-Fix Bullseye compatibility
-Prevent missing Python2 dependencies from getting installed on Xubuntu
+- Fix Bullseye compatibility
+- Prevent missing Python2 dependencies from getting installed on Xubuntu
 
 ## [3.0] - 2022-03-29
 
