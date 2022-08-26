@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Desktop Launcher for NOAA-APT
 Add support for Xubuntu 22 for HamPC
+- Support to install from ansible playbook on the localhost with an existing user `hampc`
 
 ### Changed
 
