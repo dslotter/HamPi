@@ -188,28 +188,69 @@
 #    set_fact: jtdx_installer="jtdx_2.2.158_amd64_ub18.deb"
 #    when: (ansible_architecture == "x86_64" or ansible_architecture == "amd64") and ansible_distribution_major_version == "18"
 
-  - name: Determine correct JTDX version for Xubuntu/Ubuntu
-    set_fact: jtdx_installer="jtdx-2.2.0-rc155_2004_amd64.deb"
-    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+  # - name: Determine correct JTDX version for Xubuntu/Ubuntu
+  #   set_fact: jtdx_installer="jtdx-2.2.0-rc155_2004_amd64.deb"
+  #   when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
-  - name: Copy JTDX from local file (because automated downloads don't work reliably) (AMD64)
-    copy:
-      src: "{{ playbook_dir }}/../files/{{ jtdx_installer }}"
-      dest: "/home/{{ ham_user }}/hamradio/{{ jtdx_installer }}"
-    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+  # - name: Copy JTDX from local file (because automated downloads don't work reliably) (AMD64)
+  #   copy:
+  #     src: "{{ playbook_dir }}/../files/jtdx-2.2.0-rc155_2004_amd64.deb"
+  #     dest: "/home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc155_2004_amd64.deb"
+  #   when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
-  - name: Install JTDX from local file (because automated downloads don't work reliably) (AMD64)
+  # - name: Install JTDX from local file (because automated downloads don't work reliably) (AMD64)
+  #   become: yes
+  #   apt:
+  #     deb: /home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc155_2004_amd64.deb"
+  #   when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+  # - name: Remove JTDX installer from local file (because automated downloads don't work reliably) (AMD64)
+  #   file:
+  #     path: /home/{{ ham_user }}/hamradio/jtdx-2.2.0-rc155_2004_amd64.deb"
+  #     state: absent
+  #   when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+  - name: Install dependent libraries
     become: yes
-    apt:
-      deb: /home/{{ ham_user }}/hamradio/{{ jtdx_installer }}"
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - libqt5websockets5-dev
+      - libqt5serialport5-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
-  - name: Remove JTDX installer from local file (because automated downloads don't work reliably) (AMD64)
+  - name: Git clone latest jtdx sources
+    git:
+      repo: https://www.github.com/jtdx-project/jtdx
+      dest: /home/{{ ham_user }}/hamradio/jtdx
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+
+  - name: Create directory jtdx/build
     file:
-      path: /home/{{ ham_user }}/hamradio/{{ jtdx_installer }}"
-      state: absent
+      path: /home/{{ ham_user }}/hamradio/jtdx/build
+      state: directory
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+      
+  - name: Build Dev jtdx CMakeFiles
+    command: cmake .. -DWSJT_SKIP_MANPAGES=ON
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/jtdx/build
     when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 
+  - name: Build jtdx
+    command: cmake --build . --target install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/jtdx/build
+    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
 #
 # Common
 #
