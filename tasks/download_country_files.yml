@@ -48,7 +48,7 @@
     shell: cp /home/{{ ham_user }}/hamradio/CTY_FILES/cty.dat /home/{{ ham_user }}/.local/share/WSJT-X
 
   - name: Determine latest version of BIGCTY on web
-    shell: curl --silent "https://www.country-files.com/" | grep -Po "https://www.country-files.com/bigcty/download/2022/bigcty-[0-9]+.zip" | head -n 1 | grep -Po "[0-9]+"
+    shell: curl --silent "https://www.country-files.com/" | grep -Po "https://www.country-files.com/bigcty/download/2022/bigcty-[0-9]+.zip" | head -n 1 | grep -Po "\-[0-9]+" | grep -Po "[0-9]+"
     args:
       warn: no
     register: bigcty_version
