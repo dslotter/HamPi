@@ -50,6 +50,22 @@
       path: /usr/local/share/applications
       state: directory
 
+  - name: Modify path for {{ ham_user }} patmenu2.desktop
+    become: yes
+    replace:
+      path: /home/{{ ham_user }}/patmenu2/patmenu2.desktop
+      regexp: "\/home\/pi\/"
+      replace: "/home/{{ ham_user }}/"
+    when: is_pc|bool
+
+  - name: Modify path for {{ ham_user }} 891.km4ack.config
+    become: yes
+    replace:
+      path: /home/{{ ham_user }}/patmenu2/891.km4ack.config
+      regexp: "\/home\/pi\/"
+      replace: "/home/{{ ham_user }}/"
+    when: is_pc|bool
+
   - name: Copy Patmenu2.desktop to /usr/local/share/applications
     become: yes
     shell: cp -a /home/{{ ham_user }}/patmenu2/patmenu2.desktop /usr/local/share/applications/patmenu2.desktop
