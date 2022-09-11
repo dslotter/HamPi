@@ -58,11 +58,14 @@
 # Install YAAC - Yet Another APRS Client
 #
 
-  - name: Install YAAC prerequisite library
+  - name: Install YAAC prerequisite libraries
     become: yes
     package:
-      name: librxtx-java
+      name: "{{ item }}"
       state: present
+    with_items:
+      - default-jre
+      - librxtx-java
     retries: 5
     delay: 30
     register: result

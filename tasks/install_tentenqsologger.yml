@@ -11,6 +11,16 @@
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
+  - name: Install Ten Ten QSO Logger pre-requisites
+    become: yes
+    package:
+      name: default-jre
+      state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
   - name: Create directory /usr/local/1010qsologger
     become: yes
     file:
