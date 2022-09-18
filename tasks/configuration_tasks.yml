@@ -86,7 +86,7 @@
       warn: no
     when: cmdline_stat_result.stat.exists
 
-  - name: Remove unwanted software packages
+  - name: Remove unwanted software packages (Raspberry Pi)
     become: yes
     package:
       name: "{{ item }}"
@@ -97,6 +97,22 @@
       - bluej
       - greenfoot-unbundled
       - minecraft-pi
+    when: is_rpi|bool
+
+  - name: Remove unwanted software packages (Xubuntu)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: absent
+    with_items:
+      - gimp
+      - gimp-data
+      - lazarus*
+      - sgt-puzzles
+      - sgt-launcher
+      - xplanet
+      - xplanet-images
+    when: is_pc|bool
 
   # This allows apt-add-repository command to be added
   - name: Install software-properties-common Packages
