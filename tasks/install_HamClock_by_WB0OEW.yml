@@ -39,28 +39,21 @@
     register: result
     until: result.failed == false
 
-  - name: Build HamClock by WB0OEW
-    command: make hamclock-800x480
-    args:
-      chdir: /home/{{ ham_user }}/hamradio/ESPHamClock
-
-  - name: Install HamClock application by WB0OEW
-    become: yes
-    command: cp hamclock-800x480 /usr/local/bin
-    args:
-      chdir: /home/{{ ham_user }}/hamradio/ESPHamClock
+  - name: Build multiple sizes of HamClock
+    vars:
+      hamclock_size:
+        - 800x480
+        - 1600x960
+        - 2400x1440
+        - 3200x1920
+    include_tasks: build_HamClock_by_WB0OEW.yml
+    loop: "{{ hamclock_size }}"
 
   - name: Install HamClock icon
     become: yes
-    command: cp hamclock.png /usr/local/share/icons
+    command: cp hamclock.png /usr/share/icons
     args:
       chdir: /home/{{ ham_user }}/hamradio/ESPHamClock
-
-  - name: Copy HamClock desktop file
-    become: yes
-    copy:
-      src: "{{ playbook_dir }}/../files/usr/local/share/applications/hamclock.desktop"
-      dest: "/usr/local/share/applications/hamclock.desktop"
 
   - name: Remove HamClock by WB0OEW build directory
     file:
