@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Now include all four pre-defined sizes of HamClock
+  (HamClock now has its own submenu)
+- Fix HamPC About Dialog Support URL
+
+## [3.0.1b1] - 2022-08-18
+
 ### Added
 
 Desktop Launcher for NOAA-APT
@@ -310,7 +318,7 @@ Version 0.7 is the first beta release being distributed to a small group of beta
 ### Removed (temporarily)
 - SDRAngel
 - Background Images
-    
+    Fixed in Git commit
 ### 2020-05-13
 
 #### Big Picture
