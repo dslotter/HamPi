@@ -157,6 +157,7 @@
 - import_playbook: install_droidstar.yml
 - import_playbook: install_rpitx.yml
 - import_playbook: install_dxspider.yml
+- import_playbook: install_trlog.yml
 
 # Final tasks
 - import_playbook: finish_tasks.yml

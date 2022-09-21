@@ -1,0 +1,116 @@
+#
+# Copyright 2020 - 2022, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install N6TR's TR log
+  gather_facts: no
+  hosts: all
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install dependent libraries for trlog (Common)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - autotools-dev
+      - autoconf
+      - libtool
+      - expect
+      - libusb-1.0-0-dev
+      - libieee1284-3-dev
+      - libcurl4-openssl-dev
+      - libsndfile1-dev
+      - libasound-dev
+      - xterm 
+      - ncat
+      - texlive
+      - xpdf
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Download Free Pascal sources (Takes ~5 minutes)
+    unarchive:
+      src: https://sourceforge.net/projects/freepascal/files/Linux/3.2.2/fpc-3.2.2.arm-linux-raspberry-2.tar
+      dest: /home/{{ ham_user }}/hamradio
+      remote_src: yes
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+    when: is_rpi|bool
+
+  - name: Copy Free pascal Expect Script
+    copy:
+      src: "{{ playbook_dir }}/../files/freepascal_install.exp"
+      dest: /home/{{ ham_user }}/hamradio/fpc-3.2.2.arm-linux/freepascal_install.exp
+      mode: 0655
+    when: is_rpi|bool
+
+  - name: Install Free Pascal using Expect Script
+    become: yes
+    command: ./freepascal_install.exp
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/fpc-3.2.2.arm-linux
+    when: is_rpi|bool
+
+  - name: Insert Free Pascal configuration
+    blockinfile:
+      dest: "/home/{{ ham_user }}/.fpc"
+      create: yes
+      block: |
+        #INCLUDE /etc/fpc.cfg
+        -Fl/usr/lib/gcc/arm-linux-gnueabihf/10
+    when: is_rpi|bool
+
+  - name: Download trlog sources
+    git:
+      repo: https://github.com/trlinux/trlinux.git
+      dest: /home/{{ ham_user }}/hamradio/trlinux
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Build trlog
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/trlinux
+
+  - name: Install trlog
+    become: yes
+    copy: remote_src=True src=/home/{{ ham_user }}/hamradio/trlinux/log/ dest=/usr/trlog/
+
+  - name: Create a symbolic link for {{ item }}
+    become: yes
+    file:
+      src: /usr/trlog/{{ item }}
+      dest: /usr/bin/{{ item }}
+      owner: root
+      group: root
+      state: link
+    with_items:
+      - trlog
+      - post
+
+  - name: Remove trlog build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/trlinux
+      state: absent
+
+  - name: Remove Free Pascal directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/fpc-3.2.2.arm-linux
+      state: absent

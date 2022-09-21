@@ -1,0 +1,21 @@
+#!/usr/bin/expect -f
+
+set timeout 20
+
+spawn $env(SHELL)
+
+send -- "./install.sh\r"
+
+expect "Install prefix (/usr or /usr/local)  * : "
+send -- "/usr\r"
+
+expect "Install documentation (Y/n) ? "
+send -- "\r"
+
+expect "Install demos (Y/n) ? "
+send -- "\r"
+
+expect "Install demos in * :"
+send -- "\r"
+
+expect "End of installation.\r"
