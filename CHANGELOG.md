@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Now include all four pre-defined sizes of HamClock
   (HamClock now has its own submenu)
 - Fix HamPC About Dialog Support URL
+- Add TRlog contest logger
+- Add HAMRS portable logger
 
 ## [3.0.1b1] - 2022-08-18
 
