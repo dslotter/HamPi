@@ -1,0 +1,58 @@
+#
+# Copyright 2020 - 2022, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install HAMRS Software
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Set architecture for Raspberry Pi
+    set_fact:
+      architecture: "armv7l"
+    when: is_rpi|bool
+
+  - name: Set architecture for Xubuntu
+    set_fact:
+       architecture: "x86_64"
+    when: is_pc|bool
+
+  - name: Determine latest version of HAMRS on web (Raspberry Pi)
+    shell: curl --silent "https://www.hamrs.app/" | grep -P "{{ architecture }}" | egrep -o "https://.*AppImage"
+    args:
+      warn: no
+    retries: 5
+    delay: 30
+    register: download_url
+    until: download_url.failed == false
+
+  - name: Derive HAMRS filename
+    shell: echo "{{ download_url.stdout }}" | grep -Po "hamrs-[0-9].*AppImage"
+    register: hamrs_filename
+
+  - name: Download HAMRS from {{ download_url.stdout }} to /usr/bin/{{ hamrs_filename.stdout }}
+    become: yes
+    get_url:
+      url: "{{ download_url.stdout }}"
+      dest: /usr/bin/{{ hamrs_filename.stdout }}
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Set HAMRS to executable
+    become: yes
+    file: dest=/usr/bin/{{ hamrs_filename.stdout }} mode=755
+
+  - name: Create hamrs.desktop
+    become: yes
+    template:
+      src: "{{ playbook_dir }}/../templates/usr/share/applications/hamrs.desktop.j2"
+      dest: /usr/share/applications/hamrs.desktop
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Add HAMRS icon
+    become: yes
+    copy: src="{{ playbook_dir }}/../files/usr/share/pixmaps/hamrs.png" dest=/usr/share/pixmaps/hamrs.png mode=644
