@@ -32,6 +32,7 @@ Add support for Xubuntu 22 for HamPC
 - acfax is missing from Xubuntu 22 (Jammy) for HamPC
 - Update QDMR dependencies for Xubuntu 22 (Jammy) for HamPC
 - Update build date for Xubuntu 22 (Jammy) for HamPC
+- Changed repo path for D-Rat & build dependencies
 
 ### Removed
 

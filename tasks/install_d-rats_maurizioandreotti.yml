@@ -62,49 +62,9 @@
       name: "{{ item }}"
       state: present
     with_items:
-      - python
-      - python-lxml
-      - python-libxml2
-    when: is_ubuntu|bool 
-    retries: 5
-    delay: 30
-    register: result
-    until: result.failed == false
-
-  - name: Install dependent Python component python-gtk for D-Rats (Xubuntu)
-    become: yes
-    apt:
-      deb: http://archive.ubuntu.com/ubuntu/pool/universe/p/pygtk/python-gtk2_2.24.0-5.1ubuntu2_amd64.deb
-    when: is_ubuntu|bool 
-    retries: 5
-    delay: 30
-    register: result
-    until: result.failed == false
-
-  - name: Install dependent Python component python-serial for D-Rats (Xubuntu)
-    become: yes
-    apt:
-      deb: http://mirrors.kernel.org/ubuntu/pool/main/p/pyserial/python-serial_3.4-2_all.deb
-    when: is_ubuntu|bool 
-    retries: 5
-    delay: 30
-    register: result
-    until: result.failed == false
-
-  - name: Install dependent Python component python-glade2 for D-Rats (Xubuntu)
-    become: yes
-    apt:
-      deb: http://archive.ubuntu.com/ubuntu/pool/universe/p/pygtk/python-glade2_2.24.0-5.1ubuntu2_amd64.deb
-    when: is_ubuntu|bool 
-    retries: 5
-    delay: 30
-    register: result
-    until: result.failed == false
-
-  - name: Install dependent Python component python-libxslt1 for D-Rats (Xubuntu)
-    become: yes
-    apt:
-      deb: http://security.ubuntu.com/ubuntu/pool/main/libx/libxslt/python-libxslt1_1.1.29-5ubuntu0.2_amd64.deb
+      - python2-dev
+      - libxml2-dev  
+      - libxslt1-dev
     when: is_ubuntu|bool 
     retries: 5
     delay: 30
@@ -113,7 +73,7 @@
 
   - name: Download D-Rats sources
     git:
-      repo: https://github.com/maurizioandreotti/D-Rats.git
+      repo: https://github.com/ham-radio-software/D-Rats.git
       dest: /home/{{ ham_user }}/hamradio/D-Rats
     retries: 5
     delay: 30
