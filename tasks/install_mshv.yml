@@ -1,0 +1,83 @@
+#
+# Copyright 2020 - 2022, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install MSHV Software
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Install dependent libraries for MSHV (Common)
+    become: yes
+    package:
+      name: libqt5websockets5-dev
+      state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Download MSHV from Sourceforge
+    unarchive:
+      src: "https://downloads.sourceforge.net/project/mshv/MSHV_265_Full_Source_Code.zip?use_mirror=versaweb&r=https://sourceforge.net/projects/mshv/files/MSHV_265_Full_Source_Code.zip/download"
+      dest: /home/{{ ham_user }}/hamradio/
+      remote_src: yes
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: QMake MSHV
+    command: qmake MSHV_I686.pro
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/MSHV_265
+
+  - name: Clean MSHV
+    command: make clean
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/MSHV_265
+
+  - name: Build MSHV
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/MSHV_265
+
+  - name: Install MSHV artifacts
+    become: yes
+    copy:
+      src: /home/{{ ham_user }}/hamradio/MSHV_265/bin/{{ item }}
+      dest: /usr/MSHV
+      owner: root
+      group: root
+      mode: 0755
+      remote_src: yes
+    with_items:
+      - AllTxtMonthly
+      - ExportLog
+      - log
+      - RxWavs
+      - Screenshots
+      - settings
+      - MSHV_I686
+
+  - name: Create mshv.desktop
+    become: yes
+    template:
+      src: "{{ playbook_dir }}/../files/usr/share/applications/MSHV.desktop"
+      dest: /usr/share/applications/MSHV.desktop
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Install MSHV icon
+    become: yes
+    copy:
+      src: /home/{{ ham_user }}/hamradio/MSHV_265/src/pic/ms_ico.png
+      dest: /usr/share/pixmaps/MSHV.png
+      mode: 0644
+      remote_src: yes
+
+  - name: Remove MSHV build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/MSHV_256
+      state: absent
