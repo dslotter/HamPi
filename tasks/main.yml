@@ -24,6 +24,7 @@
 - import_playbook: install_wallpaper.yml
 - import_playbook: upgrade_debian_packages.yml
 - import_playbook: install_bookmarks.yml
+- import_playbook: install_wireguard.yml
 - import_playbook: install_cmake.yml
 - import_playbook: install_wxwidgets.yml
 # ^^^ This part takes about 1 hour to build on a RPi 4 ^^^

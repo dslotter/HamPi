@@ -1,0 +1,18 @@
+#
+# Copyright 2020 - 2022, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Wireguard Software (used by AMPRnet for example)
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Install Wireguard
+    become: yes
+    package:
+      name: wireguard
+      state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
