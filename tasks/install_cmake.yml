@@ -78,7 +78,7 @@
 #
 
   - name: Determine latest version of CMake on GitHub
-    shell: curl --silent "https://github.com/Kitware/CMake/releases/" | grep -Po "cmake-[0-9]+.[0-9]+.[0-9]+.tar.gz" | head -n 1 | grep -Po "[0-9]+.[0-9]+.[0-9]+"
+    shell: curl --silent "https://github.com/Kitware/CMake/releases/" | grep -Po "cmake-[0-9]+.[0-9]+.[0-9]+.*.tar.gz" | head -n 1 | grep -Po "[0-9]+.[0-9]+.[0-9]+"
     args:
       warn: no
     retries: 5
