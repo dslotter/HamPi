@@ -4,6 +4,7 @@
 
 - name: Install wfview - a program to control modern Icom ham radios
   hosts: all
+  gather_facts: no
   environment:
     # Build-Time Tuning:
     CXXFLAGS: -O2 -march=native -mtune=native
@@ -67,6 +68,24 @@
       path: /home/{{ ham_user }}/hamradio/build
       state: directory
 
+  - name: Rewrite RtAudio include directory for rthandler.h
+    replace:
+      path: /home/{{ ham_user }}/hamradio/wfview/rthandler.h
+      regexp: '#include "rtaudio/RtAudio.h"'
+      replace: '#include "RtAudio.h"'
+
+  - name: Rewrite RtAudio include directories servermain.h
+    replace:
+      path: /home/{{ ham_user }}/hamradio/wfview/servermain.h
+      regexp: '#include "rtaudio/RtAudio.h"'
+      replace: '#include "RtAudio.h"'
+
+  - name: Rewrite RtAudio include directories wfmain.h
+    replace:
+      path: /home/{{ ham_user }}/hamradio/wfview/wfmain.h
+      regexp: '#include "rtaudio/RtAudio.h"'
+      replace: '#include "RtAudio.h"'
+
   - name: Build wfview Makefiles
     command: qmake ../wfview/wfview.pro
     args:
@@ -90,12 +109,10 @@
       regexp: '^Categories=Network;HamRadio'
       line: Categories=HamRadio
 
-  - name: Remove wfview sources
+  - name: Remove wfview source directories
     file:
-      path: /home/{{ ham_user }}/hamradio/wfview
+      path: /home/{{ ham_user }}/hamradio/{{ item }}
       state: absent
-
-  - name: Remove wfview build directory
-    file:
-      path: /home/{{ ham_user }}/hamradio/build
-      state: absent
+    with_items:
+      - wfview
+      - build
