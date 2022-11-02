@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+#
+# Copyright 2020 - 2021, Dave Slotter (W3DJS). All rights reserved.
+#
+
+echo -n "Ansible Playbook Run started at: "
+start_time=`date`
+echo $start_time
+# Compute the seconds since epoch for start date
+t1=`date --date="$start_time" +%s`
+
+curdate=`date +%Y-%m-%d`
+
+echo "ansible-playbook -i hosts tasks/main.yml"
+ansible-playbook -u hampc -i hosts_ubuntu_local --connection=local ./tasks/main.yml | tee --append ansible-output_${curdate}.txt
+notify_via_email.py "Ansible has finished (HamPi)."
+
+# Compute the seconds since epoch for end date
+end_time=`date`
+t2=`date --date="$end_time" +%s`
+
+let diff_time=$t2-$t1
+printf "Total time for running Ansible Playbook: %02d:%02d:%02d\n" $((diff_time/3600)) $((diff_time%3600/60)) $((diff_time%60)) | tee --append ansible-output_${curdate}.txt
