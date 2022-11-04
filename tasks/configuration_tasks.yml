@@ -257,40 +257,6 @@
       dest: "/etc/lightdm/lightdm-gtk-greeter.conf"
     when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
 
-  - name: Create /home/{{ ham_user }}/Desktop directory
-    file:
-      path: "/home/{{ ham_user }}/Desktop"
-      state: directory
-
-  - name: Create HamPi README in /home/{{ ham_user }}/Desktop
-    copy:
-      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/HAMPI README.docx"
-      dest: "/home/{{ ham_user }}/Desktop/HAMPI README.docx"
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
-
-  - name: Create HamPC README in /home/{{ ham_user }}/Desktop
-    copy:
-      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/HAMPC README.docx"
-      dest: "/home/{{ ham_user }}/Desktop/HAMPC README.docx"
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
-
-  - name: Create HamPi LICENSE in /home/{{ ham_user }}/Desktop
-    copy:
-      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/HAMPI LICENSE.TXT"
-      dest: "/home/{{ ham_user }}/Desktop/HAMPI LICENSE.TXT"
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
-
-  - name: Create HamPC LICENSE in /home/{{ ham_user }}/Desktop
-    copy:
-      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/HAMPC LICENSE.TXT"
-      dest: "/home/{{ ham_user }}/Desktop/HAMPC LICENSE.TXT"
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
-
-  - name: Create GIVE BACK in /home/{{ ham_user }}/Desktop
-    copy:
-      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/GIVE BACK.PDF"
-      dest: "/home/{{ ham_user }}/Desktop/GIVE BACK.PDF"
-
   - name: Create HamPi-Help menu item in /usr/share/raspi-ui-overrides/applications
     become: yes
     copy:

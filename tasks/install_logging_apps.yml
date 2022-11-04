@@ -240,5 +240,10 @@
       src: "{{ playbook_dir }}/../files/usr/local/share/applications/pyqso.desktop"
       dest: "/usr/local/share/applications/pyqso.desktop"
 
+  - name: Remove pyqso source directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/pyqso
+      state: absent
+
 # Todo:
 # twlog - basic logging program for ham radio

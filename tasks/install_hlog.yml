@@ -1,0 +1,99 @@
+#
+# Copyright 2020 - 2022, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install hlog
+  hosts: all
+  gather_facts: no
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Install dependent libraries
+    become: yes
+    package:
+      name: mercurial
+      state: present
+    with_items:
+      - mercurial
+      - lua5.3
+      - libtolua-dev
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Git clone latest libzmq sources
+    git:
+      repo: https://github.com/zeromq/libzmq.git
+      dest: /home/{{ ham_user }}/hamradio/libzmq
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Create directory libzmq/build
+    file:
+      path: /home/{{ ham_user }}/hamradio/libzmq/build
+      state: directory
+
+  - name: Build libzmq CMakeFiles
+    command: cmake ..
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/libzmq/build
+
+  - name: Build libzmq
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/libzmq/build
+
+  - name: Install libzmq
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/libzmq/build
+
+  - name: Clone libjeffpc
+    command: hg clone http://hg.31bits.net/libjeffpc/
+    args:
+      chdir: /home/{{ ham_user }}/hamradio
+
+  - name: Build libjeffpc CMakeFiles
+    command: cmake . -DCMAKE_INSTALL_PREFIX=/usr
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/libjeffpc
+
+  - name: Build libjeffpc
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/libjeffpc
+
+  - name: Install libjeffpc
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/libjeffpc
+
+  - name: Clone hlog
+    command: hg clone http://hg.31bits.net/hlog/
+    args:
+      chdir: /home/{{ ham_user }}/hamradio
+
+  - name: Build hlog CMakeFiles
+    command: cmake . -DCMAKE_INSTALL_PREFIX=/usr
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/hlog
+
+  - name: Build hlog
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/hlog
+
+  - name: Install hlog
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/hlog

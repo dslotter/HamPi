@@ -2,163 +2,43 @@
 # Copyright 2020 - 2022, Dave Slotter (W3DJS). All rights reserved.
 #
 
-- name: Install D-Rats by Maurizio Andreotti
+- name: Install D-Rats
   hosts: all
   gather_facts: no
   tasks:
 
-  - name: Create directory /usr/local/share/applications
-    become: yes
-    file:
-      path: /usr/local/share/applications
-      state: directory
-
-  - include_tasks: ../library/install_buster_repo.yml
-
-  - name: Install dependent Python components for D-Rats (Raspberry Pi Buster)
-    become: yes
-    package:
-      name: python
-      state: present
-    when: is_rpi|bool and is_debian|bool and is_buster|bool 
-    retries: 5
-    delay: 30
-    register: result
-    until: result.failed == false
-
-  - name: Install dependent Python components for D-Rats (Raspberry Pi Bullseye)
-    become: yes
-    package:
-      name: "{{ item }}"
-      state: present
-    with_items:
-      - python2.7
-      - python-six
-    when: is_rpi|bool and is_debian|bool and is_bullseye|bool 
-    retries: 5
-    delay: 30
-    register: result
-    until: result.failed == false
-
-  - name: Install dependent Python components for D-Rats (Raspberry Pi Common)
-    become: yes
-    package:
-      name: "{{ item }}"
-      state: present
-    with_items:
-      - python-glade2
-      - python-libxml2
-      - python-libxslt1
-      - python-serial
-    when: is_rpi|bool and is_debian|bool 
-    retries: 5
-    delay: 30
-    register: result
-    until: result.failed == false
-
-  - name: Install dependent Python components for D-Rats (Xubuntu)
-    become: yes
-    package:
-      name: "{{ item }}"
-      state: present
-    with_items:
-      - python
-      - python-lxml
-      - python-libxml2
-    when: is_ubuntu|bool 
-    retries: 5
-    delay: 30
-    register: result
-    until: result.failed == false
-
-  - name: Install dependent Python component python-gtk for D-Rats (Xubuntu)
-    become: yes
-    apt:
-      deb: http://archive.ubuntu.com/ubuntu/pool/universe/p/pygtk/python-gtk2_2.24.0-5.1ubuntu2_amd64.deb
-    when: is_ubuntu|bool 
-    retries: 5
-    delay: 30
-    register: result
-    until: result.failed == false
-
-  - name: Install dependent Python component python-serial for D-Rats (Xubuntu)
-    become: yes
-    apt:
-      deb: http://mirrors.kernel.org/ubuntu/pool/main/p/pyserial/python-serial_3.4-2_all.deb
-    when: is_ubuntu|bool 
-    retries: 5
-    delay: 30
-    register: result
-    until: result.failed == false
-
-  - name: Install dependent Python component python-glade2 for D-Rats (Xubuntu)
-    become: yes
-    apt:
-      deb: http://archive.ubuntu.com/ubuntu/pool/universe/p/pygtk/python-glade2_2.24.0-5.1ubuntu2_amd64.deb
-    when: is_ubuntu|bool 
-    retries: 5
-    delay: 30
-    register: result
-    until: result.failed == false
-
-  - name: Install dependent Python component python-libxslt1 for D-Rats (Xubuntu)
-    become: yes
-    apt:
-      deb: http://security.ubuntu.com/ubuntu/pool/main/libx/libxslt/python-libxslt1_1.1.29-5ubuntu0.2_amd64.deb
-    when: is_ubuntu|bool 
-    retries: 5
-    delay: 30
-    register: result
-    until: result.failed == false
-
-  - name: Download D-Rats sources
+  - name: Download D-Rats sources from John and Maurizio's GitHub
     git:
-      repo: https://github.com/maurizioandreotti/D-Rats.git
+      repo: https://github.com/ham-radio-software/D-Rats.git
       dest: /home/{{ ham_user }}/hamradio/D-Rats
     retries: 5
     delay: 30
     register: result
     until: result.failed == false
 
-  - name: Install D-Rats update script (Pi)
+  - name: Install D-Rats update script
     become: yes
-    copy:
-      src: "{{ playbook_dir }}/../files/usr/local/bin/update_d-rats"
+    template:
+      src: "{{ playbook_dir }}/../templates/usr/local/bin/update_d-rats.j2"
       dest: "/usr/local/bin/update_d-rats"
       mode: a+x
-    when: is_rpi|bool 
-
-  - name: Install D-Rats update script (PC)
-    become: yes
-    copy:
-      src: "{{ playbook_dir }}/../files/usr/local/bin/update_d-rats_linux"
-      dest: "/usr/local/bin/update_d-rats"
-      mode: a+x
-    when: is_pc|bool 
-
-  - name: Run D-Rats update script (which builds and installs D-Rats from Git)
-    command: /usr/local/bin/update_d-rats
 
   - name: Modify categories for d-rats.desktop
     become: yes
     lineinfile:
-      path: /usr/share/applications/d-rats.desktop
+      path: /home/{{ ham_user }}/hamradio/D-Rats/share/d-rats.desktop
       regexp: '^Categories=Application;HamRadio'
       line: Categories=HamRadio D-Rats
-
-#  - name: Modify categories for d-rats_mapdownloader.desktop
-#    become: yes
-#    lineinfile:
-#      path: /usr/share/applications/d-rats_mapdownloader.desktop
-#      regexp: '^Categories=Application;HamRadio'
-#      line: Categories=HamRadio D-Rats
 
   - name: Modify categories for d-rats_repeater.desktop
     become: yes
     lineinfile:
-      path: /usr/share/applications/d-rats_repeater.desktop
+      path: /home/{{ ham_user }}/hamradio/D-Rats/share/d-rats_repeater.desktop
       regexp: '^Categories=Application;HamRadio'
       line: Categories=HamRadio D-Rats
+
+  - name: Run D-Rats update script (which builds and installs D-Rats from Git)
+    command: /usr/local/bin/update_d-rats
 
   - name: Copy D-Rats update script desktop file
     become: yes

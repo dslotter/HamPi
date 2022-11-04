@@ -7,13 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added groundwork for hlog curses-based logger
+- Added groundwork for TRlog contest logger
+
+## [3.1 32-bit] - 2022-10-02
+
 ### Changed
 
+- Base image: Raspbian OS Buster September 2022 (Full release)
 - Now include all four pre-defined sizes of HamClock
   (HamClock now has its own submenu)
-- Fix HamPC About Dialog Support URL
-- Add TRlog contest logger
 - Add HAMRS portable logger
+- Add Wireguard VPN
+- Add MSHV digital communications app
+- Install JTDX from source code now
+- Updated D-Rats to John and Maurizio version
+- Fix HamPC About Dialog Support URL
+- A bunch of minor bugfixes
 
 ## [3.0.1b1] - 2022-08-18
 
@@ -338,6 +348,7 @@ Initial announcement to QRZ.com for W3DJS Raspberry Pi for Ham Radio Image v2.0
 Initial announcement to local ham club for W3DJS Raspberry Pi for Ham Radio Image v2.0
 
 [unreleased]: https://github.com/dslotter/HamPi/compare/3.0...HEAD
+[3.1]: https://github.com/dslotter/HamPi/compare/3.0...3.1
 [3.0]: https://github.com/dslotter/HamPi/compare/2.0...3.0
 [2.0]: https://github.com/dslotter/HamPi/compare/1.5...2.0
 [1.5]: https://github.com/dslotter/HamPi/compare/1.4...1.5

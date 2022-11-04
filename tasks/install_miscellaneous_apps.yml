@@ -321,3 +321,13 @@
     delay: 30
     register: result
     until: result.failed == false
+
+  - name: Download backup_hampi_for_upgrade executable by W3DJS
+    get_url:
+      url: https://raw.githubusercontent.com/dslotter/ham_radio_scripts/main/backup_hampi_for_upgrade
+      dest: /home/{{ ham_user }}/bin/backup_hampi_for_upgrade
+      mode: a+x
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false

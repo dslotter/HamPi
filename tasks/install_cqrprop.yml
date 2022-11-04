@@ -63,6 +63,13 @@
     args:
       chdir: /home/{{ ham_user }}/hamradio/cqrprop
 
+  - name: Modify categories for cqrprop.desktop
+    become: yes
+    lineinfile:
+      path: /usr/share/applications/cqrprop.desktop
+      regexp: '^Categories=.*'
+      line: Categories=HamRadio
+
   - name: Remove CQRPROP build directory
     file:
       path: /home/{{ ham_user }}/hamradio/cqrprop

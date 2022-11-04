@@ -62,7 +62,7 @@
     set_fact:
       is_rpi: True
       is_pc: False
-    when: is_debian|bool and is_arm|bool 
+    when: ansible_lsb.id == "Raspbian" or ansible_lsb.id == "Debian"
 
   - name: Set facts for PC running Ubuntu / Xubuntu
     set_fact:
