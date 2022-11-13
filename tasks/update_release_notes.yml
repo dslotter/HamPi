@@ -1,0 +1,47 @@
+#
+# Copyright 2020 - 2022, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Update Release Notes
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Create /home/{{ ham_user }}/Desktop directory
+    file:
+      path: "/home/{{ ham_user }}/Desktop"
+      state: directory
+
+  - name: Create HamPi README in /home/{{ ham_user }}/Desktop
+    copy:
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/HAMPI README.docx"
+      dest: "/home/{{ ham_user }}/Desktop/HAMPI README.docx"
+    when: is_rpi|bool
+
+  - name: Create HamPC README in /home/{{ ham_user }}/Desktop
+    copy:
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/HAMPC README.docx"
+      dest: "/home/{{ ham_user }}/Desktop/HAMPC README.docx"
+    when: is_pc|bool
+
+  - name: Create HamPi LICENSE in /home/{{ ham_user }}/Desktop
+    copy:
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/HAMPI LICENSE.TXT"
+      dest: "/home/{{ ham_user }}/Desktop/HAMPI LICENSE.TXT"
+    when: is_rpi|bool
+
+  - name: Create HamPC LICENSE in /home/{{ ham_user }}/Desktop
+    copy:
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/HAMPC LICENSE.TXT"
+      dest: "/home/{{ ham_user }}/Desktop/HAMPC LICENSE.TXT"
+    when: is_pc|bool
+
+  - name: Create GIVE BACK in /home/{{ ham_user }}/Desktop
+    copy:
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/GIVE BACK.PDF"
+      dest: "/home/{{ ham_user }}/Desktop/GIVE BACK.PDF"
+
+  - name: Create HOTY Nomination in /home/{{ ham_user }}/Desktop
+    copy:
+      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/HOTY Nomination 2022.pdf"
+      dest: "/home/{{ ham_user }}/Desktop/HOTY Nomination 2022.pdf"
