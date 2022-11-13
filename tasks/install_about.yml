@@ -7,6 +7,16 @@
   gather_facts: no
   tasks:
 
+  - name: Install prerequisite
+    become: yes
+    package:
+      name: zenity
+      state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
   - name: Create /usr/share/icons/hampi/[RESOLUTION] directory
     become: yes
     file:
