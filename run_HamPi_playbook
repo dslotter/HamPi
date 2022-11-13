@@ -12,7 +12,7 @@ t1=`date --date="$start_time" +%s`
 curdate=`date +%Y-%m-%d`
 
 echo "ansible-playbook -i hosts tasks/main.yml"
-ansible-playbook -i hosts tasks/main.yml | tee --append ansible-output_${curdate}.txt
+ansible-playbook -i hosts tasks/main.yml | tee --append ansible-output/ansible-output_${curdate}.txt
 notify_via_email.py "Ansible has finished (HamPi)."
 
 # Compute the seconds since epoch for end date

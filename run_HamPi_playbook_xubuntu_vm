@@ -12,7 +12,7 @@ t1=`date --date="$start_time" +%s`
 curdate=`date +%Y-%m-%d`
 
 echo "ansible-playbook -vvv -u hampi -i hosts_xubuntu_vm tasks/main.yml"
-ansible-playbook -vvv -u hampi -i hosts_xubuntu_vm tasks/main.yml | tee --append ansible-output_${curdate}.txt
+ansible-playbook -vvv -u hampi -i hosts_xubuntu_vm tasks/main.yml | tee --append ansible-output/ansible-output_${curdate}.txt
 
 if [ -x /usr/local/bin/notify-send ]; then
   export NOTIFY_SEND_URL="http://192.168.1.220:12345"
