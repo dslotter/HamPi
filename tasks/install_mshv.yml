@@ -5,6 +5,11 @@
 - name: Install MSHV Software
   hosts: all
   gather_facts: no
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
   - name: Install dependent libraries for MSHV (Common)
