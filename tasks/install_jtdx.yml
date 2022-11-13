@@ -100,7 +100,7 @@
     become: yes
     lineinfile:
       path: /usr/local/share/applications/jtdx.desktop
-      regexp: '^Categories=AudioVideo;Audio;HamRadio;'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio Weak Signal
 
   - name: Remove JTDX build directory
