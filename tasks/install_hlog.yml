@@ -19,7 +19,7 @@
       state: present
     with_items:
       - mercurial
-      - lua5.3
+      - lua5.2
       - libtolua-dev
     retries: 5
     delay: 30
