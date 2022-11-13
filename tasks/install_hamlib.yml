@@ -58,6 +58,16 @@
       register: result
       until: result.failed == false
 
+    - name: Install dependent libraries (Inovato)
+      become: yes
+      package:
+        name: python3-dev
+        state: present
+      when: is_inovato|bool
+      retries: 5
+      delay: 30
+      register: result
+
     - name: Install dependent libraries (Common)
       become: yes
       package:
@@ -66,6 +76,7 @@
       with_items:
         - build-essential
         - git
+        - libtool
         - libfltk1.3-dev
         - libsamplerate0-dev
         - portaudio19-dev
@@ -109,7 +120,7 @@
       command: ./configure PYTHON_VERSION='3.9' --with-python-binding --with-xml-support
       args:
         chdir: /home/{{ ham_user }}/hamradio/hamlib
-      when: is_bullseye|bool and not is_buster|bool and not is_jammy|bool
+      when: is_bullseye|bool or is_inovato|bool and not is_buster|bool and not is_jammy|bool
 
     - name: Configure Hamlib (Jammy)
       command: ./configure PYTHON_VERSION='3.10' --with-python-binding --with-xml-support

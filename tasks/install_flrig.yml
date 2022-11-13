@@ -24,6 +24,7 @@
       with_items:
         - build-essential
         - libfltk1.3-dev
+        - libudev-dev
       retries: 5
       delay: 30
       register: result

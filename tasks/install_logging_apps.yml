@@ -7,6 +7,17 @@
   gather_facts: no
   tasks:
 
+  - name: Install Prerequisite (python3-pip)
+    become: yes
+    package:
+      name: python3-pip
+      state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+#    when: inovato|bool
+
   - name: Install Logging Packages
     become: yes
     package:
