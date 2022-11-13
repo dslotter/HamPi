@@ -5,6 +5,11 @@
 - name: Install support for DRAWS
   hosts: all
   gather_facts: no
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
   tasks:
 
   - name: Insert boot config configuration for DRAWS / UDRC
@@ -243,7 +248,7 @@
     become: yes
     lineinfile:
       path: /usr/local/share/applications/direwolf.desktop
-      regexp: '^Categories=HamRadio'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio APRS
 
   - name: Remove Dev Direwolf build directory
