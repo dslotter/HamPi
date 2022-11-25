@@ -43,12 +43,12 @@
     register: result
     until: result.failed == false
 
-  - name: Install dependent libraries (Raspberry Pi Buster)
+  - name: Install dependent libraries (ARM Buster)
     become: yes
     package:
       name: qt5-default
       state: present
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and ansible_distribution_version == "10" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: is_arm|bool and is_buster|bool
     retries: 5
     delay: 30
     register: result

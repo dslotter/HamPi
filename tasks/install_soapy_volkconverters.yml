@@ -6,6 +6,7 @@
   hosts: all
   environment:
     # Build-Time Tuning:
+    # These only work for ARM32, not ARM64:
     CXXFLAGS: -O2 -march=native -mtune=native
     CFLAGS: -O2 -march=native -mtune=native
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
@@ -54,17 +55,21 @@
       path: /home/{{ ham_user }}/hamradio/volk/build
       state: directory
 
+#
+# need "cmake .." for ARMv8
+#
+
   - name: Build volk CMakeFiles (ARM)
     command: cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchains/arm_cortex_a72_hardfp_native.cmake ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/volk/build
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    when: is_arm|bool
 
   - name: Build volk CMakeFiles (x86)
     command: cmake ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/volk/build
-    when: ansible_architecture == "i386" or ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    when: is_i386|bool or is_x86_64|bool
 
   - name: Build volk
     command: make

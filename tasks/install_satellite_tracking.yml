@@ -32,7 +32,7 @@
     with_items:
       - predict
       - predict-gsat
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: is_arm|bool
     retries: 5
     delay: 30
     register: result

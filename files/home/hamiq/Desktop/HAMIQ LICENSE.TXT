@@ -1,0 +1,39 @@
+Software License:
+
+The Software provided on this website or computer storage medium are provided "as is" without warranty of any kind, either express or implied. Use at your own risk.
+
+The use of the software and scripts downloaded from this site or used on this computer storage medium is done at your own discretion and risk and with agreement that you will be solely responsible for any damage to your computer system or loss of data that results from such activities. You are solely responsible for adequate protection and backup of the data and equipment used in connection with any of the software, and we will not be liable for any damages that you may suffer in connection with using, modifying or distributing any of this software. No advice or information, whether oral or written, obtained by you from us or from this website shall create any warranty for the software.
+
+We make no warranty that the software will meet your requirements, the software will be uninterrupted, timely, secure or error-free, the results that may be obtained from the use of the software will be effective, accurate or reliable, the quality of the software will meet your expectations, any errors in the software obtained from us will be corrected.
+
+The software, code sample and their documentation made available on this website could include technical or other mistakes, inaccuracies or typographical errors. We may make changes to the software or documentation made available on its web site at any time without prior-notice. may be out of date, and we make no commitment to update such materials.
+
+HamIQ / HamPi / HamPC is not obligated under this agreement to provide any support services for the software. Any support provided is “as is”, “with all faults”, and without warranty of any kind.
+
+As long as you comply with the terms of this Agreement, HamIQ / HamPi / HamPC grants to you a non-exclusive license to Use the Software Image for the purposes described in the Documentation. 
+
+You shall not alter, modify or remove the Software which provides the Copyright / Nagware Notice, or create a new installer or derivative for the Software with this component removed.
+
+You may not, rent, lease, sublicense, assign or transfer your rights in the Software, or authorize all or any portion of the Software to be copied onto another user’s computer except as may be expressly permitted herein. You may, however, transfer all your rights to Use the Software to another person or legal entity provided that: (a) you also transfer (i) this Agreement, and (ii) the Software and all other software or hardware bundled or pre-installed with the Software, including all copies, Updates and prior versions, to such person or entity; (b) you retain no copies, including backups and copies stored on a computer; and (c) the receiving party accepts the terms and conditions of this Agreement and any other terms and conditions upon which you legally purchased a license to the Software. Notwithstanding the foregoing, you may not transfer pre-release copies of the Software.
+
+This software or derivatives of this software MUST attribute the original author, Dave Slotter, W3DJS and link to https://github.com/dslotter/hampi . Derivates of this software MUST NOT remove the original attribution. . Derivatives of this software must include the existing Copyright / NAGWARE notice and may not modify or remove it. Including any source code from this software in your own software MUST attribute the original author, Dave Slotter, W3DJS and link to https://github.com/dslotter/hampi .
+
+This software or derivatives of this software may not be sold. However, asking end users to send a QSL card, or postcard, or to donate to a charity not run by the people, or relatives of, or friends of the people promoting said charity is acceptable.
+
+Either HamIQ / HamPi / HamPC or you may terminate this Agreement at any time. At the time of termination, you must uninstall the Software from any device it was installed on by you or any authorized individual and/or organization whom you authorized to do so. Without limiting the foregoing, we have the right to immediately terminate your usage of the image in the event that you breach this Agreement. All provisions herein shall survive termination of this Agreement. 
+
+IN NO EVENT WILL HAMIQ / HAMPI / HAMPC OR ITS SUPPLIERS BE LIABLE TO YOU FOR ANY DAMAGES, CLAIMS OR COSTS WHATSOEVER OR FOR ANY CONSEQUENTIAL, INDIRECT, INCIDENTAL DAMAGES, OR ANY LOST PROFITS OR LOST SAVINGS, EVEN IF AN HAMIQ / HAMPI / HAMPC REPRESENTATIVE HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH LOSS, DAMAGES, CLAIMS OR COSTS OR FOR ANY CLAIM BY ANY THIRD PARTY. THE FOREGOING LIMITATIONS AND EXCLUSIONS APPLY TO THE EXTENT PERMITTED BY APPLICABLE LAW IN YOUR JURISDICTION. HAMIQ / HAMPI / HAMPC’S AGGREGATE LIABILITY AND THAT OF ITS SUPPLIERS UNDER OR IN CONNECTION WITH THIS AGREEMENT SHALL BE LIMITED TO THE AMOUNT PAID FOR THE SOFTWARE (WHICH IS $0), IF ANY. Nothing contained in this Agreement limits HamIQ / HamPi / HamPC’s liability to you in the event of death or personal injury resulting from HamIQ / HamPi / HamPC’s negligence or for the tort of deceit (fraud). HamIQ / HamPi / HamPC is acting on behalf of its suppliers for the purpose of disclaiming, excluding and/or limiting obligations, warranties and liability as provided in this Agreement, but in no other respects and for no other purpose. For further information, please see the jurisdiction-specific information at the end of this Agreement, if any, or contact HamIQ / HamPi / HamPC’s Support team.
+
+If you are in North America, this Agreement will be construed in accordance with the laws of the Gwinnett County, Georgia, USA, without regard to any conflict of laws rules, and for any suit, action or other proceeding arising from or relating to this Agreement or the Services, you agree irrevocably to the exclusive jurisdiction of the courts of Gwinnett County, Georgia, USA.
+
+If you are elsewhere in the world, this Agreement will be construed in accordance with the laws of the USA, without regard to any conflict of laws rules, and for any suit, action or other proceeding arising from or relating to this Agreement or the Services, you agree irrevocably to the exclusive jurisdiction of the USA courts.
+
+No waiver of either party of any breach or default of this Agreement will be deemed to be a waiver of any preceding or subsequent breach or default.
+
+If any provision of this Agreement is found to be unenforceable or invalid, that provision will be limited or eliminated to the extent necessary so that this Agreement will otherwise remain in full force and effect, and enforceable.
+
+We assume no responsibility for errors or omissions in the software or documentation available from its web site. In no event shall we be liable to you or any third parties for any special, punitive, incidental, indirect or consequential damages of any kind, or any damages whatsoever, including, without limitation, those resulting from loss of use, data or profits, and on any theory of liability, arising out of or in connection with the use of this software.
+
+This Agreement and software image are protected by copyright. © HamIQ / HamPi / HamPC, 2020-2022. All rights reserved.
+
+Last updated: November 25, 2022

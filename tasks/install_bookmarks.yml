@@ -15,14 +15,14 @@
     file:
       path: /home/{{ ham_user }}/.config/chromium/Default
       state: directory
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: is_hampi|bool
 
   - name: Copy initial Chromium Bookmarks
     become: yes
     copy:
       src: "{{ playbook_dir }}/../files/Bookmarks"
       dest: "/home/{{ ham_user }}/.config/chromium/Default/Bookmarks"
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: is_hampi|bool
 
 #
 # How to create initial bookmarks for Firefox:
@@ -33,11 +33,11 @@
     file:
       path: /usr/lib/firefox/distribution
       state: directory
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    when: is_hampc|bool or is_hamiq|bool
 
   - name: Copy initial Mozilla Firefox Bookmarks
     become: yes
     copy:
       src: "{{ playbook_dir }}/../files/usr/lib/firefox/distribution/distribution.ini"
       dest: "/usr/lib/firefox/distribution/distribution.ini"
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    when: is_hampc|bool or is_hamiq|bool

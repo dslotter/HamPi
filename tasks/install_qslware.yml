@@ -8,13 +8,13 @@
   tasks:
 
 #
-# Raspberry Pi OS on ARM
+# ARM
 #
   - name: Create directory lxsession/LXDE-pi
     file:
       path: /home/{{ ham_user }}/.config/lxsession/LXDE-pi
       state: directory
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: is_arm|bool
 
   - name: Install executable QSLware nag script
     become: yes
@@ -22,20 +22,20 @@
       src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/.config/lxsession/LXDE-pi/qslware.sh"
       dest: "/home/{{ ham_user }}/.config/lxsession/LXDE-pi/qslware.sh"
       mode: a+x
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: is_arm|bool
 
   - name: Install lxsession autostart
     template:
       src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/.config/lxsession/LXDE-pi/autostart"
       dest: "/home/{{ ham_user }}/.config/lxsession/LXDE-pi/autostart"
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: is_arm|bool
 
   - name: Install remove script
     template:
       src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/.config/lxsession/LXDE-pi/remove_nag_dialog"
       dest: "/home/{{ ham_user }}/.config/lxsession/LXDE-pi/remove_nag_dialog"
       mode: a+x
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: is_arm|bool
 
 #
 # Xubuntu - X86
@@ -44,18 +44,18 @@
     file:
       path: /home/{{ ham_user }}/.config/autostart
       state: directory
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    when: is_hampc|bool
 
   - name: Install executable QSLware nag script
     become: yes
     copy:
       src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/.config/autostart/qslware.desktop"
       dest: "/home/{{ ham_user }}/.config/autostart/qslware.desktop"
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    when: is_hampc|bool
 
   - name: Install remove script
     copy:
       src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/.config/autostart/remove_nag_dialog"
       dest: "/home/{{ ham_user }}/.config/autostart/remove_nag_dialog"
       mode: a+x
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    when: is_hampc|bool

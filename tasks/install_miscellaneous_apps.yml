@@ -35,7 +35,7 @@
     package:
       name: colrconv
       state: present
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: is_arm|bool
     retries: 5
     delay: 30
     register: result
@@ -46,24 +46,22 @@
     package:
       name: gcb
       state: present
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: is_arm|bool
     retries: 5
     delay: 30
     register: result
     until: result.failed == false
 
-#
-# WTH? This was available earlier...
-#
-#  - name: Install gmfsk Package (Program for reception and transmission of HF conversation modes MFSK, OLIVIA, RTTY, THROB, PSK31, MT63 and FeldHell)
-#    become: yes
-#    package:
-#      name: gmfsk
-#      state: present
-#    retries: 5
-#    delay: 30
-#    register: result
-#    until: result.failed == false
+  - name: Install gmfsk Package (Program for reception and transmission of HF conversation modes MFSK, OLIVIA, RTTY, THROB, PSK31, MT63 and FeldHell)
+    become: yes
+    package:
+      name: gmfsk
+      state: present
+    when: is_arm|bool and is_buster|bool
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
   - name: Install fbb Package (Packet radio mailbox and utilities)
     become: yes
@@ -141,7 +139,7 @@
     package:
       name: acfax
       state: present
-    when: ansible_architecture != "aarch64" and not is_jammy|bool
+    when: not is_x86_64|bool and not is_jammy|bool
     retries: 5
     delay: 30
     register: result
@@ -152,7 +150,7 @@
     package:
       name: hamfax
       state: present
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and ansible_distribution_version == "10" and(ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: is_arm|bool and is_buster|bool
     retries: 5
     delay: 30
     register: result
@@ -164,7 +162,7 @@
       path: /usr/share/applications/hamfax.desktop
       regexp: '^Categories=AudioVideo;Audio;HamRadio;Qt'
       line: Categories=HamRadio
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and ansible_distribution_version == "10" and(ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: is_arm|bool and is_buster|bool
 
   - name: Install inspectrum Package (Tool for visualising captured radio signals)
     become: yes
@@ -331,3 +329,6 @@
     delay: 30
     register: result
     until: result.failed == false
+    when: is_hampi|bool
+
+TODO: We need backup_inovato_for_upgrade

@@ -2,7 +2,7 @@
 # Copyright 2020 - 2022, Dave Slotter (W3DJS). All rights reserved.
 #
 
-- name: Set HamPi facts
+- name: Set HamPi / HamPC / HamIQ facts
   hosts: all
   gather_facts: yes
   tasks:
@@ -12,6 +12,20 @@
       is_arm: True
       is_x86_64: False
     when: ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64"
+
+  - name: Set facts for 64-bit ARM CPU
+    set_fact:
+      is_arm: True
+      is_arm_64: True
+      is_x86_64: False
+    when: ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64"
+
+  - name: Set facts for 32-bit x86 CPU
+    set_fact:
+      is_i386: True
+      is_arm: False
+      is_x86_64: False
+    when: ansible_architecture == "i386"
 
   - name: Set facts for 64-bit x86 CPU
     set_fact:
@@ -36,38 +50,55 @@
       is_buster: True
       is_bullseye: False
       is_jammy: False
-    when: (is_debian|bool or is_ubuntu|bool ) and ansible_distribution_major_version == "10"
+    when: (is_debian|bool or is_ubuntu|bool) and ansible_distribution_major_version == "10"
 
   - name: Set facts for Debian Bullseye
     set_fact:
       is_buster: False
       is_bullseye: True
       is_jammy: False
-    when: (is_debian|bool or is_ubuntu|bool ) and ansible_distribution_release == "bullseye"
+    when: (is_debian|bool or is_ubuntu|bool) and ansible_distribution_release == "bullseye"
 
   - name: Set facts for Ubuntu Jammy
     set_fact:
       is_buster: False
       is_bullseye: True
       is_jammy: True
-    when: (is_debian|bool or is_ubuntu|bool ) and ansible_distribution_release == "jammy"
+    when: (is_debian|bool or is_ubuntu|bool) and ansible_distribution_release == "jammy"
+
+  - name: Set facts for Ubuntu Impish
+    set_fact:
+      is_buster: False
+      is_bullseye: True
+      is_jammy: False
+      is_impish: True
+    when: (is_debian|bool or is_ubuntu|bool) and ansible_distribution_release == "impish"
 
   - name: Set facts for Debian Bullseye on Ubuntu
     set_fact:
       is_buster: False
       is_bullseye: True
-    when: (is_debian|bool or is_ubuntu|bool ) and ansible_distribution_major_version == "21"
+    when: (is_debian|bool or is_ubuntu|bool) and ansible_distribution_major_version == "21"
 
   - name: Set facts for Raspberry Pi
     set_fact:
       is_rpi: True
       is_pc: False
+      is_iq: False
     when: ansible_lsb.id == "Raspbian" or ansible_lsb.id == "Debian"
+
+  - name: Set facts for Inovato Quadra
+    set_fact:
+      is_iq: True
+      is_rpi: False
+      is_pc: False
+    when: inventory_hostname == "inovato"
 
   - name: Set facts for PC running Ubuntu / Xubuntu
     set_fact:
-      is_rpi: False
       is_pc: True
+      is_rpi: False
+      is_iq: False
     when: is_ubuntu|bool and is_x86_64|bool 
 
   - name: Confirm CPU is consistent
@@ -88,8 +119,20 @@
 #      fail_msg:
 #        - "Both is_buster and is_bullseye cannot match"
 
-  - name: Confirm Platform is consistent
+  - name: Confirm Platform is consistent 1
     assert:
       that: is_rpi != is_pc
       fail_msg:
         - "Both is_rpi and is_pc cannot match"
+
+  - name: Confirm Platform is consistent 2
+    assert:
+      that: is_rpi != is_iq
+      fail_msg:
+        - "Both is_rpi and is_iq cannot match"
+
+  - name: Confirm Platform is consistent 3
+    assert:
+      that: is_iq != is_pc
+      fail_msg:
+        - "Both is_iq and is_pc cannot match"

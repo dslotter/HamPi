@@ -16,7 +16,7 @@
     delay: 30
     register: result
     until: result.failed == false
-#    when: inovato|bool
+    when: is_iq|bool
 
   - name: Install Logging Packages
     become: yes

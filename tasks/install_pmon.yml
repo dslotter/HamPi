@@ -40,7 +40,7 @@
     apt:
       name: pmon
       state: present
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: is_arm|bool and not is_arm_64|bool
     retries: 5
     delay: 30
     register: result

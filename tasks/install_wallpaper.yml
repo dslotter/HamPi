@@ -17,14 +17,21 @@
     copy:
       src: "{{ playbook_dir }}/../files/usr/share/wallpapers/HamPi Desktop Wallpaper.png"
       dest: "{{ wallpaper_prefix }}/HamPi Desktop Wallpaper.png"
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: is_hampi|bool
 
   - name: Create HamPC desktop wallpaper in {{ wallpaper_prefix }}
     become: yes
     copy:
       src: "{{ playbook_dir }}/../files/usr/share/wallpapers/HamPC Desktop Wallpaper.png"
       dest: "{{ wallpaper_prefix }}/HamPC Desktop Wallpaper.png"
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    when: is_hampc|bool
+
+  - name: Create HamIQ desktop wallpaper in {{ wallpaper_prefix }}
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/wallpapers/HamIQ Desktop Wallpaper.png"
+      dest: "{{ wallpaper_prefix }}/HamIQ Desktop Wallpaper.png"
+    when: is_hamiq|bool
 
   - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
     become: yes

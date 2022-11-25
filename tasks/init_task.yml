@@ -16,6 +16,11 @@
       file: ../default/raspbianos.yml
     when: is_rpi|bool
 
+  - name: Include needed variables for Inovato Quadra (ARMbian)
+    include_vars:
+      file: ../default/inovato.yml
+    when: is_inovato|bool
+
   - name: Include needed variables for Xubuntu
     include_vars:
       file: ../default/xubuntu.yml

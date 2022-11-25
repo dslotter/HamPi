@@ -58,7 +58,7 @@
       url: https://www.cantab.net/users/john.wiseman/Downloads/Beta/piARDOP_GUI
       dest: /usr/local/bin/piARDOP_GUI
       mode: a+x
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    when: is_arm|bool
     retries: 5
     delay: 30
     register: result
@@ -73,7 +73,7 @@
       url: https://www.cantab.net/users/john.wiseman/Downloads/Beta/ARDOP_GUI
       dest: /usr/local/bin/ARDOP_GUI
       mode: a+x
-    when: ansible_architecture == "i386"
+    when: is_i386|bool
     retries: 5
     delay: 30
     register: result

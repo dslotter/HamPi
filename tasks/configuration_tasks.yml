@@ -84,7 +84,7 @@
     command: sed -i 's/ quiet splash plymouth.ignore-serial-consoles$/ quiet init=\/usr\/lib\/raspi-config\/init_resize.sh splash plymouth.ignore-serial-consoles/' /boot/cmdline.txt
     args:
       warn: no
-    when: cmdline_stat_result.stat.exists
+    when: is_hampi|bool and cmdline_stat_result.stat.exists
 
   - name: Remove unwanted software packages (Raspberry Pi)
     become: yes
@@ -112,7 +112,7 @@
       - sgt-launcher
       - xplanet
       - xplanet-images
-    when: is_pc|bool
+    when: is_hampc|bool
 
   # This allows apt-add-repository command to be added
   - name: Install software-properties-common Packages
@@ -166,12 +166,12 @@
       dest: /boot/config.txt
       block: |
         arm_64bit=1
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: is_hampi|bool
 
   - name: Update Pi to use 64-bit Kernel
     become: yes
     command: echo "y" | rpi-update
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: is_hampi|bool
 
   - name: Enable Pi VNC Server (32 bit ARM)
     become: yes
@@ -179,63 +179,64 @@
       dest: /etc/systemd/system/multi-user.target.wants/vncserver-x11-serviced.service
       src: /usr/lib/systemd/system/vncserver-x11-serviced.service
       state: link
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: is_arm|bool
     ignore_errors: yes
 
   - name: Start Pi VNC Server (32 bit ARM)
     become: yes
     command: systemctl start vncserver-x11-serviced
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    when: is_hampi|bool
     ignore_errors: yes
 
-  - name: Install Pi VNC Server (64 bit ARM)
-    become: yes
-    package:
-      name: "{{ item }}"
-      state: present
-    with_items:
-      - tightvncserver
-    when: ansible_architecture == "aarch64"
+#DJS 2022-11-23
+#  - name: Install Pi VNC Server (64 bit ARM)
+#    become: yes
+#    package:
+#      name: "{{ item }}"
+#      state: present
+#    with_items:
+#      - tightvncserver
+#    when: is_arm_64|bool
 
   - name: Create /etc/xdg/pcmanfm/LXDE-pi directory for Raspberry Pi OS
     become: yes
     file:
       path: /etc/xdg/pcmanfm/LXDE-pi
       state: directory
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: is_hampi|bool
 
   - name: Create HamPi desktop config 0 for Raspberry Pi OS in /etc/xdg/pcmanfm/LXDE-pi
     become: yes
     copy:
       src: "{{ playbook_dir }}/../files/etc/xdg/pcmanfm/LXDE-pi/desktop-items-0.conf"
       dest: "/etc/xdg/pcmanfm/LXDE-pi/desktop-items-0.conf"
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: is_hampi|bool
 
   - name: Create HamPi desktop config 1 for Raspberry Pi OS in /etc/xdg/pcmanfm/LXDE-pi
     become: yes
     copy:
       src: "{{ playbook_dir }}/../files/etc/xdg/pcmanfm/LXDE-pi/desktop-items-1.conf"
       dest: "/etc/xdg/pcmanfm/LXDE-pi/desktop-items-1.conf"
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: is_hampi|bool
 
-  - name: Create HamPi desktop config 1 for Xubuntu in /etc/xdg/pcmanfm/LXDE-pi
+  - name: Create HamPC desktop config 1 for Xubuntu in /etc/xdg/xdg-xubuntu/xfce4/xfconf/xfce-perchannel-xml/
     become: yes
     copy:
       src: "{{ playbook_dir }}/../files/etc/xdg/xdg-xubuntu/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml"
       dest: "/etc/xdg/xdg-xubuntu/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml"
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    when: is_hampc|bool
 
   - name: Create /home/{{ ham_user }}/.config/pcmanfm/LXDE-pi directory
     file:
       path: "/home/{{ ham_user }}/.config/pcmanfm/LXDE-pi"
       state: directory
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: is_hampi|bool
 
   - name: Create HamPi desktop config in /home/{{ ham_user }}/.config/pcmanfm/LXDE-pi
     copy:
       src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
       dest: "/home/{{ ham_user }}/.config/pcmanfm/LXDE-pi/desktop-items-0.conf"
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: is_hampi|bool
 
   - name: Create /etc/lightdm
     become: yes
@@ -248,35 +249,35 @@
     copy:
       src: "{{ playbook_dir }}/../files/etc/lightdm/pi-greeter.conf"
       dest: "/etc/lightdm/pi-greeter.conf"
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: is_hampi|bool
 
-  - name: Create HamPi greeter config in /etc/lightdm for Xubuntu
+  - name: Create HamPC greeter config in /etc/lightdm for Xubuntu
     become: yes
     copy:
       src: "{{ playbook_dir }}/../files/etc/lightdm/lightdm-gtk-greeter.conf"
       dest: "/etc/lightdm/lightdm-gtk-greeter.conf"
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    when: is_hampc|bool
 
   - name: Create HamPi-Help menu item in /usr/share/raspi-ui-overrides/applications
     become: yes
     copy:
       src: "{{ playbook_dir }}/../files/usr/share/raspi-ui-overrides/applications/hampi-help.desktop"
       dest: "/usr/share/raspi-ui-overrides/applications/hampi-help.desktop"
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64") and inventory_hostname != 'inovato'
+    when: is_hampi|bool
 
   - name: Create HamPi-Group menu item in /usr/share/raspi-ui-overrides/applications
     become: yes
     copy:
       src: "{{ playbook_dir }}/../files/usr/share/raspi-ui-overrides/applications/hampi-group.desktop"
       dest: "/usr/share/raspi-ui-overrides/applications/hampi-group.desktop"
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64") and inventory_hostname != 'inovato' 
+    when: is_hampi|bool
 
 # TODO: See if Xubuntu has a Help Menu where this can be added
 #  - name: Create HamPC-Group menu item in /usr/share/raspi-ui-overrides/applications
 #    copy:
 #      src: "{{ playbook_dir }}/../files/usr/share/raspi-ui-overrides/applications/hampc-group.desktop"
 #      dest: "/usr/share/raspi-ui-overrides/applications/hampc-group.desktop"
-#    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+#    when: is_hampc|bool
 
   - name: Insert .bash_local configuration
     blockinfile:

@@ -12,7 +12,7 @@
       state: directory
 
 #
-# Raspbian ARM
+# ARM-based CPUs
 #
 
   - name: Determine latest version of wxtoimg on web (ARM)
@@ -20,7 +20,7 @@
     args:
       warn: no
     register: wxtoimg_version
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    when: is_arm|bool
     retries: 5
     delay: 30
     until: wxtoimg_version.failed == false
@@ -29,7 +29,7 @@
     get_url:
       url: "https://wxtoimgrestored.xyz/beta/wxtoimg-linux-armhf-{{ wxtoimg_version.stdout }}-beta.tar.gz"
       dest: /home/{{ ham_user }}/hamradio/wxtoimg-linux-armhf-{{ wxtoimg_version.stdout }}-beta.tar.gz
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    when: is_arm|bool
     retries: 5
     delay: 30
     register: result
@@ -41,16 +41,16 @@
     args:
       chdir: /home/{{ ham_user }}/hamradio/
       warn: no
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    when: is_arm|bool
 
   - name: Remove wxtoimg {{ wxtoimg_version.stdout }} gzip (ARM)
     file:
       path: /home/{{ ham_user }}/hamradio/wxtoimg-linux-armhf-{{ wxtoimg_version.stdout }}-beta.tar.gz
       state: absent
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    when: is_arm|bool
 
 #
-# Raspbian x86
+# i386-based CPUs
 #
 
   - name: Determine latest version of wxtoimg on web (x86)
@@ -58,7 +58,7 @@
     args:
       warn: no
     register: wxtoimg_version
-    when: ansible_architecture == "i386"
+    when: is_hampc|bool and is_i386|bool
     retries: 5
     delay: 30
     until: wxtoimg_version.failed == false
@@ -67,7 +67,7 @@
     get_url:
       url: "https://wxtoimgrestored.xyz/beta/wxtoimg-i386-{{ wxtoimg_version.stdout }}-beta.deb"
       dest: /home/{{ ham_user }}/hamradio/wxtoimg-i386-{{ wxtoimg_version.stdout }}-beta.deb
-    when: ansible_architecture == "i386"
+    when: is_hampc|bool and is_i386|bool
     retries: 5
     delay: 30
     register: result
@@ -77,16 +77,16 @@
     become: yes
     apt:
       deb: /home/{{ ham_user }}/hamradio/wxtoimg-i386-{{ wxtoimg_version.stdout }}-beta.deb
-    when: ansible_architecture == "i386"
+    when: is_hampc|bool and is_i386|bool
 
   - name: Remove wxtoimg {{ wxtoimg_version.stdout }} installer (x86)
     file:
       path: /home/{{ ham_user }}/hamradio/wxtoimg-i386-{{ wxtoimg_version.stdout }}-beta.deb
       state: absent
-    when: ansible_architecture == "i386"
+    when: is_hampc|bool and is_i386|bool
 
 #
-# AMD64
+# x86_64-based CPUs
 #
 
   - name: Determine latest version of wxtoimg on web (AMD64)
@@ -94,7 +94,7 @@
     args:
       warn: no
     register: wxtoimg_version
-    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    when: is_hampc|bool and is_x86_64|bool
     retries: 5
     delay: 30
     until: wxtoimg_version.failed == false
@@ -103,7 +103,7 @@
     get_url:
       url: "https://wxtoimgrestored.xyz/beta/wxtoimg-amd64-{{ wxtoimg_version.stdout }}-beta.deb"
       dest: /home/{{ ham_user }}/hamradio/wxtoimg-amd64-{{ wxtoimg_version.stdout }}-beta.deb
-    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    when: is_hampc|bool and is_x86_64|bool
     retries: 5
     delay: 30
     register: result
@@ -113,10 +113,10 @@
     become: yes
     apt:
       deb: /home/{{ ham_user }}/hamradio/wxtoimg-amd64-{{ wxtoimg_version.stdout }}-beta.deb
-    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    when: is_hampc|bool and is_x86_64|bool
 
   - name: Remove wxtoimg {{ wxtoimg_version.stdout }} installer (AMD64)
     file:
       path: /home/{{ ham_user }}/hamradio/wxtoimg-amd64-{{ wxtoimg_version.stdout }}-beta.deb
       state: absent
-    when: ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    when: is_hampc|bool and is_x86_64|bool

@@ -25,7 +25,7 @@
     package:
       name: gsmc
       state: present
-    when: ansible_architecture != "aarch64" and not is_jammy|bool
+    when: not is_arm_64|bool and not is_jammy|bool
 
   - name: Copy desktop file for Antenna Visualizer
     become: yes
@@ -40,7 +40,7 @@
       path: /usr/share/applications/gsmc.desktop
       regexp: '^Categories=Education;HamRadio;'
       line: Categories=HamRadio Calculators
-    when: ansible_architecture != "aarch64" and not is_jammy|bool
+    when: not is_arm_64|bool and not is_jammy|bool
 
   - name: Modify categories for nec2c.desktop
     become: yes

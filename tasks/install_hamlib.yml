@@ -63,7 +63,7 @@
       package:
         name: python3-dev
         state: present
-      when: is_inovato|bool
+      when: is_iq|bool
       retries: 5
       delay: 30
       register: result
@@ -120,7 +120,7 @@
       command: ./configure PYTHON_VERSION='3.9' --with-python-binding --with-xml-support
       args:
         chdir: /home/{{ ham_user }}/hamradio/hamlib
-      when: is_bullseye|bool or is_inovato|bool and not is_buster|bool and not is_jammy|bool
+      when: is_bullseye|bool or is_iq|bool and not is_buster|bool and not is_jammy|bool
 
     - name: Configure Hamlib (Jammy)
       command: ./configure PYTHON_VERSION='3.10' --with-python-binding --with-xml-support

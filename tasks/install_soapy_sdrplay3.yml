@@ -29,51 +29,54 @@
     register: result
     until: result.failed == false
 
+# Add this for Raspberry Pi ARM64 support:
+# https://www.sdrplay.com/software/SDRplay_RSP_API-ARM64-3.07.1.run
+
 #
 # Raspbian (ARM) v3
 #
-  - name: Copy SDRPlay RSP Driver Installer {{ sdrplay3_arm_version }} (ARM)
+  - name: Copy SDRPlay RSP Driver Installer {{ sdrplay3_arm_version }} (Raspberry Pi OS ARM)
     copy:
       src: "{{ playbook_dir }}/../files/SDRplay_RSP_API-ARM32-{{ sdrplay3_arm_version }}.run"
       dest: /home/{{ ham_user }}/hamradio/SDRplay_RSP_API-ARM32-{{ sdrplay3_arm_version }}.run
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    when: is_hampi|bool
 
   - name: Copy SDRPlay 3 Expect Script
     copy:
       src: "{{ playbook_dir }}/../files/sdrplay_api3_install.exp"
       dest: /home/{{ ham_user }}/hamradio/sdrplay_api3_install.exp
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    when: is_hampi|bool
 
-  - name: Set SDRPlay RSP Driver Installer {{ sdrplay3_arm_version }} (ARM) to executable
+  - name: Set SDRPlay RSP Driver Installer {{ sdrplay3_arm_version }} (Raspberry Pi OS ARM) to executable
     become: yes
     file: dest=/home/{{ ham_user }}/hamradio/SDRplay_RSP_API-ARM32-{{ sdrplay3_arm_version }}.run mode=a+x
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    when: is_hampi|bool
 
-  - name: Set Expect Script to executable (ARM)
+  - name: Set Expect Script to executable (Raspberry Pi OS ARM)
     become: yes
     file: dest=/home/{{ ham_user }}/hamradio/sdrplay_api3_install.exp mode=a+x
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    when: is_hampi|bool
 
   - name: Install SDRPlay RSP Driver {{ sdrplay3_arm_version }} (ARM) using Expect Script
     become: yes
     command: ./sdrplay_api3_install.exp
     args:
       chdir: /home/{{ ham_user }}/hamradio
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    when: is_hampi|bool
 
-  - name: Remove SDRPlay RSP Driver Installer {{ sdrplay3_arm_version }} (ARM)
+  - name: Remove SDRPlay RSP Driver Installer {{ sdrplay3_arm_version }} (Raspberry Pi OS ARM)
     become: yes
     file:
       path: /home/{{ ham_user }}/hamradio/SDRplay_RSP_API-ARM32-{{ sdrplay3_arm_version }}.run
       state: absent
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    when: is_hampi|bool
 
-  - name: Remove SDRPlay Driver Expect Script {{ sdrplay3_arm_version }} (ARM)
+  - name: Remove SDRPlay Driver Expect Script {{ sdrplay3_arm_version }} (Raspberry Pi OS ARM)
     become: yes
     file:
       path: /home/{{ ham_user }}/hamradio/sdrplay_api3_install.exp
       state: absent
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    when: is_hampi|bool
 
 #
 # Raspbian (x86)
@@ -83,44 +86,44 @@
     copy:
       src: "{{ playbook_dir }}/../files/SDRplay_RSP_API-Linux-{{ sdrplay3_x86_version }}.run"
       dest: /home/{{ ham_user }}/hamradio/SDRplay_RSP_API-Linux-{{ sdrplay3_x86_version }}.run
-    when: ansible_architecture == "i386" or ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    when: is_hampc|bool
 
   - name: Copy SDRPlay Expect Script (x86)
     copy:
       src: "{{ playbook_dir }}/../files/sdrplay_linux_api3_install.exp"
       dest: /home/{{ ham_user }}/hamradio/sdrplay_linux_api3_install.exp
-    when: ansible_architecture == "i386" or ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    when: is_hampc|bool
 
   - name: Set SDRPlay RSP Driver Installer {{ sdrplay3_x86_version }} (x86) to executable
     become: yes
     file: dest=/home/{{ ham_user }}/hamradio/SDRplay_RSP_API-Linux-{{ sdrplay3_x86_version }}.run mode=a+x
-    when: ansible_architecture == "i386" or ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    when: is_hampc|bool
 
   - name: Set Expect Script to executable (x86)
     become: yes
     file: dest=/home/{{ ham_user }}/hamradio/sdrplay_linux_api3_install.exp mode=a+x
-    when: ansible_architecture == "i386" or ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    when: is_hampc|bool
 
   - name: Install SDRPlay RSP Driver {{ sdrplay3_x86_version }} (x86) using Expect Script
     become: yes
     command: ./sdrplay_linux_api3_install.exp
     args:
       chdir: /home/{{ ham_user }}/hamradio
-    when: ansible_architecture == "i386" or ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    when: is_hampc|bool
 
   - name: Remove SDRPlay RSP Driver Installer (x86)
     become: yes
     file:
       path: /home/{{ ham_user }}/hamradio/SDRplay_RSP_API-Linux-{{ sdrplay3_x86_version }}.run
       state: absent
-    when: ansible_architecture == "i386" or ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    when: is_hampc|bool
 
   - name: Remove SDRPlay Driver Expect Script (x86)
     become: yes
     file:
       path: /home/{{ ham_user }}/hamradio/sdrplay_linux_api3_install.exp
       state: absent
-    when: ansible_architecture == "i386" or ansible_architecture == "x86_64" or ansible_architecture == "amd64"
+    when: is_hampc|bool
 
 
 #

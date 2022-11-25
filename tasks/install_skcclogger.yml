@@ -8,22 +8,22 @@
   tasks:
 
 #
-# Raspberry Pi
+# ARM
 #
 
   - name: Copy SKCCLogger from local file (because developer moved download behind a login) (ARM)
     copy:
       src: "{{ playbook_dir }}/../files/SKCCLogger_Linux_32-Bit-ARM.zip"
       dest: "/home/{{ ham_user }}/hamradio/SKCCLogger_Linux_32-Bit-ARM.zip"
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: is_arm|bool and not is_arm_64|bool
 
-  - name: Unarchive SKCCLogger (Raspberry Pi)
+  - name: Unarchive SKCCLogger (ARM)
     become: yes
     unarchive:
       src: "/home/{{ ham_user }}/hamradio/SKCCLogger_Linux_32-Bit-ARM.zip"
       dest: /usr/local/
       remote_src: yes
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: is_arm|bool and not is_arm_64|bool
     retries: 5
     delay: 30
     register: result
@@ -32,20 +32,20 @@
   - name: Change Ownership of /usr/local/SKCCLogger_Linux_32-Bit-ARM to {{ ham_user }}
     become: yes
     file: dest=/usr/local/SKCCLogger_Linux_32-Bit-ARM owner={{ ham_user }} group={{ ham_user}} mode=775
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: is_arm|bool and not is_arm_64|bool
 
   - name: Change Ownership of /usr/local/SKCCLogger_Linux_32-Bit-ARM to {{ ham_user }}
     become: yes
     shell: chown -R {{ ham_user }}.{{ ham_user }} /usr/local/SKCCLogger_Linux_32-Bit-ARM
     args:
       warn: false
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: is_arm|bool and not is_arm_64|bool
 
   - name: Remove SKCCLogger from local file (ARM)
     file:
       path: "/home/{{ ham_user }}/hamradio/SKCCLogger_Linux_32-Bit-ARM.zip"
       state: absent
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
+    when: is_arm|bool and not is_arm_64|bool
 
 #
 # Xubuntu
@@ -54,7 +54,7 @@
     copy:
       src: "{{ playbook_dir }}/../files/SKCCLogger_Linux_64-Bit.zip"
       dest: "/home/{{ ham_user }}/hamradio/SKCCLogger_Linux_64-Bit.zip"
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    when: is_hampc|bool
 
   - name: Unarchive SKCCLogger (Xubuntu)
     become: yes
@@ -62,7 +62,7 @@
       src: "/home/{{ ham_user }}/hamradio/SKCCLogger_Linux_64-Bit.zip"
       dest: /usr/local/
       remote_src: yes
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    when: is_hampc|bool
     retries: 5
     delay: 30
     register: result
@@ -71,18 +71,17 @@
   - name: Change Ownership of /usr/local/SKCCLogger_Linux_64-Bit to {{ ham_user }}
     become: yes
     file: dest=/usr/local/SKCCLogger_Linux_64-Bit owner={{ ham_user }} group={{ ham_user}} mode=775
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    when: is_hampc|bool
 
   - name: Change Ownership of /usr/local/SKCCLogger_Linux_64-Bit to {{ ham_user }}
     become: yes
     shell: chown -R {{ ham_user }}.{{ ham_user }} /usr/local/SKCCLogger_Linux_64-Bit
     args:
       warn: false
-    when: ansible_distribution == "Ubuntu" and ansible_os_family == "Debian" and (ansible_architecture == "x86_64" or ansible_architecture == "amd64")
+    when: is_hampc|bool
 
   - name: Remove SKCCLogger from local file (Xubuntu)
     file:
       path: "/home/{{ ham_user }}/hamradio/SKCCLogger_Linux_64-Bit.zip"
       state: absent
-    when: ansible_distribution == "Debian" and ansible_os_family == "Debian" and (ansible_architecture == 'armhf' or ansible_architecture == 'armv7l' or ansible_architecture == "aarch64")
-
+    when: is_hampc|bool

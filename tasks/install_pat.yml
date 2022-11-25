@@ -86,7 +86,7 @@
     args:
       warn: no
     register: pat_version
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    when: is_arm|bool
     retries: 5
     delay: 30
     until: pat_version.failed == false
@@ -95,7 +95,7 @@
     get_url:
       url: https://github.com/la5nta/pat/releases/download/v{{ pat_version.stdout }}/pat_{{ pat_version.stdout }}_linux_armhf.deb
       dest: /home/{{ ham_user }}/hamradio/pat_{{ pat_version.stdout }}_linux_armhf.deb
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    when: is_arm|bool
     retries: 5
     delay: 30
     register: result
@@ -105,20 +105,20 @@
     become: yes
     apt:
       deb: /home/{{ ham_user }}/hamradio/pat_{{ pat_version.stdout }}_linux_armhf.deb
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    when: is_arm|bool
 
   - name: Remove latest Pat (WinLink) installer (ARM)
     file:
       path: /home/{{ ham_user }}/hamradio/pat_{{ pat_version.stdout }}_linux_armhf.deb
       state: absent
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    when: is_arm|bool
 
   - name: Download Pi Ardop (ARM)
     become: yes
     get_url:
       url: http://www.cantab.net/users/john.wiseman/Downloads/Beta/piardopc
       dest: /usr/local/bin/piardopc
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    when: is_arm|bool
     retries: 5
     delay: 30
     register: result
@@ -129,7 +129,7 @@
     file:
       path: /usr/local/bin/piardopc
       mode: a+x
-    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l" or ansible_architecture == "aarch64"
+    when: is_arm|bool
 
 #
 # Raspbian x86
@@ -140,7 +140,7 @@
     args:
       warn: no
     register: pat_version
-    when: ansible_architecture == "i386"
+    when: is_i386|bool
     retries: 5
     delay: 30
     until: pat_version.failed == false
@@ -149,7 +149,7 @@
     get_url:
       url: https://github.com/la5nta/pat/releases/download/v{{ pat_version.stdout }}/pat_{{ pat_version.stdout }}_linux_i386.deb
       dest: /home/{{ ham_user }}/hamradio/pat_{{ pat_version.stdout }}_linux_i386.deb
-    when: ansible_architecture == "i386"
+    when: is_i386|bool
     retries: 5
     delay: 30
     register: result
@@ -159,13 +159,13 @@
     become: yes
     apt:
       deb: /home/{{ ham_user }}/hamradio/pat_{{ pat_version.stdout }}_linux_i386.deb
-    when: ansible_architecture == "i386"
+    when: is_i386|bool
 
   - name: Remove latest Pat (WinLink) installer (x86)
     file:
       path: /home/{{ ham_user }}/hamradio/pat_{{ pat_version.stdout }}_linux_i386.deb
       state: absent
-    when: ansible_architecture == "i386"
+    when: is_i386|bool
 
 #
 # Raspbian amd64
@@ -176,7 +176,7 @@
     args:
       warn: no
     register: pat_version
-    when: ansible_architecture == "amd64"
+    when: is_x86_64|bool
     retries: 5
     delay: 30
     until: pat_version.failed == false
@@ -185,7 +185,7 @@
     get_url:
       url: https://github.com/la5nta/pat/releases/download/v{{ pat_version.stdout }}/pat_{{ pat_version.stdout }}_linux_amd64.deb
       dest: /home/{{ ham_user }}/hamradio/pat_{{ pat_version.stdout }}_linux_amd64.deb
-    when: ansible_architecture == "amd64"
+    when: is_x86_64|bool
     retries: 5
     delay: 30
     register: result
@@ -195,10 +195,10 @@
     become: yes
     apt:
       deb: /home/{{ ham_user }}/hamradio/pat_{{ pat_version.stdout }}_linux_amd64.deb
-    when: ansible_architecture == "amd64"
+    when: is_x86_64|bool
 
   - name: Remove latest Pat (WinLink) installer (amd64)
     file:
       path: /home/{{ ham_user }}/hamradio/pat_{{ pat_version.stdout }}_linux_amd64.deb
       state: absent
-    when: ansible_architecture == "amd64"
+    when: is_x86_64|bool
