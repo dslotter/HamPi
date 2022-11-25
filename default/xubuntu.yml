@@ -2,6 +2,7 @@
 
 ham_user: hampc
 wallpaper_prefix: /usr/share/wallpapers/
+is_hampc: True
 
 # Ettus Research UHD Build-Time Tuning
 UHD_CXXFLAGS: "-O2 -march=native -mtune=native"
