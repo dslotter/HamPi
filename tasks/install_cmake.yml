@@ -87,9 +87,9 @@
     register: cmake_version
     until: cmake_version.failed == false
 
-  - name: Download and Unarchive CMake {{ cmake_version.stdout }} sources
+  - name: Download and Unarchive CMake {{ cmake_version.stdout }} sources from https.//github.com/Kitware/CMake/releases/download/v{{ cmake_version.stdout }}/cmake-{{ cmake_version.stdout }}.tar.gz
     unarchive:
-      src: https://github.com/Kitware/CMake/releases/download/v{{ cmake_version.stdout }}-rc3/cmake-{{ cmake_version.stdout }}-rc3.tar.gz
+      src: https://github.com/Kitware/CMake/releases/download/v{{ cmake_version.stdout }}/cmake-{{ cmake_version.stdout }}.tar.gz
       dest: /home/{{ ham_user }}/hamradio
       remote_src: yes
     retries: 5
@@ -97,23 +97,23 @@
     register: result
     until: result.failed == false
 
-  - name: Configure CMake {{ cmake_version.stdout }}-rc3
-    command: ./configure
+  - name: Configure CMake {{ cmake_version.stdout }}
+    command: ./configure --prefix=/usr
     args:
-      chdir: /home/{{ ham_user }}/hamradio/cmake-{{ cmake_version.stdout }}-rc3
+      chdir: /home/{{ ham_user }}/hamradio/cmake-{{ cmake_version.stdout }}
 
-  - name: Build CMake {{ cmake_version.stdout }}-rc3
+  - name: Build CMake {{ cmake_version.stdout }}
     command: make
     args:
-      chdir: /home/{{ ham_user }}/hamradio/cmake-{{ cmake_version.stdout }}-rc3
+      chdir: /home/{{ ham_user }}/hamradio/cmake-{{ cmake_version.stdout }}
 
-  - name: Install CMake {{ cmake_version.stdout }}-rc3
+  - name: Install CMake {{ cmake_version.stdout }}
     become: yes
     command: make install
     args:
-      chdir: /home/{{ ham_user }}/hamradio/cmake-{{ cmake_version.stdout }}-rc3
+      chdir: /home/{{ ham_user }}/hamradio/cmake-{{ cmake_version.stdout }}
 
-  - name: Remove CMake {{ cmake_version.stdout }}-rc3 build directory
+  - name: Remove CMake {{ cmake_version.stdout }} build directory
     file:
-      path: /home/{{ ham_user }}/hamradio/cmake-{{ cmake_version.stdout }}-rc3
+      path: /home/{{ ham_user }}/hamradio/cmake-{{ cmake_version.stdout }}
       state: absent
