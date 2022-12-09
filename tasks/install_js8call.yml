@@ -34,5 +34,5 @@
     become: yes
     lineinfile:
       path: /usr/share/applications/js8call.desktop
-      regexp: '^Categories=AudioVideo;Audio;HamRadio;'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio Weak Signal

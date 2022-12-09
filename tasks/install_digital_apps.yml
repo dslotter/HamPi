@@ -22,7 +22,7 @@
     become: yes
     lineinfile:
       path: /usr/share/applications/linpsk.desktop
-      regexp: '^Categories=Network;HamRadio'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio PSK
     when: is_arm|bool and is_buster|bool
 
@@ -50,7 +50,7 @@
     become: yes
     lineinfile:
       path: /usr/share/applications/psk31lx.desktop
-      regexp: '^Categories=HamRadio;ConsoleOnly;Audio;AudioVideo'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio PSK
 
   - name: Install twpsk Package (Soundcard-based X program for operating PSK31)

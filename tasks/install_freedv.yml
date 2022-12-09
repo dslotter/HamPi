@@ -110,7 +110,7 @@
     become: yes
     lineinfile:
       path: /usr/local/share/applications/freedv.desktop
-      regexp: '^Categories=GTK;GNOME;AudioVideo;Audio;HamRadio;'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio
 
   - name: Remove freedv-gui build directory

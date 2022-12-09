@@ -49,7 +49,7 @@
       until: result.failed == false
 
     - name: Configure flmsg {{ download_date.stdout }}
-#      command: ./configure
+#      command: ./configure --prefix=/usr
       command: ./configure --without-flxmlrpc
       args:
         chdir: /home/{{ ham_user }}/hamradio/flmsg-{{ download_date.stdout }}
@@ -68,8 +68,8 @@
     - name: Modify categories for flmsg.desktop
       become: yes
       lineinfile:
-        path: /usr/local/share/applications/flmsg.desktop
-        regexp: '^Categories=Network;HamRadio;'
+        path: /usr/share/applications/flmsg.desktop
+        regexp: '^Categories=.*'
         line: Categories=HamRadio Fldigi
 
     - name: Remove flmsg {{ download_date.stdout }} build directory

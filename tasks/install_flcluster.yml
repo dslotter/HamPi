@@ -49,7 +49,7 @@
       until: result.failed == false
 
     - name: Configure flcluster {{ download_date.stdout }}
-      command: ./configure
+      command: ./configure --prefix=/usr
       args:
         chdir: /home/{{ ham_user }}/hamradio/flcluster-{{ download_date.stdout }}
 
@@ -67,8 +67,8 @@
     - name: Modify categories for flcluster.desktop
       become: yes
       lineinfile:
-        path: /usr/local/share/applications/flcluster.desktop
-        regexp: '^Categories=Network;HamRadio;'
+        path: /usr/share/applications/flcluster.desktop
+        regexp: '^Categories=.*'
         line: Categories=HamRadio Fldigi
 
     - name: Remove flcluster {{ download_date.stdout }} build directory

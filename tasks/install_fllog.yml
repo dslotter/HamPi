@@ -49,7 +49,7 @@
       until: result.failed == false
 
     - name: Configure fllog {{ download_date.stdout }}
-      command: ./configure
+      command: ./configure --prefix=/usr
       args:
         chdir: /home/{{ ham_user }}/hamradio/fllog-{{ download_date.stdout }}
 
@@ -67,8 +67,8 @@
     - name: Modify categories for fllog.desktop
       become: yes
       lineinfile:
-        path: /usr/local/share/applications/fllog.desktop
-        regexp: '^Categories=Network;HamRadio;'
+        path: /usr/share/applications/fllog.desktop
+        regexp: '^Categories=.*'
         line: Categories=HamRadio Fldigi
 
     - name: Remove fllog {{ download_date.stdout }} build directory

@@ -49,7 +49,7 @@
       until: result.failed == false
 
     - name: Configure flwrap {{ download_date.stdout }}
-      command: ./configure
+      command: ./configure --prefix=/usr
       args:
         chdir: /home/{{ ham_user }}/hamradio/flwrap-{{ download_date.stdout }}
 
@@ -67,8 +67,8 @@
     - name: Modify categories for flwrap.desktop
       become: yes
       lineinfile:
-        path: /usr/local/share/applications/flwrap.desktop
-        regexp: '^Categories=Network;HamRadio;'
+        path: /usr/share/applications/flwrap.desktop
+        regexp: '^Categories=.*'
         line: Categories=HamRadio Fldigi
 
     - name: Remove flwrap {{ download_date.stdout }} build directory

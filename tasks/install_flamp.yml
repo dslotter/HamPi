@@ -50,7 +50,7 @@
       until: result.failed == false
 
     - name: Configure flamp {{ download_date.stdout }}
-      command: ./configure
+      command: ./configure --prefix=/usr
       args:
         chdir: /home/{{ ham_user }}/hamradio/flamp-{{ download_date.stdout }}
 
@@ -68,8 +68,8 @@
     - name: Modify categories for flamp.desktop
       become: yes
       lineinfile:
-        path: /usr/local/share/applications/flamp.desktop
-        regexp: '^Categories=Network;HamRadio;'
+        path: /usr/share/applications/flamp.desktop
+        regexp: '^Categories=.*'
         line: Categories=HamRadio Fldigi
 
     - name: Remove flamp {{ download_date.stdout }} build directory

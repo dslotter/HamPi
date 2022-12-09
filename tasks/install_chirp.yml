@@ -95,7 +95,7 @@
     become: yes
     lineinfile:
       path: /usr/local/share/applications/chirp.desktop
-      regexp: '^Categories=Utility;HamRadio'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio
 
   - name: Remove Chirp {{ download_date.stdout }} build directory

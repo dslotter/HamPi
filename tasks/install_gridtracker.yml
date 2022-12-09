@@ -85,7 +85,7 @@
     become: yes
     lineinfile:
       path: /usr/local/share/applications/GridTracker.desktop
-      regexp: '^Categories=None;'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio Weak Signal
     when: is_arm|bool
 
@@ -136,7 +136,7 @@
     become: yes
     lineinfile:
       path: /usr/local/share/applications/GridTracker.desktop
-      regexp: '^Categories=None;'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio Weak Signal
     when: is_i386|bool
 
@@ -203,6 +203,6 @@
     become: yes
     lineinfile:
       path: /usr/local/share/applications/GridTracker.desktop
-      regexp: '^Categories=None;'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio Weak Signal
     when: not is_jammy|bool

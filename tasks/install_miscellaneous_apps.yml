@@ -90,7 +90,7 @@
     become: yes
     lineinfile:
       path: /usr/share/applications/glfer.desktop
-      regexp: '^Categories=Utility;HamRadio'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio Morse Code
 
   # Grig 0.8.1 in repo is latest available as of 2020-02-12
@@ -108,7 +108,7 @@
     become: yes
     lineinfile:
       path: /usr/share/applications/grig.desktop
-      regexp: '^Categories=Audio;HamRadio;'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio
 
   - name: Install gnuais Package (AIS receiver which uses the discriminator output of VHF receivers)
@@ -160,7 +160,7 @@
     become: yes
     lineinfile:
       path: /usr/share/applications/hamfax.desktop
-      regexp: '^Categories=AudioVideo;Audio;HamRadio;Qt'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio
     when: is_arm|bool and is_buster|bool
 
@@ -230,7 +230,7 @@
     become: yes
     lineinfile:
       path: /usr/share/applications/Xdx.desktop
-      regexp: '^Categories=Network;HamRadio;'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio
 
   # Because there's really no other place for this to go (falls under misc)

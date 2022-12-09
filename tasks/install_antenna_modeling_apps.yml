@@ -38,7 +38,7 @@
     become: yes
     lineinfile:
       path: /usr/share/applications/gsmc.desktop
-      regexp: '^Categories=Education;HamRadio;'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio Calculators
     when: not is_arm_64|bool and not is_jammy|bool
 
@@ -46,12 +46,12 @@
     become: yes
     lineinfile:
       path: /usr/share/applications/nec2c.desktop
-      regexp: '^Categories=Network;HamRadio;X-HamRadio-Antennas'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio Antenna Analyzer
 
   - name: Modify categories for xnec2c.desktop
     become: yes
     lineinfile:
       path: /usr/share/applications/xnec2c.desktop
-      regexp: '^Categories=Science;Math;NumericalAnalysis;'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio Antenna Analyzer

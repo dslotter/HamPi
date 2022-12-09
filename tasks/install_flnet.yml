@@ -49,7 +49,7 @@
       until: result.failed == false
 
     - name: Configure flnet {{ download_date.stdout }}
-      command: ./configure
+      command: ./configure --prefix=/usr
       args:
         chdir: /home/{{ ham_user }}/hamradio/flnet-{{ download_date.stdout }}
 
@@ -67,8 +67,8 @@
     - name: Modify categories for flnet.desktop
       become: yes
       lineinfile:
-        path: /usr/local/share/applications/flnet.desktop
-        regexp: '^Categories=Network;HamRadio;'
+        path: /usr/share/applications/flnet.desktop
+        regexp: '^Categories=.*'
         line: Categories=HamRadio Fldigi
 
     - name: Remove flnet {{ download_date.stdout }} build directory

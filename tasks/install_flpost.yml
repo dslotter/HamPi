@@ -47,7 +47,7 @@
       until: result.failed == false
 
     - name: Configure flpost {{ download_date.stdout }}
-      command: ./configure --without-flxmlrpc
+      command: ./configure --prefix=/usr --without-flxmlrpc
       args:
         chdir: /home/{{ ham_user }}/hamradio/flpost-{{ download_date.stdout }}
 
@@ -65,8 +65,8 @@
     - name: Modify categories for flpost.desktop
       become: yes
       lineinfile:
-        path: /usr/local/share/applications/flpost.desktop
-        regexp: '^Categories=Other;HamRadio;'
+        path: /usr/share/applications/flpost.desktop
+        regexp: '^Categories=.*'
         line: Categories=HamRadio Fldigi
 
     - name: Remove flpost {{ download_date.stdout }} build directory

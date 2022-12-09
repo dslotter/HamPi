@@ -37,14 +37,14 @@
     become: yes
     lineinfile:
       path: /usr/share/applications/cqrlog.desktop
-      regexp: '^Categories=Utility;Database;HamRadio'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio Logging
 
   - name: Modify categories for xlog.desktop
     become: yes
     lineinfile:
       path: /usr/share/applications/xlog.desktop
-      regexp: '^Categories=Utility;Database;HamRadio;GTK'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio Logging
 
   - name: Copy klog desktop file
@@ -116,7 +116,7 @@
     become: yes
     lineinfile:
       path: /usr/share/applications/tucnak2.desktop
-      regexp: '^Categories=Utility;HamRadio'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio Logging
     when: is_rpi|bool and is_buster|bool
 
@@ -131,7 +131,7 @@
     become: yes
     lineinfile:
       path: /usr/share/applications/tucnak.desktop
-      regexp: '^Categories=Utility;HamRadio'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio Logging
     when: is_rpi|bool and is_bullseye|bool
 

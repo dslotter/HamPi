@@ -48,7 +48,7 @@
       until: result.failed == false
 
     - name: Configure flxmlrpc {{ download_date.stdout }}
-      command: ./configure
+      command: ./configure --prefix=/usr
       args:
         chdir: /home/{{ ham_user }}/hamradio/flxmlrpc-{{ download_date.stdout }}
 

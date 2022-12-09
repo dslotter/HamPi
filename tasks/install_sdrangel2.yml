@@ -1,0 +1,122 @@
+#
+# Copyright 2020 - 2022, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install SDRAngel (FOR TESTING ONLY)
+  hosts: all
+  gather_facts: no
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+#
+# LibSigMF
+#
+
+  - name: Git clone latest LibSigMF sources
+    git:
+      repo: https://github.com/f4exb/libsigmf.git
+      dest: /opt/build/libsigmf
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Git Checkout "new-namespaces"
+    command: git checkout "new-namespaces"
+    args:
+      chdir: /opt/build/libsigmf
+
+  - name: Create directory libsigmf/build
+    file:
+      path: /opt/build/libsigmf/build
+      state: directory
+
+  - name: Build LibSigMF CMakeFiles
+    command: cmake -Wno-dev -DCMAKE_INSTALL_PREFIX=/opt/install/libsigmf ..
+    args:
+      chdir: /opt/build/libsigmf/build
+
+  - name: Build LibSigMF
+    command: make
+    args:
+      chdir: /opt/build/libsigmf/build
+
+  - name: Install LibSigMF
+    become: yes
+    command: make install
+    args:
+      chdir: /opt/build/libsigmf/build
+
+  - name: Remove LibSigMF build directory
+    file:
+      path: /opt/build/libsigmf
+      state: absent
+
+
+#
+# SDRAngel
+#
+
+  - name: Git clone latest SDRAngel sources
+    git:
+      repo: https://github.com/f4exb/sdrangel.git
+      dest: /opt/build/sdrangel
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Create directory sdrangel/build
+    file:
+      path: /opt/build/sdrangel/build
+      state: directory
+
+  - name: Build SDRAngel CMakeFiles
+    command: cmake -Wno-dev -DDEBUG_OUTPUT=ON -DRX_SAMPLE_24BIT=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo -DMIRISDR_DIR=/opt/install/libmirisdr -DAIRSPY_DIR=/opt/install/libairspy -DAIRSPYHF_DIR=/opt/install/libairspyhf -DBLADERF_DIR=/opt/install/libbladeRF -DHACKRF_DIR=/opt/install/libhackrf -DRTLSDR_DIR=/opt/install/librtlsdr -DLIMESUITE_DIR=/opt/install/LimeSuite -DIIO_DIR=/opt/install/libiio -DPERSEUS_DIR=/opt/install/libperseus -DXTRX_DIR=/opt/install/xtrx-images -DSOAPYSDR_DIR=/usr/local/lib/SoapySDR -DAPT_DIR=/opt/install/aptdec -DCM256CC_DIR=/opt/install/cm256cc -DDSDCC_DIR=/opt/install/dsdcc -DSERIALDV_DIR=/opt/install/serialDV -DMBE_DIR=/opt/install/mbelib -DCODEC2_DIR=/opt/install/codec2 -DSGP4_DIR=/opt/install/sgp4 -DLIBSIGMF_DIR=/opt/install/libsigmf -DDAB_DIR=/opt/install/libdab -DCMAKE_INSTALL_PREFIX=/opt/install/sdrangel ..
+    args:
+      chdir: /opt/build/sdrangel/build
+
+  - name: Build SDRAngel
+    command: make
+    args:
+      chdir: /opt/build/sdrangel/build
+
+  - name: Install SDRAngel
+    become: yes
+    command: make install
+    args:
+      chdir: /opt/build/sdrangel/build
+
+  - name: Modify categories for sdrangel.desktop
+    become: yes
+    lineinfile:
+      path: /opt/install/sdrangel/share/applications/sdrangel.desktop
+      regexp: '^Categories=.*'
+      line: Categories=HamRadio SDR
+
+  - name: Modify path for sdrangel.desktop
+    become: yes
+    lineinfile:
+      path: /opt/install/sdrangel/share/applications/sdrangel.desktop
+      regexp: '^Exec=sdrangel'
+      line: Exec=/opt/install/sdrangel/bin/sdrangel
+
+  - name: Modify icon for sdrangel.desktop
+    become: yes
+    lineinfile:
+      path: /opt/install/sdrangel/share/applications/sdrangel.desktop
+      regexp: '^Icon=sdrangel_icon'
+      line: Icon=/opt/install/sdrangel/share/icons/hicolor/scalable/apps/sdrangel_icon.svg
+
+  - name: Copy sdrangel.desktop to where system will recognize it
+    become: yes
+    command: cp /opt/install/sdrangel/share/applications/sdrangel.desktop /usr/local/share/applications/sdrangel.desktop
+
+  - name: Remove SDRAngel build directory
+    file:
+      path: /opt/build/sdrangel
+      state: absent

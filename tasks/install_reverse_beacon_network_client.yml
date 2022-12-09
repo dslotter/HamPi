@@ -70,7 +70,7 @@
     become: yes
     lineinfile:
       path: /usr/local/share/applications/rbnc.desktop
-      regexp: '^Categories=HamRadio;Network'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio
 
   - name: Modify icon path for rbnc.desktop

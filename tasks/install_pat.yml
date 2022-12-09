@@ -74,7 +74,7 @@
     become: yes
     lineinfile:
       path: /usr/local/share/applications/patmenu2.desktop
-      regexp: '^Categories=Network;HamRadio;'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio
 
 #

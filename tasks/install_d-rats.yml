@@ -27,14 +27,14 @@
     become: yes
     lineinfile:
       path: /home/{{ ham_user }}/hamradio/D-Rats/share/d-rats.desktop
-      regexp: '^Categories=Application;HamRadio'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio D-Rats
 
   - name: Modify categories for d-rats_repeater.desktop
     become: yes
     lineinfile:
       path: /home/{{ ham_user }}/hamradio/D-Rats/share/d-rats_repeater.desktop
-      regexp: '^Categories=Application;HamRadio'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio D-Rats
 
   - name: Run D-Rats update script (which builds and installs D-Rats from Git)

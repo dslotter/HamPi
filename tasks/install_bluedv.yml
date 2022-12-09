@@ -84,7 +84,7 @@
     become: yes
     lineinfile:
       path: /usr/local/share/applications/BlueDV.desktop
-      regexp: '^Categories=Network;WebBrowser;'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio
 
   - name: Download latest AMBEServer sources

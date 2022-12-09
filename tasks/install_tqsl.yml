@@ -123,7 +123,7 @@
     become: yes
     lineinfile:
       path: /usr/share/applications/tqsl.desktop
-      regexp: '^Categories=Application;HamRadio;Utility;'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio Logging
 
   - name: Remove TQSL {{ tqsl_version.stdout }} build directory

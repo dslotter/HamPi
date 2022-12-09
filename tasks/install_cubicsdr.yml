@@ -53,7 +53,7 @@
       chdir: /home/{{ ham_user }}/hamradio/liquid-dsp
 
   - name: Configure liquid-dsp
-    shell: CFLAGS="-march=native -O3" ./configure --enable-fftoverride
+    shell: CFLAGS="-march=native -O3" ./configure --prefix=/usr --enable-fftoverride
     args:
       chdir: /home/{{ ham_user }}/hamradio/liquid-dsp
 
@@ -119,8 +119,8 @@
   - name: Modify categories for CubicSDR.desktop
     become: yes
     lineinfile:
-      path: /usr/local/share/applications/CubicSDR.desktop
-      regexp: '^Categories=Science;HamRadio;DataVisualization;'
+      path: /usr/share/applications/CubicSDR.desktop
+      regexp: '^Categories=.*'
       line: Categories=HamRadio SDR
 
   - name: Remove CubicSDR build directory

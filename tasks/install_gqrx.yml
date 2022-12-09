@@ -146,5 +146,5 @@
     become: yes
     lineinfile:
       path: /usr/share/applications/gnuradio-grc.desktop
-      regexp: '^Categories=Development;HamRadio;Science;'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio

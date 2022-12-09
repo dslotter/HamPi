@@ -67,7 +67,7 @@
     become: yes
     lineinfile:
       path: /usr/share/applications/sdrpp.desktop
-      regexp: '^Categories=HamRadio'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio SDR
 
   - name: Remove SDR++ build directory

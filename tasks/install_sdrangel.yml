@@ -1042,7 +1042,7 @@
     become: yes
     lineinfile:
       path: /opt/install/sdrangel/share/applications/sdrangel.desktop
-      regexp: '^Categories=Network;HamRadio;'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio SDR
 
   - name: Modify path for sdrangel.desktop

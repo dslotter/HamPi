@@ -84,7 +84,7 @@
   - name: Modify categories for qsstv.desktop
     lineinfile:
       path: "/home/{{ ham_user }}/hamradio/qsstv_{{ download_date.stdout }}/qsstv.desktop"
-      regexp: '^Categories=Education;'
+      regexp: '^Categories=.*'
       line: Categories=HamRadio
 
   - name: Copy qsstv.desktop to /usr/local/share/applications

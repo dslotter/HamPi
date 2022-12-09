@@ -52,7 +52,7 @@
       chdir: /home/{{ ham_user }}/hamradio/voacapl
 
   - name: Configure VOACAPL
-    command: ./configure
+    command: ./configure --prefix=/usr
     args:
       chdir: /home/{{ ham_user }}/hamradio/voacapl
 
@@ -134,7 +134,7 @@
       chdir: /home/{{ ham_user }}/hamradio/pythonprop-{{ pythonprop_version.stdout }}
 
   - name: Configure pythonprop {{ pythonprop_version.stdout }}
-    command: ./configure
+    command: ./configure --prefix=/usr
     args:
       chdir: /home/{{ ham_user }}/hamradio/pythonprop-{{ pythonprop_version.stdout }}
 
@@ -162,6 +162,6 @@
   - name: Modify categories for voacapgui.desktop
     become: yes
     lineinfile:
-      path: /usr/local/share/applications/voacapgui.desktop
-      regexp: '^Categories=Science;HamRadio'
+      path: /usr/share/applications/voacapgui.desktop
+      regexp: '^Categories=.*'
       line: Categories=HamRadio Calculators

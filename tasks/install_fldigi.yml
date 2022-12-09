@@ -59,7 +59,7 @@
       until: result.failed == false
 
     - name: Configure FlDigi {{ download_date.stdout }}
-      command: ./configure
+      command: ./configure --prefix=/usr
       args:
         chdir: /home/{{ ham_user }}/hamradio/fldigi-{{ download_date.stdout }}
 
@@ -77,15 +77,15 @@
     - name: Modify categories for flarq.desktop
       become: yes
       lineinfile:
-        path: /usr/local/share/applications/flarq.desktop
-        regexp: '^Categories=Network;HamRadio;'
+        path: /usr/share/applications/flarq.desktop
+        regexp: '^Categories=.*'
         line: Categories=HamRadio Fldigi
 
     - name: Modify categories for fldigi.desktop
       become: yes
       lineinfile:
         path: /usr/local/share/applications/fldigi.desktop
-        regexp: '^Categories=Network;HamRadio;'
+        regexp: '^Categories=.*'
         line: Categories=HamRadio Fldigi
 
     - name: Clean FlDigi {{ download_date.stdout }}
