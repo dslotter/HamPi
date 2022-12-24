@@ -44,5 +44,5 @@
   - name: Copy quisk desktop file
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/usr/local/share/applications/quisk.desktop"
-      dest: "/usr/local/share/applications/quisk.desktop"
+      src: "{{ playbook_dir }}/../files/usr/share/applications/quisk.desktop"
+      dest: "/usr/share/applications/quisk.desktop"

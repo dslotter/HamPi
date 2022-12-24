@@ -49,7 +49,7 @@
       chdir: /home/{{ ham_user }}/hamradio/lysdr
 
   - name: Configure lysdr
-    command: ./configure
+    command: ./configure --prefix=/usr
     args:
       chdir: /home/{{ ham_user }}/hamradio/lysdr
 

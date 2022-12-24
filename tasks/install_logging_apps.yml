@@ -50,8 +50,8 @@
   - name: Copy klog desktop file
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/usr/local/share/applications/klog.desktop"
-      dest: "/usr/local/share/applications/klog.desktop"
+      src: "{{ playbook_dir }}/../files/usr/share/applications/klog.desktop"
+      dest: "/usr/share/applications/klog.desktop"
 
 #
 # Logging helpers by W3DJS
@@ -248,8 +248,8 @@
   - name: Copy pyqso desktop file
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/usr/local/share/applications/pyqso.desktop"
-      dest: "/usr/local/share/applications/pyqso.desktop"
+      src: "{{ playbook_dir }}/../files/usr/share/applications/pyqso.desktop"
+      dest: "/usr/share/applications/pyqso.desktop"
 
   - name: Remove pyqso source directory
     file:

@@ -10,13 +10,7 @@
   - name: Create directory bluedv
     become: yes
     file:
-      path: /usr/local/bluedv
-      state: directory
-
-  - name: Create directory /usr/local/share/applications
-    become: yes
-    file:
-      path: /usr/local/share/applications
+      path: /usr/bluedv
       state: directory
 
   - name: Install BlueDV prerequisite packages
@@ -56,8 +50,8 @@
   - name: Download and Unarchive BlueDV
     become: yes
     unarchive:
-      src: "{{ playbook_dir }}/../files/usr/local/bluedv/BlueDV_v1_0_0_9609.zip"
-      dest: "/usr/local/bluedv"
+      src: "{{ playbook_dir }}/../files/usr/bluedv/BlueDV_v1_0_0_9617.zip"
+      dest: "/usr/bluedv"
       validate_certs: no
     retries: 5
     delay: 30
@@ -67,23 +61,23 @@
 #  - name: Copy BlueDV default preferences file
 #    become: yes
 #    copy:
-#      src: "{{ playbook_dir }}/../files/usr/local/bluedv/BlueDVconfig.ini"
-#      dest: "/usr/local/bluedv/BlueDVconfig.ini"
+#      src: "{{ playbook_dir }}/../files/usr/bluedv/BlueDVconfig.ini"
+#      dest: "/usr/bluedv/BlueDVconfig.ini"
 
   - name: Change owner of BlueDV folder to {{ ham_user }}
     become: yes
-    file: dest=/usr/local/bluedv owner="{{ ham_user }}" group="{{ ham_user }}" recurse=yes
+    file: dest=/usr/bluedv owner="{{ ham_user }}" group="{{ ham_user }}" recurse=yes
 
   - name: Copy BlueDV desktop file
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/usr/local/share/applications/BlueDV.desktop"
-      dest: "/usr/local/share/applications/BlueDV.desktop"
+      src: "{{ playbook_dir }}/../files/usr/share/applications/BlueDV.desktop"
+      dest: "/usr/share/applications/BlueDV.desktop"
 
   - name: Modify categories for BlueDV.desktop
     become: yes
     lineinfile:
-      path: /usr/local/share/applications/BlueDV.desktop
+      path: /usr/share/applications/BlueDV.desktop
       regexp: '^Categories=.*'
       line: Categories=HamRadio
 

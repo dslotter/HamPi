@@ -11,22 +11,22 @@
     become: yes
     unarchive:
       src:  http://www.radioexplorer.com.ru/RadioExplorer-2_7_7.zip
-      dest: /usr/local/
+      dest: /usr/
       remote_src: yes
     retries: 5
     delay: 30
     register: result
     until: result.failed == false
 
-  - name: Change Mode of /usr/local/RadioExplorer/RadioExplorer.sh to executable
+  - name: Change Mode of /usr/RadioExplorer/RadioExplorer.sh to executable
     become: yes
-    file: dest=/usr/local/RadioExplorer/RadioExplorer.sh mode=a+x
+    file: dest=/usr/RadioExplorer/RadioExplorer.sh mode=a+x
 
   - name: Download current EiBi shortwave schedule
     become: yes
     get_url:
       url: http://www.eibispace.de/dx/eibi-radioexplorer-b21.zip
-      dest: /usr/local/RadioExplorer/eibi-radioexplorer-b21.zip
+      dest: /usr/RadioExplorer/eibi-radioexplorer-b21.zip
     retries: 5
     delay: 30
     register: result
@@ -37,10 +37,10 @@
 #    become: yes
 #    get_url:
 #      url: https://transition.fcc.gov/ib/sand/neg/hf_web/B20FCC01.TXT
-#      dest: /usr/local/RadioExplorer/B20FCC01.TXT
+#      dest: /usr/RadioExplorer/B20FCC01.TXT
 
   - name: Copy RadioExplorer desktop file
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/usr/local/share/applications/RadioExplorer.desktop"
-      dest: "/usr/local/share/applications/RadioExplorer.desktop"
+      src: "{{ playbook_dir }}/../files/usr/share/applications/RadioExplorer.desktop"
+      dest: "/usr/share/applications/RadioExplorer.desktop"

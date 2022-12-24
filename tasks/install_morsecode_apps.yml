@@ -64,22 +64,16 @@
       regexp: '^Categories=.*'
       line: Categories=HamRadio Training
 
-  - name: Create /usr/local/share/applications directory
-    become: yes
-    file:
-      path: /usr/local/share/applications
-      state: directory
-
-  - name: Create xcwcp.desktop in /usr/local/share/applications
+  - name: Create xcwcp.desktop in /usr/share/applications
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/usr/local/share/applications/xcwcp.desktop"
-      dest: "/usr/local/share/applications/xcwcp.desktop"
+      src: "{{ playbook_dir }}/../files/usr/share/applications/xcwcp.desktop"
+      dest: "/usr/share/applications/xcwcp.desktop"
 
-  - name: Create xdemorse.desktop in /usr/local/share/applications
+  - name: Create xdemorse.desktop in /usr/share/applications
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/usr/local/share/applications/xdemorse.desktop"
+      src: "{{ playbook_dir }}/../files/usr/share/applications/xdemorse.desktop"
       dest: "/usr/local/share/applications/xdemorse.desktop"
 
   - name: Modify categories for ebook2cwgui.desktop
@@ -92,14 +86,14 @@
   - name: Modify categories for xcwcp.desktop
     become: yes
     lineinfile:
-      path: /usr/local/share/applications/xcwcp.desktop
+      path: /usr/share/applications/xcwcp.desktop
       regexp: '^Categories=.*'
       line: Categories=HamRadio Morse Code
 
   - name: Modify categories for xdemorse.desktop
     become: yes
     lineinfile:
-      path: /usr/local/share/applications/xdemorse.desktop
+      path: /usr/share/applications/xdemorse.desktop
       regexp: '^Categories=.*'
       line: Categories=HamRadio Morse Code
 
@@ -107,7 +101,7 @@
     become: yes
     get_url:
       url: https://www.qsl.net/hz1jw/morse/downloads/MorsePractice.jar
-      dest: /usr/local/bin/MorsePractice.jar
+      dest: /usr/bin/MorsePractice.jar
     when: is_hampc|bool
     retries: 5
     delay: 30

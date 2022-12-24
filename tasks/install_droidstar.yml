@@ -101,9 +101,9 @@
     args:
       chdir: /home/{{ ham_user }}/hamradio/droidstar/build
 
-  - name: Move DroidStar to /usr/local/bin
+  - name: Move DroidStar to /usr/bin
     become: yes
-    command: mv /opt/DroidStar/bin/DroidStar /usr/local/bin
+    command: mv /opt/DroidStar/bin/DroidStar /usr/bin
 
   - name: Remove /opt/DroidStar
     become: yes
@@ -114,8 +114,8 @@
   - name: Copy DroidStar desktop file
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/usr/local/share/applications/DroidStar.desktop"
-      dest: "/usr/local/share/applications/DroidStar.desktop"
+      src: "{{ playbook_dir }}/../files/usr/share/applications/DroidStar.desktop"
+      dest: "/usr/share/applications/DroidStar.desktop"
 
   - name: Remove droidstar sources
     file:

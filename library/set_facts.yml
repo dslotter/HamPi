@@ -7,6 +7,16 @@
   gather_facts: yes
   tasks:
 
+  - name: Set default settings to False
+    set_fact:
+      is_hampc: False
+      is_rpi: False
+      is_pc: False
+      is_iq: False
+      is_i386: False
+      is_arm: False
+      is_x86_64: False
+
   - name: Set facts for ARM CPU
     set_fact:
       is_arm: True
@@ -119,20 +129,20 @@
 #      fail_msg:
 #        - "Both is_buster and is_bullseye cannot match"
 
-  - name: Confirm Platform is consistent 1
-    assert:
-      that: is_rpi != is_pc
-      fail_msg:
-        - "Both is_rpi and is_pc cannot match"
-
-  - name: Confirm Platform is consistent 2
-    assert:
-      that: is_rpi != is_iq
-      fail_msg:
-        - "Both is_rpi and is_iq cannot match"
-
-  - name: Confirm Platform is consistent 3
-    assert:
-      that: is_iq != is_pc
-      fail_msg:
-        - "Both is_iq and is_pc cannot match"
+#  - name: Confirm Platform is consistent 1
+#    assert:
+#      that: is_rpi != True and is_pc != True
+#      fail_msg:
+#        - "Both is_rpi and is_pc cannot match"
+#
+#  - name: Confirm Platform is consistent 2
+#    assert:
+#      that: is_rpi != True and is_iq != True
+#      fail_msg:
+#        - "Both is_rpi and is_iq cannot match"
+#
+#  - name: Confirm Platform is consistent 3
+#    assert:
+#      that: is_iq != True and is_pc != True
+#      fail_msg:
+#        - "Both is_iq and is_pc cannot match"

@@ -26,12 +26,6 @@
 #      dest: /usr/share/doc/gridtracker/GTQS_0406.pdf
 #      validate_certs: no
 
-  - name: Create directory for desktop files
-    become: yes
-    file:
-      path: /usr/local/share/applications/
-      state: directory
-
 #
 # Raspbian ARM
 #
@@ -52,7 +46,7 @@
 #      src: "{{ download_file.stdout }}"
 #      src: "https://storage.googleapis.com/gt_download/v1.21.0503-2/GridTracker-1.22.0503-linux-arm32.tar.gz"
       src: "https://downloads.gridtracker.org/v1.22.1016-Harvest/GridTracker-1.22.1016-linux-arm64.tar.gz"
-      dest: /usr/local
+      dest: /usr
       remote_src: yes
     when: is_arm|bool
     retries: 5
@@ -62,29 +56,29 @@
 
   - name: Rename GridTracker directory
     become: yes
-    shell: mv /usr/local/GridTracker* /usr/local/GridTracker
+    shell: mv /usr/GridTracker* /usr/GridTracker
     when: is_arm|bool
 
   - name: Copy GridTracker Desktop file (ARM)
     become: yes
     copy:
-      src: /usr/local/GridTracker/GridTracker.desktop
-      dest: /usr/local/share/applications/GridTracker.desktop
+      src: /usr/GridTracker/GridTracker.desktop
+      dest: /usr/share/applications/GridTracker.desktop
       remote_src: yes
     when: is_arm|bool
 
   - name: Fix the lazy path that GridTracker uses to what we're using
     become: yes
     replace:
-      path: /usr/local/share/applications/GridTracker.desktop
+      path: /usr/share/applications/GridTracker.desktop
       regexp: "/home/{{ ham_user }}/Downloads"
-      replace: '/usr/local'
+      replace: '/usr'
     when: is_arm|bool
 
   - name: Modify categories for GridTracker.desktop
     become: yes
     lineinfile:
-      path: /usr/local/share/applications/GridTracker.desktop
+      path: /usr/share/applications/GridTracker.desktop
       regexp: '^Categories=.*'
       line: Categories=HamRadio Weak Signal
     when: is_arm|bool
@@ -108,7 +102,7 @@
     unarchive:
 #      src: "{{ download_file.stdout }}"
       src: "https://storage.googleapis.com/gt_download/v1.21.0503-2/GridTracker-1.22.0503-linux-x86.tar.gz"
-      dest: /usr/local
+      dest: /usr
       remote_src: yes
     when: is_i386|bool
     retries: 5
@@ -119,23 +113,23 @@
   - name: Copy GridTracker Desktop file (x86)
     become: yes
     copy:
-      src: /usr/local/GridTracker/GridTracker.desktop
-      dest: /usr/local/share/applications/GridTracker.desktop
+      src: /usr/GridTracker/GridTracker.desktop
+      dest: /usr/share/applications/GridTracker.desktop
       remote_src: yes
     when: is_i386|bool
 
   - name: Fix the lazy path that GridTracker uses to what we're using
     become: yes
     replace:
-      path: /usr/local/share/applications/GridTracker.desktop
+      path: /usr/share/applications/GridTracker.desktop
       regexp: '~\/Downloads'
-      replace: '/usr/local'
+      replace: '/usr'
     when: is_i386|bool
 
   - name: Modify categories for GridTracker.desktop
     become: yes
     lineinfile:
-      path: /usr/local/share/applications/GridTracker.desktop
+      path: /usr/share/applications/GridTracker.desktop
       regexp: '^Categories=.*'
       line: Categories=HamRadio Weak Signal
     when: is_i386|bool
@@ -159,7 +153,7 @@
     unarchive:
 #      src: "{{ download_file.stdout }}"
       src: "https://storage.googleapis.com/gt_download/v1.22.0725/GridTracker-1.22.0725-linux-x64.tar.gz"
-      dest: /usr/local
+      dest: /usr
       remote_src: yes
     when: is_x86_64|bool
     retries: 5
@@ -169,7 +163,7 @@
 
   - name: Rename GridTracker directory
     become: yes
-    shell: mv /usr/local/GridTracker* /usr/local/GridTracker
+    shell: mv /usr/GridTracker* /usr/GridTracker
     when: is_x86_64|bool
 
 #
@@ -179,30 +173,30 @@
   - name: Copy GridTracker Desktop file
     become: yes
     copy:
-      src: /usr/local/GridTracker/GridTracker.desktop
-      dest: /usr/local/share/applications/GridTracker.desktop
+      src: /usr/GridTracker/GridTracker.desktop
+      dest: /usr/share/applications/GridTracker.desktop
       remote_src: yes
     when: not is_jammy|bool
 
   - name: Copy GridTracker desktop file (Jammy)
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/usr/local/share/applications/GridTracker.desktop"
-      dest: "/usr/local/share/applications/GridTracker.desktop"
+      src: "{{ playbook_dir }}/../files/usr/share/applications/GridTracker.desktop"
+      dest: "/usr/share/applications/GridTracker.desktop"
     when: is_jammy|bool
 
   - name: Fix the lazy path that GridTracker uses to what we're using
     become: yes
     replace:
-      path: /usr/local/share/applications/GridTracker.desktop
+      path: /usr/share/applications/GridTracker.desktop
       regexp: '/home/{{ ham_user }}/Downloads'
-      replace: '/usr/local'
+      replace: '/usr'
     when: not is_jammy|bool
 
   - name: Modify categories for GridTracker.desktop
     become: yes
     lineinfile:
-      path: /usr/local/share/applications/GridTracker.desktop
+      path: /usr/share/applications/GridTracker.desktop
       regexp: '^Categories=.*'
       line: Categories=HamRadio Weak Signal
     when: not is_jammy|bool

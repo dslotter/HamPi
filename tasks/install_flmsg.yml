@@ -50,7 +50,7 @@
 
     - name: Configure flmsg {{ download_date.stdout }}
 #      command: ./configure --prefix=/usr
-      command: ./configure --without-flxmlrpc
+      command: ./configure --prefix=/usr --without-flxmlrpc
       args:
         chdir: /home/{{ ham_user }}/hamradio/flmsg-{{ download_date.stdout }}
 

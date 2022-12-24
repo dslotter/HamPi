@@ -174,17 +174,11 @@
     register: result
     until: result.failed == false
 
-  - name: Create /usr/local/share/applications directory
-    become: yes
-    file:
-      path: /usr/local/share/applications
-      state: directory
-
-  - name: Create inspectrum.desktop in /usr/local/share/applications
+  - name: Create inspectrum.desktop in /usr/share/applications
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/usr/local/share/applications/inspectrum.desktop"
-      dest: "/usr/local/share/applications/inspectrum.desktop"
+      src: "{{ playbook_dir }}/../files/usr/share/applications/inspectrum.desktop"
+      dest: "/usr/share/applications/inspectrum.desktop"
 
   - name: Install minimodem Package (provides general-purpose software audio FSK modem)
     become: yes
@@ -234,11 +228,11 @@
       line: Categories=HamRadio
 
   # Because there's really no other place for this to go (falls under misc)
-  - name: Create xplanet.desktop in /usr/local/share/applications
+  - name: Create xplanet.desktop in /usr/share/applications
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/usr/local/share/applications/xplanet.desktop"
-      dest: "/usr/local/share/applications/xplanet.desktop"
+      src: "{{ playbook_dir }}/../files/usr/share/applications/xplanet.desktop"
+      dest: "/usr/share/applications/xplanet.desktop"
 
   - name: Install qrz_callsign_reader dependencies
     become: yes

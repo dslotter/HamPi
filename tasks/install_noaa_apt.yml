@@ -59,8 +59,8 @@
   - name: Copy noaa-apt desktop file
     become: yes
     template:
-      src: "{{ playbook_dir }}/../files/usr/local/share/applications/noaa-apt.desktop.j2"
-      dest: "/usr/local/share/applications/noaa-apt.desktop"
+      src: "{{ playbook_dir }}/../files/usr/share/applications/noaa-apt.desktop.j2"
+      dest: "/usr/share/applications/noaa-apt.desktop"
       owner: root
       group: root
       mode: 0644

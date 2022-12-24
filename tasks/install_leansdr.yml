@@ -36,7 +36,7 @@
 
   - name: Install leansdr (Makefile has no install target)
     become: yes
-    command: install -o root "/home/{{ ham_user }}/hamradio/leansdr/src/apps/{{ item }}" /usr/local/bin
+    command: install -o root "/home/{{ ham_user }}/hamradio/leansdr/src/apps/{{ item }}" /usr/bin
     with_items:
       - leanchansim
       - leandvb

@@ -2,9 +2,9 @@
 Name=GridTracker
 Comment=GridTracker
 GenericName=GridTracker, An Amateur Radio Companion
-Exec=/usr/local/GridTracker/GridTracker
-Icon=/usr/local/GridTracker/gridtracker.png
-Path=/usr/local/GridTracker
+Exec=/usr/GridTracker/GridTracker
+Icon=/usr/GridTracker/gridtracker.png
+Path=/usr/GridTracker
 Type=Application
 Encoding=UTF-8
 Terminal=false

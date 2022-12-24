@@ -77,8 +77,8 @@
       path: /home/{{ ham_user }}/hamradio/pihpsdr
       state: absent
 
-  - name: Copy pihpsdr.desktop to /usr/local/share/applications
+  - name: Copy pihpsdr.desktop to /usr/share/applications
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/usr/local/share/applications/pihpsdr.desktop"
-      dest: /usr/local/share/applications/pihpsdr.desktop
+      src: "{{ playbook_dir }}/../files/usr/share/applications/pihpsdr.desktop"
+      dest: /usr/share/applications/pihpsdr.desktop

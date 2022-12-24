@@ -71,17 +71,17 @@
     register: result
     until: result.failed == false
 
-  - name: Create directory /usr/local/YAAC
+  - name: Create directory /usr/YAAC
     become: yes
     file:
-      path: /usr/local/YAAC
+      path: /usr/YAAC
       state: directory
 
   - name: Download and Unarchive latest YAAC from KA2DDO
     become: yes
     unarchive:
       src: https://sourceforge.net/projects/yetanotheraprsc/files/latest/download
-      dest: /usr/local/YAAC
+      dest: /usr/YAAC
       remote_src: yes
       validate_certs: no
     retries: 5
@@ -93,7 +93,7 @@
     become: yes
     unarchive:
       src: https://sourceforge.net/projects/yetanotheraprsc/files/callsigndb.jar/download
-      dest: /usr/local/YAAC/plugins
+      dest: /usr/YAAC/plugins
       remote_src: yes
       validate_certs: no
     retries: 5
@@ -104,5 +104,5 @@
   - name: Copy YAAC desktop file
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/usr/local/share/applications/YAAC.desktop"
-      dest: "/usr/local/share/applications/YAAC.desktop"
+      src: "{{ playbook_dir }}/../files/usr/share/applications/YAAC.desktop"
+      dest: "/usr/share/applications/YAAC.desktop"

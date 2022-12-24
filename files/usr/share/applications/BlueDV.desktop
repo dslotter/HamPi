@@ -1,0 +1,9 @@
+[Desktop Entry]
+GenericName=BlueDV HotSpot Software
+Name=BlueDV
+Comment=BlueDV HotSpot Software
+Exec=sh -c "cd /usr/bluedv/; mono BlueDV.exe"
+Terminal=false
+Type=Application
+Categories=Network;WebBrowser;
+Icon=/usr/bluedv/BlueDV.ico
