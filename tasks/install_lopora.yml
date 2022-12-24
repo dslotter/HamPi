@@ -49,7 +49,7 @@
 
   - name: Create quickstartlopora-hampi.sh
     copy:
-      dest: /home/{{ ham_user }}/lopora/scriptfiles/quickstartlopora-hampi.sh
+      dest: /home/{{ ham_user }}/lopora/scriptfiles/quickstartlopora-pi.sh
       mode: 0755
       content: |
         #!/bin/sh
