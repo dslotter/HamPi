@@ -47,7 +47,7 @@
   - name: Set quickstart script to executable
     file: dest=/home/{{ ham_user }}/lopora/scriptfiles/quickstartlopora.sh mode=a+x
 
-  - name: Create quickstartlopora-hampi.sh
+  - name: Create quickstartlopora-pi.sh
     copy:
       dest: /home/{{ ham_user }}/lopora/scriptfiles/quickstartlopora-pi.sh
       mode: 0755
