@@ -84,7 +84,7 @@
     - name: Modify categories for fldigi.desktop
       become: yes
       lineinfile:
-        path: /usr/local/share/applications/fldigi.desktop
+        path: /usr/share/applications/fldigi.desktop
         regexp: '^Categories=.*'
         line: Categories=HamRadio Fldigi
 
