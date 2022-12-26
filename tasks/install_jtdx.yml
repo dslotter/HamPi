@@ -81,7 +81,7 @@
       state: directory
 
   - name: Build Dev JTDX CMakeFiles
-    command: cmake .. -DWSJT_SKIP_MANPAGES=ON
+    command: cmake .. -DWSJT_SKIP_MANPAGES=ON --install-prefix=/usr
     args:
       chdir: /home/{{ ham_user }}/hamradio/jtdx/build
 
@@ -99,7 +99,7 @@
   - name: Modify categories for jtdx.desktop
     become: yes
     lineinfile:
-      path: /usr/local/share/applications/jtdx.desktop
+      path: /usr/share/applications/jtdx.desktop
       regexp: '^Categories=.*'
       line: Categories=HamRadio Weak Signal
 

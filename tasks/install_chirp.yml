@@ -87,7 +87,7 @@
 
   - name: Install Chirp {{ download_date.stdout }}
     become: yes
-    command: python setup.py install
+    command: python setup.py install --prefix /usr
     args:
       chdir: /home/{{ ham_user }}/hamradio/chirp-daily-{{ download_date.stdout }}
 
