@@ -45,7 +45,7 @@
       state: directory
 
   - name: Build HackRF CMakeFiles
-    command: cmake ..
+    command: cmake --prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/hackrf/host/build
 

@@ -45,7 +45,7 @@
       state: directory
 
   - name: Build SoapyOsmo CMakeFiles
-    command: cmake ..
+    command: cmake --prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/SoapyOsmo/build
 

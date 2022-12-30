@@ -42,7 +42,7 @@
     until: result.failed == false
 
   - name: Configure TwClock {{ twclock_version }}
-    command: ./configure
+    command: ./configure --prefix=/usr
     args:
       chdir: /home/{{ ham_user }}/hamradio/twclock-{{ twclock_version }}
 

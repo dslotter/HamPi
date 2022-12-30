@@ -52,7 +52,7 @@
       state: directory
 
   - name: Build UHD CMakeFiles
-    command: cmake ..
+    command: cmake --prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/uhd/host/build
 
@@ -87,7 +87,7 @@
       state: directory
 
   - name: Build SoapyUHD CMakeFiles
-    command: cmake ..
+    command: cmake --prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/SoapyUHD/build
 

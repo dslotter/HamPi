@@ -47,7 +47,7 @@
       state: directory
 
   - name: Build AirSpy driver CMakeFiles
-    command: cmake .. -DINSTALL_UDEV_RULES=ON
+    command: cmake --prefix=/usr .. -DINSTALL_UDEV_RULES=ON
     args:
       chdir: /home/{{ ham_user }}/hamradio/airspyone_host-master/build
 

@@ -45,7 +45,7 @@
       state: directory
 
   - name: Build SoapyAirSpy CMakeFiles
-    command: cmake ..
+    command: cmake --prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/SoapyAirSpy/build
 

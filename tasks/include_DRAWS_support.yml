@@ -10,6 +10,7 @@
     CXXFLAGS: -O2 -march=native -mtune=native
     CFLAGS: -O2 -march=native -mtune=native
     MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+    CMAKE_INSTALL_PREFIX: /usr
   tasks:
 
   - name: Check that the /boot/cmdline.txt exists

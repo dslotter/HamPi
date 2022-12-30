@@ -31,7 +31,7 @@
       state: directory
 
   - name: Build SoapyAudio CMakeFiles
-    command: cmake ..
+    command: cmake --prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/SoapyAudio/build
 

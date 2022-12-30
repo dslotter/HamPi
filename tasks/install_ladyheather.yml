@@ -28,7 +28,7 @@
     become: yes
     unarchive:
       src: "http://www.ke5fx.com/heather/heatherx11.zip"
-      dest: /usr/local
+      dest: /usr
       remote_src: yes
     retries: 5
     delay: 30
@@ -39,21 +39,21 @@
     become: yes
     command: make
     args:
-      chdir: /usr/local/heatherx11
+      chdir: /usr/heatherx11
 
   - name: Remove Lady Heather cruft
     become: yes
     shell: rm *.o *.cpp *.ch heathosx makefile
     args:
-      chdir: /usr/local/heatherx11
+      chdir: /usr/heatherx11
       warn: no
 
-  - name: Change Ownership of /usr/local/heatherx11/heather.cfg to {{ ham_user }}
+  - name: Change Ownership of /usr/heatherx11/heather.cfg to {{ ham_user }}
     become: yes
-    file: dest=/usr/local/heatherx11/heather.cfg owner={{ ham_user }} group={{ ham_user}} mode=644
+    file: dest=/usr/heatherx11/heather.cfg owner={{ ham_user }} group={{ ham_user}} mode=644
 
   - name: Convert Windows line endings to Unix
     become: yes
-    command: sed 's/\r//' -i "/usr/local/heatherx11/heather.cfg"
+    command: sed 's/\r//' -i "/usr/heatherx11/heather.cfg"
     args:
       warn: no

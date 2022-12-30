@@ -42,7 +42,7 @@
 
   - name: Install meteor_decoder (medet)
     become: yes
-    command: mv medet /usr/local/bin
+    command: mv medet /usr/bin
     args:
       chdir: /home/{{ ham_user }}/hamradio/meteor_decoder
 

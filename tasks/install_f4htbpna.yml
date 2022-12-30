@@ -41,6 +41,12 @@
       warn: no
       chdir: /home/{{ ham_user }}/hamradio/F4HTBPanadapter
 
+  - name: Rewrite F4HTBPanadapter project install prefix
+    replace:
+      path: /home/{{ ham_user }}/hamradio/F4HTBPanadapter/Makefile
+      regexp: 'prefix=/usr/local'
+      replace: 'prefix=/usr'
+
   - name: Pre-clean F4HTBPanadapter
     command: make clean
     args:

@@ -41,7 +41,7 @@
       state: directory
 
   - name: Build RTL-SDR CMakeFiles
-    command: cmake ..
+    command: cmake --prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/librtlsdr/build
 
@@ -76,7 +76,7 @@
       state: directory
 
   - name: Build SoapyRTLSDR CMakeFiles
-    command: cmake ..
+    command: cmake --prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/SoapyRTLSDR/build
 

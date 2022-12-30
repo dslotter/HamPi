@@ -99,6 +99,34 @@
       line: export ARCH := native
     when: not is_x86_64|bool
 
+  - name: Fix BINDIR
+    lineinfile:
+      path: /home/{{ ham_user }}/hamradio/OpenDV/AMBETools/settings.mk
+      regexp: '^export BINDIR  := "/usr/local/bin"'
+      line: export BINDIR  := "/usr/bin"
+    when: not is_x86_64|bool
+
+  - name: Fix DATADIR
+    lineinfile:
+      path: /home/{{ ham_user }}/hamradio/OpenDV/AMBETools/settings.mk
+      regexp: '^export DATADIR := "/usr/local/etc"'
+      line: export DATADIR := "/usr/etc"
+    when: not is_x86_64|bool
+
+  - name: Fix DESKTOPDIR
+    lineinfile:
+      path: /home/{{ ham_user }}/hamradio/OpenDV/AMBETools/settings.mk
+      regexp: '^export DESKTOPDIR := "/usr/local/share/applications"'
+      line: export DESKTOPDIR := "/usr/share/applications"
+    when: not is_x86_64|bool
+
+  - name: Fix PNGDIR
+    lineinfile:
+      path: /home/{{ ham_user }}/hamradio/OpenDV/AMBETools/settings.mk
+      regexp: '^export PNGDIR := "/usr/local/share/pixmaps"'
+      line: export PNGDIR := "/usr/share/pixmaps"
+    when: not is_x86_64|bool
+
   - name: Build OpenDV - AMBETools
     command: make
     args:
@@ -115,7 +143,7 @@
 # AnalogueRepeater
 #
   - name: Configure OpenDV - AnalogueRepeater
-    command: ./configure
+    command: ./configure --prefix=/usr
     args:
       chdir: /home/{{ ham_user }}/hamradio/OpenDV/AnalogueRepeater
 
@@ -142,6 +170,34 @@
       line: export ARCH := native
     when: not is_x86_64|bool
 
+  - name: Fix BINDIR
+    lineinfile:
+      path: /home/{{ ham_user }}/hamradio/OpenDV/Digital Voice/settings.mk
+      regexp: '^export BINDIR  := "/usr/local/bin"'
+      line: export BINDIR  := "/usr/bin"
+    when: not is_x86_64|bool
+
+  - name: Fix DATADIR
+    lineinfile:
+      path: /home/{{ ham_user }}/hamradio/OpenDV/Digital Voice/settings.mk
+      regexp: '^export DATADIR := "/usr/local/etc"'
+      line: export DATADIR := "/usr/etc"
+    when: not is_x86_64|bool
+
+  - name: Fix DESKTOPDIR
+    lineinfile:
+      path: /home/{{ ham_user }}/hamradio/OpenDV/Digital Voice/settings.mk
+      regexp: '^export DESKTOPDIR := "/usr/local/share/applications"'
+      line: export DESKTOPDIR := "/usr/share/applications"
+    when: not is_x86_64|bool
+
+  - name: Fix PNGDIR
+    lineinfile:
+      path: /home/{{ ham_user }}/hamradio/OpenDV/Digital Voice/settings.mk
+      regexp: '^export PNGDIR := "/usr/local/share/pixmaps"'
+      line: export PNGDIR := "/usr/share/pixmaps"
+    when: not is_x86_64|bool
+
   - name: Build OpenDV - Digital Voice
     command: make
     args:
@@ -159,7 +215,7 @@
 #
 
   - name: Configure OpenDV - DStarRepeater
-    command: ./configure
+    command: ./configure --prefix=/usr
     args:
       chdir: /home/{{ ham_user }}/hamradio/OpenDV/DStarRepeater
 
@@ -180,7 +236,7 @@
 #
 
   - name: Configure OpenDV - DummyRepeater
-    command: ./configure --with-ambeserver
+    command: ./configure --prefix=/usr --with-ambeserver
     args:
       chdir: /home/{{ ham_user }}/hamradio/OpenDV/DummyRepeater
 
@@ -201,7 +257,7 @@
 #
 
   - name: Configure OpenDV - ircDDBGateway
-    command: ./configure
+    command: ./configure --prefix=/usr
     args:
       chdir: /home/{{ ham_user }}/hamradio/OpenDV/ircDDBGateway
 
@@ -222,7 +278,7 @@
 #
 
   - name: Configure OpenDV - XReflector
-    command: ./configure
+    command: ./configure --prefix=/usr
     args:
       chdir: /home/{{ ham_user }}/hamradio/OpenDV/XReflector
 

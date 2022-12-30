@@ -47,7 +47,7 @@
       state: directory
 
   - name: Build SoapyFCDPP CMakeFiles
-    command: cmake ..
+    command: cmake --prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/SoapyFCDPP/build
 

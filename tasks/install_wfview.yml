@@ -86,6 +86,12 @@
       regexp: '#include "rtaudio/RtAudio.h"'
       replace: '#include "RtAudio.h"'
 
+  - name: Rewrite wfview project install prefix
+    replace:
+      path: /home/{{ ham_user }}/hamradio/wfview/wfview.pro
+      regexp: '  PREFIX = /usr/local'
+      replace: '  PREFIX = /usr'
+
   - name: Build wfview Makefiles
     command: qmake ../wfview/wfview.pro
     args:

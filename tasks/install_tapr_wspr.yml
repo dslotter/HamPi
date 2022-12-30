@@ -98,7 +98,7 @@
 
   - name: Install WsprryPi
     become: yes
-    command: install wspr-pi /usr/local/bin
+    command: install wspr-pi /usr/bin
     args:
       chdir: /home/{{ ham_user }}/hamradio/WsprryPi
     when: is_hampi|bool

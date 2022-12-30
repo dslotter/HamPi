@@ -62,7 +62,7 @@
       chdir: /home/{{ ham_user }}/hamradio/linuxax25/libax25/
 
   - name: Configure ax.25 lib
-    command: ./configure
+    command: ./configure --prefix=/usr
     args:
       chdir: /home/{{ ham_user }}/hamradio/linuxax25/libax25/
 
@@ -86,7 +86,7 @@
       chdir: /home/{{ ham_user }}/hamradio/linuxax25/ax25apps/
 
   - name: Configure ax.25 apps
-    command: ./configure
+    command: ./configure --prefix=/usr
     args:
       chdir: /home/{{ ham_user }}/hamradio/linuxax25/ax25apps/
 
@@ -110,7 +110,7 @@
       chdir: /home/{{ ham_user }}/hamradio/linuxax25/ax25tools/
 
   - name: Configure ax.25 tools
-    command: ./configure
+    command: ./configure --prefix=/usr
     args:
       chdir: /home/{{ ham_user }}/hamradio/linuxax25/ax25tools/
 

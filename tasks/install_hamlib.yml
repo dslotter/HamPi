@@ -111,19 +111,19 @@
         chdir: /home/{{ ham_user }}/hamradio/hamlib
 
     - name: Configure Hamlib (Buster)
-      command: ./configure --with-python-binding --with-xml-support
+      command: ./configure --prefix=/usr --with-python-binding --with-xml-support
       args:
         chdir: /home/{{ ham_user }}/hamradio/hamlib
       when: is_buster|bool and not is_jammy|bool
 
     - name: Configure Hamlib (Bullseye)
-      command: ./configure PYTHON_VERSION='3.9' --with-python-binding --with-xml-support
+      command: ./configure --prefix=/usr PYTHON_VERSION='3.9' --with-python-binding --with-xml-support
       args:
         chdir: /home/{{ ham_user }}/hamradio/hamlib
       when: is_bullseye|bool or is_iq|bool and not is_buster|bool and not is_jammy|bool
 
     - name: Configure Hamlib (Jammy)
-      command: ./configure PYTHON_VERSION='3.10' --with-python-binding --with-xml-support
+      command: ./configure --prefix=/usr PYTHON_VERSION='3.10' --with-python-binding --with-xml-support
       args:
         chdir: /home/{{ ham_user }}/hamradio/hamlib
       when: is_jammy|bool

@@ -42,7 +42,7 @@
     until: result.failed == false
 
   - name: Configure TwHamQTH {{ twhamqth_version }}
-    command: ./configure
+    command: ./configure --prefix=/usr
     args:
       chdir: /home/{{ ham_user }}/hamradio/twhamqth-{{ twhamqth_version }}
 

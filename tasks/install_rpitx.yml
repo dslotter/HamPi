@@ -146,14 +146,10 @@
 #
 
   - name: Build rpitx
-    command: make
+    shell: prefix=/usr make
     args:
       chdir: /home/{{ ham_user }}/hamradio/rpitx/src
     when: is_hampi|bool
-    retries: 5
-    delay: 30
-    register: result
-    until: result.failed == false
 
   - name: Install rpitx
     become: yes

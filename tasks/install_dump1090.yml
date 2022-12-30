@@ -49,7 +49,7 @@
 
   - name: Install dump1090
     become: yes
-    shell: cp -a [a-z]*1090 /usr/local/bin/
+    shell: cp -a [a-z]*1090 /usr/bin/
     args:
       chdir: /home/{{ ham_user }}/hamradio/dump1090
 

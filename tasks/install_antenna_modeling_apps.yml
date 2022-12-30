@@ -30,8 +30,8 @@
   - name: Copy desktop file for Antenna Visualizer
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/usr/local/share/applications/antennavis.desktop"
-      dest: "/usr/local/share/applications/antennavis.desktop"
+      src: "{{ playbook_dir }}/../files/usr/share/applications/antennavis.desktop"
+      dest: "/usr/share/applications/antennavis.desktop"
 
   # GTK Smith Chart Calculator (not 64-bit ARM)
   - name: Modify categories for gsmc.desktop
