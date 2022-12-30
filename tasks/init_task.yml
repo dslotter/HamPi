@@ -19,7 +19,7 @@
   - name: Include needed variables for Inovato Quadra (ARMbian)
     include_vars:
       file: ../default/inovato.yml
-    when: is_inovato|bool
+    when: is_iq|bool
 
   - name: Include needed variables for Xubuntu
     include_vars:
