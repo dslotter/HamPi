@@ -33,11 +33,11 @@
     file:
       path: /usr/lib/firefox/distribution
       state: directory
-    when: is_hampc|bool or is_hamiq|bool
+    when: is_hampc|bool or is_iq|bool
 
   - name: Copy initial Mozilla Firefox Bookmarks
     become: yes
     copy:
       src: "{{ playbook_dir }}/../files/usr/lib/firefox/distribution/distribution.ini"
       dest: "/usr/lib/firefox/distribution/distribution.ini"
-    when: is_hampc|bool or is_hamiq|bool
+    when: is_hampc|bool or is_iq|bool
