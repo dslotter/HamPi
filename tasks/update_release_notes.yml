@@ -40,8 +40,3 @@
     copy:
       src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/GIVE BACK.PDF"
       dest: "/home/{{ ham_user }}/Desktop/GIVE BACK.PDF"
-
-  - name: Create HOTY Nomination in /home/{{ ham_user }}/Desktop
-    copy:
-      src: "{{ playbook_dir }}/../files/home/{{ ham_user }}/Desktop/HOTY Nomination 2022.pdf"
-      dest: "/home/{{ ham_user }}/Desktop/HOTY Nomination 2022.pdf"
