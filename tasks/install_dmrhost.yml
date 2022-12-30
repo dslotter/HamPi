@@ -1,0 +1,60 @@
+#
+# Copyright 2020 - 2022, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install DMRHost
+  hosts: all
+  gather_facts: no
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Git clone latest DMRHost sources
+    git:
+      repo: https://github.com/BrandMeister/DMRHost.git
+      dest: /home/{{ ham_user }}/hamradio/DMRHost
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Create directory DMRHost/build
+    file:
+      path: /home/{{ ham_user }}/hamradio/DMRHost/build
+      state: directory
+
+  - name: Build DMRHost CMakefiles
+    command: cmake -DCMAKE_BUILD_TYPE=Release --install-prefix=/usr ..
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/DMRHost/build
+
+  - name: Build DMRHost
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/DMRHost/build
+
+  - name: Install DMRHost
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/DMRHost/build
+
+#  - name: Modify categories for dmrhost.desktop
+#    become: yes
+#    lineinfile:
+#      path: /usr/share/applications/sdrpp.desktop
+#      regexp: '^Categories=.*'
+#      line: Categories=HamRadio SDR
+
+  - name: Remove DMRHost build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/DMRHost
+      state: absent

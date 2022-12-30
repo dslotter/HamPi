@@ -1,0 +1,31 @@
+#
+# Copyright 2020 - 2022, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install DMR Link
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Git clone latest DMR Link sources
+    git:
+      repo: https://github.com/HBLink-org/DMRlink
+      dest: /home/{{ ham_user }}/hamradio/DMRlink
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Git clone latest hblink3 sources
+    git:
+      repo: https://github.com/HBLink-org/hblink3.git
+      dest: /home/{{ ham_user }}/hamradio/hblink3
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false

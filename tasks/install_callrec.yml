@@ -1,0 +1,11 @@
+#
+# Copyright 2020 - 2022, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install callrec
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Install callrec
+    command: /usr/go/bin/go install github.com/BrandMeister/callrec@latest

@@ -4,7 +4,7 @@
 
 ---
 
-- name: HamPi 32/64-bit / HamPC v3.1.1b1 (November 2022) Playbook by W3DJS
+- name: HamPi 32/64-bit / HamPC / HamIQ v3.2 (December 2022) Playbook by W3DJS
   hosts: all
   # hosts: nuc
   # hosts: vm
@@ -147,15 +147,14 @@
 - import_playbook: install_radioexplorer.yml
 - import_playbook: install_reverse_beacon_network_client.yml
 - import_playbook: install_qdmr_gui_dmr_radio_programmer.yml
-# ^^^ Takes a long time to build ^^^
+# ^^^ Takes 18 minutes on RPi 4 to build ^^^
+
 - import_playbook: install_cqrprop.yml
 - import_playbook: install_pihpsdr.yml
 - import_playbook: install_meteor_decoder.yml
 - import_playbook: install_f4htbpna.yml
 - import_playbook: install_tentenqsologger.yml
 - import_playbook: install_ladyheather.yml
-# OpenDV git repository has some issues, but
-# some of them have been worked around.
 - import_playbook: install_opendv.yml
 # ^^^ Takes a long time to build ^^^
 - import_playbook: install_droidstar.yml
@@ -166,6 +165,11 @@
 - import_playbook: install_trlog.yml
 - import_playbook: install_hlog.yml
 - import_playbook: install_noaa_apt.yml
+- import_playbook: install_brandmeister-dmr-sea.yml
+- import_playbook: install_dmrlink.yml
+- import_playbook: install_dmrhost.yml
+- import_playbook: install_golang.yml
+- import_playbook: install_callrec.yml
 - import_playbook: update_release_notes.yml
 
 # Final tasks
