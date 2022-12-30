@@ -11,22 +11,23 @@
       path: /home/{{ ham_user }}/hamradio/
       state: directory
 
-  - name: Create directory for documentation
-    become: yes
-    file:
-      path: /usr/share/doc/wsjt-x
-      state: directory
-
-  - name: Download WSJT-X {{ wsjtx_version }} Documentation
-    become: yes
-    get_url:
-      url: https://physics.princeton.edu/pulsar/K1JT/wsjtx-doc/wsjtx-main-{{ wsjtx_version }}_en%20%28USLetter%29.pdf
-      dest: /usr/share/doc/wsjt-x/wsjtx-main-{{ wsjtx_version }}_en%20%28USLetter%29.pdf
-      validate_certs: no
-    retries: 5
-    delay: 30
-    register: result
-    until: result.failed == false
+# Website is down
+#  - name: Create directory for documentation
+#    become: yes
+#    file:
+#      path: /usr/share/doc/wsjt-x
+#      state: directory
+#
+#  - name: Download WSJT-X {{ wsjtx_version }} Documentation
+#    become: yes
+#    get_url:
+#      url: https://physics.princeton.edu/pulsar/K1JT/wsjtx-doc/wsjtx-main-{{ wsjtx_version }}_en%20%28USLetter%29.pdf
+#      dest: /usr/share/doc/wsjt-x/wsjtx-main-{{ wsjtx_version }}_en%20%28USLetter%29.pdf
+#      validate_certs: no
+#    retries: 5
+#    delay: 30
+#    register: result
+#    until: result.failed == false
 
 #
 # Common
