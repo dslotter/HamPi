@@ -24,7 +24,7 @@
 
   - name: Download MSHV from Sourceforge
     unarchive:
-      src: "https://downloads.sourceforge.net/project/mshv/MSHV_265_Full_Source_Code.zip?use_mirror=versaweb&r=https://sourceforge.net/projects/mshv/files/MSHV_265_Full_Source_Code.zip/download"
+      src: "https://downloads.sourceforge.net/project/mshv/MSHV_269_Full_Source_Code.zip?use_mirror=versaweb&r=https://sourceforge.net/projects/mshv/files/MSHV_269_Full_Source_Code.zip/download"
       dest: /home/{{ ham_user }}/hamradio/
       remote_src: yes
     retries: 5
@@ -35,22 +35,22 @@
   - name: QMake MSHV
     command: qmake MSHV_I686.pro
     args:
-      chdir: /home/{{ ham_user }}/hamradio/MSHV_265
+      chdir: /home/{{ ham_user }}/hamradio/MSHV_269
 
   - name: Clean MSHV
     command: make clean
     args:
-      chdir: /home/{{ ham_user }}/hamradio/MSHV_265
+      chdir: /home/{{ ham_user }}/hamradio/MSHV_269
 
   - name: Build MSHV
     command: make
     args:
-      chdir: /home/{{ ham_user }}/hamradio/MSHV_265
+      chdir: /home/{{ ham_user }}/hamradio/MSHV_269
 
   - name: Install MSHV artifacts
     become: yes
     copy:
-      src: /home/{{ ham_user }}/hamradio/MSHV_265/bin/{{ item }}
+      src: /home/{{ ham_user }}/hamradio/MSHV_269/bin/{{ item }}
       dest: /usr/MSHV
       owner: root
       group: root
@@ -77,7 +77,7 @@
   - name: Install MSHV icon
     become: yes
     copy:
-      src: /home/{{ ham_user }}/hamradio/MSHV_265/src/pic/ms_ico.png
+      src: /home/{{ ham_user }}/hamradio/MSHV_269/src/pic/ms_ico.png
       dest: /usr/share/pixmaps/MSHV.png
       mode: 0644
       remote_src: yes
