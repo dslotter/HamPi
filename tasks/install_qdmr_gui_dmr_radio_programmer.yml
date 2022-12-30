@@ -77,7 +77,7 @@
       state: directory
 
   - name: Build QDMR Makefiles
-    command: cmake .. -Wno-dev
+    command: cmake --prefix=/usr .. -Wno-dev
     args:
       chdir: /home/{{ ham_user }}/hamradio/qdmr/build
 
@@ -99,16 +99,16 @@
   - name: Modify categories for qdmr.desktop
     become: yes
     lineinfile:
-      path: /usr/local/share/applications/qdmr.desktop
+      path: /usr/share/applications/qdmr.desktop
       regexp: '^Categories=.*'
       line: Categories=HamRadio
 
   - name: Modify icon path for qdmr.desktop
     become: yes
     lineinfile:
-      path: /usr/local/share/applications/qdmr.desktop
+      path: /usr/share/applications/qdmr.desktop
       regexp: '^Icon=qdmr'
-      line: Icon=/usr/local/share/icons/hicolor/64x64/qdmr.png 
+      line: Icon=/usr/share/icons/hicolor/64x64/qdmr.png 
 
   - name: Remove QDMR
     file:
