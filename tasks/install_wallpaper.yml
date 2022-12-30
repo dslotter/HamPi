@@ -31,7 +31,7 @@
     copy:
       src: "{{ playbook_dir }}/../files/usr/share/wallpapers/HamIQ Desktop Wallpaper.png"
       dest: "{{ wallpaper_prefix }}/HamIQ Desktop Wallpaper.png"
-    when: is_hamiq|bool
+    when: is_iq|bool
 
   - name: Create {{ ham_user }} desktop wallpaper in {{ wallpaper_prefix }}
     become: yes
