@@ -20,4 +20,4 @@ end_time=`date`
 t2=`date --date="$end_time" +%s`
 
 let diff_time=$t2-$t1
-printf "Total time for running Ansible Playbook: %02d:%02d:%02d\n" $((diff_time/3600)) $((diff_time%3600/60)) $((diff_time%60)) | tee --append ansible-output_${curdate}.txt
+printf "Total time for running Ansible Playbook: %02d:%02d:%02d\n" $((diff_time/3600)) $((diff_time%3600/60)) $((diff_time%60)) | tee --append ansible-output/ansible-output_${curdate}.txt
