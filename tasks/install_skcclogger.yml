@@ -21,7 +21,7 @@
     become: yes
     unarchive:
       src: "/home/{{ ham_user }}/hamradio/SKCCLogger_Linux_32-Bit-ARM.zip"
-      dest: /usr/local/
+      dest: /usr
       remote_src: yes
     when: is_arm|bool and not is_arm_64|bool
     retries: 5
@@ -29,14 +29,14 @@
     register: result
     until: result.failed == false
 
-  - name: Change Ownership of /usr/local/SKCCLogger_Linux_32-Bit-ARM to {{ ham_user }}
+  - name: Change Ownership of /usr/SKCCLogger_Linux_32-Bit-ARM to {{ ham_user }}
     become: yes
-    file: dest=/usr/local/SKCCLogger_Linux_32-Bit-ARM owner={{ ham_user }} group={{ ham_user}} mode=775
+    file: dest=/usr/SKCCLogger_Linux_32-Bit-ARM owner={{ ham_user }} group={{ ham_user}} mode=775
     when: is_arm|bool and not is_arm_64|bool
 
-  - name: Change Ownership of /usr/local/SKCCLogger_Linux_32-Bit-ARM to {{ ham_user }}
+  - name: Change Ownership of /usr/SKCCLogger_Linux_32-Bit-ARM to {{ ham_user }}
     become: yes
-    shell: chown -R {{ ham_user }}.{{ ham_user }} /usr/local/SKCCLogger_Linux_32-Bit-ARM
+    shell: chown -R {{ ham_user }}.{{ ham_user }} /usr/SKCCLogger_Linux_32-Bit-ARM
     args:
       warn: false
     when: is_arm|bool and not is_arm_64|bool
@@ -60,7 +60,7 @@
     become: yes
     unarchive:
       src: "/home/{{ ham_user }}/hamradio/SKCCLogger_Linux_64-Bit.zip"
-      dest: /usr/local/
+      dest: /usr
       remote_src: yes
     when: is_hampc|bool
     retries: 5
@@ -68,14 +68,14 @@
     register: result
     until: result.failed == false
 
-  - name: Change Ownership of /usr/local/SKCCLogger_Linux_64-Bit to {{ ham_user }}
+  - name: Change Ownership of /usr/SKCCLogger_Linux_64-Bit to {{ ham_user }}
     become: yes
-    file: dest=/usr/local/SKCCLogger_Linux_64-Bit owner={{ ham_user }} group={{ ham_user}} mode=775
+    file: dest=/usr/SKCCLogger_Linux_64-Bit owner={{ ham_user }} group={{ ham_user}} mode=775
     when: is_hampc|bool
 
-  - name: Change Ownership of /usr/local/SKCCLogger_Linux_64-Bit to {{ ham_user }}
+  - name: Change Ownership of /usr/SKCCLogger_Linux_64-Bit to {{ ham_user }}
     become: yes
-    shell: chown -R {{ ham_user }}.{{ ham_user }} /usr/local/SKCCLogger_Linux_64-Bit
+    shell: chown -R {{ ham_user }}.{{ ham_user }} /usr/SKCCLogger_Linux_64-Bit
     args:
       warn: false
     when: is_hampc|bool
