@@ -1,0 +1,38 @@
+#
+# Copyright 2020 - 2022, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install brandmeister-dmr-sea
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Create directory hamradio
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Get github.com SSH key
+    command: ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+#
+# DJS 12/28/22 - I think the md380 subrepository has been disabled or removed,
+# which causes a --recurse-submodules to fail. Just downloading the only repo
+# for now and filed Issue #2 with brandmeister-dmr-sea project:
+# https://github.com/redfast00/brandmeister-dmr-sea/issues/2
+#
+
+  - name: Git clone latest brandmeister-dmr-sea sources
+#    command: git clone --recurse-submodules -j8 https://github.com/redfast00/brandmeister-dmr-sea.git
+    command: git clone https://github.com/redfast00/brandmeister-dmr-sea.git
+    args:
+      chdir: /home/{{ ham_user }}/hamradio
+
+#  - name: Git clone latest brandmeister-dmr-sea sources
+#    git:
+#      repo: https://github.com/redfast00/brandmeister-dmr-sea.git
+#      dest: /home/{{ ham_user }}/hamradio/brandmeister-dmr-sea
+#    retries: 5
+#    delay: 30
+#    register: result
+#    until: result.failed == false
