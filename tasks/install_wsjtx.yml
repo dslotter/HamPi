@@ -47,19 +47,19 @@
     args:
       chdir: /home/{{ ham_user }}/bin/
 
-  - name: Modify categories for message_aggregator.desktop
-    become: yes
-    lineinfile:
-      path: /usr/local/share/applications/message_aggregator.desktop
-      regexp: '^Categories=.*'
-      line: Categories=HamRadio Weak Signal
-
-  - name: Modify categories for wsjtx.desktop
-    become: yes
-    lineinfile:
-      path: /usr/local/share/applications/wsjtx.desktop
-      regexp: '^Categories=.*'
-      line: Categories=HamRadio Weak Signal
+#  - name: Modify categories for message_aggregator.desktop
+#    become: yes
+#    lineinfile:
+#      path: /usr/local/share/applications/message_aggregator.desktop
+#      regexp: '^Categories=.*'
+#      line: Categories=HamRadio Weak Signal
+#
+#  - name: Modify categories for wsjtx.desktop
+#    become: yes
+#    lineinfile:
+#      path: /usr/local/share/applications/wsjtx.desktop
+#      regexp: '^Categories=.*'
+#      line: Categories=HamRadio Weak Signal
 
 #
 # Raspbian ARM
