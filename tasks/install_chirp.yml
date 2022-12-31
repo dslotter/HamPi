@@ -94,7 +94,7 @@
   - name: Modify categories for chirp.desktop
     become: yes
     lineinfile:
-      path: /usr/local/share/applications/chirp.desktop
+      path: /usr/share/applications/chirp.desktop
       regexp: '^Categories=.*'
       line: Categories=HamRadio
 
