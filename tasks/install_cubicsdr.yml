@@ -53,7 +53,7 @@
       chdir: /home/{{ ham_user }}/hamradio/liquid-dsp
 
   - name: Configure liquid-dsp
-    shell: CFLAGS="-march=native -O3" ./configure --prefix=/usr --enable-fftoverride
+    shell: CFLAGS="-march=native -O3" ./configure --enable-fftoverride
     args:
       chdir: /home/{{ ham_user }}/hamradio/liquid-dsp
 

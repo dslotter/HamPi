@@ -93,7 +93,7 @@
       state: directory
 
   - name: Build acarsdec cmake for RTL-SDR
-    command: cmake .. -Drtl=ON --prefix=/usr
+    command: cmake -Drtl=ON --prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/acarsdec/build
 
