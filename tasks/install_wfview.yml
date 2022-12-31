@@ -111,7 +111,7 @@
   - name: Modify categories for wfview.desktop
     become: yes
     lineinfile:
-      path: /usr/local/share/applications/wfview.desktop
+      path: /usr/share/applications/wfview.desktop
       regexp: '^Categories=.*'
       line: Categories=HamRadio
 
