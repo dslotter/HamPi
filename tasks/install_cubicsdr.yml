@@ -101,7 +101,7 @@
       state: directory
 
   - name: Build CubicSDR CMakeFiles
-    command: cmake ../ -DCMAKE_BUILD_TYPE=Release -DUSE_HAMLIB=1 -DwxWidgets_CONFIG_EXECUTABLE=~/hamradio/wxWidgets-staticlib/bin/wx-config --prefix=/usr
+    command: cmake -DCMAKE_BUILD_TYPE=Release -DUSE_HAMLIB=1 -DwxWidgets_CONFIG_EXECUTABLE=~/hamradio/wxWidgets-staticlib/bin/wx-config --prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/CubicSDR/build
 
