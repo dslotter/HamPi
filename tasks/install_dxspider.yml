@@ -96,14 +96,14 @@
   - name: Set SUID permissions on ax25_call - As per section 1.3 of DXCluster Installation Manual
     become: yes
     file:
-      path: /usr/local/sbin/ax25_call
+      path: /usr/sbin/ax25_call
       owner: root
       mode: 4775
 
   - name: Set SUID permissions on netrom_call - As per section 1.3 of DXCluster Installation Manual
     become: yes
     file:
-      path: /usr/local/sbin/netrom_call
+      path: /usr/sbin/netrom_call
       owner: root
       mode: 4775
 
