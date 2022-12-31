@@ -81,7 +81,7 @@
       state: directory
 
   - name: Build Dev JTDX CMakeFiles
-    command: cmake .. -DWSJT_SKIP_MANPAGES=ON --prefix=/usr
+    command: cmake -DWSJT_SKIP_MANPAGES=ON --prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/jtdx/build
 

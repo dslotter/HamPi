@@ -50,7 +50,7 @@
       state: directory
 
   - name: Build libacars cmake
-    command: cmake .. --prefix=/usr
+    command: cmake --prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/libacars/build
 
