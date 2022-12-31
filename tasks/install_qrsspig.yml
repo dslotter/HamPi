@@ -52,7 +52,7 @@
       state: directory
 
   - name: Build QrssPiG CMakeFiles
-    command: cmake .. --install-prefix=/usr
+    command: cmake .. --prefix=/usr
     args:
       chdir: /home/{{ ham_user }}/hamradio/qrsspig/build
 

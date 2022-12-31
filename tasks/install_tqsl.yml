@@ -96,7 +96,7 @@
     until: result.failed == false
 
   - name: Configure TQSL {{ tqsl_version.stdout }}
-    command: cmake . --install-prefix=/usr
+    command: cmake . --prefix=/usr
     args:
       chdir: /home/{{ ham_user }}/hamradio/tqsl-{{ tqsl_version.stdout }}
 
