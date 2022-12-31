@@ -51,7 +51,7 @@
       state: directory
 
   - name: Build RBNC Makefiles
-    command: cmake .. -Wno-dev --install-prefix=/usr
+    command: cmake -Wno-dev --install-prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/skcc/build
 
