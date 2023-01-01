@@ -64,7 +64,7 @@
     become: yes
     copy:
       src: "{{ playbook_dir }}/../files/etc/hampi-release"
-      dest: "/etc/{{ ham_user }}-release"
+      dest: "/etc/hampi-release"
     when: is_rpi|bool
 
   - name: Store a basic version file in public location
