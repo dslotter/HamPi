@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added groundwork for hlog curses-based logger
 - Added groundwork for TRlog contest logger
+- Updated copyright year to 2023
 
 ## [3.1 32-bit] - 2022-10-02
 
