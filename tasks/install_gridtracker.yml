@@ -44,8 +44,8 @@
     become: yes
     unarchive:
 #      src: "{{ download_file.stdout }}"
-#      src: "https://storage.googleapis.com/gt_download/v1.21.0503-2/GridTracker-1.22.0503-linux-arm32.tar.gz"
-      src: "https://downloads.gridtracker.org/v1.22.1016-Harvest/GridTracker-1.22.1016-linux-arm64.tar.gz"
+      src: "https://storage.googleapis.com/gt_download/v1.21.0503-2/GridTracker-1.22.0503-linux-arm32.tar.gz"
+#      src: "https://downloads.gridtracker.org/v1.22.1016-Harvest/GridTracker-1.22.1016-linux-arm64.tar.gz"
       dest: /usr
       remote_src: yes
     when: is_arm|bool
