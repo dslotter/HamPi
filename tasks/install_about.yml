@@ -2,7 +2,7 @@
 # Copyright 2020 - 2023, Dave Slotter (W3DJS). All rights reserved.
 #
 
-- name: About HamPi menu
+- name: About HamPi / HamPC / HamIQ(tm) menu
   hosts: all
   gather_facts: no
   tasks:
@@ -114,3 +114,20 @@
       dest: "/usr/bin/about_hampc"
       mode: 0755
     when: is_pc|bool
+
+  - name: Create HamIQ desktop file in /usr/share/applications
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/share/applications/HamIQ.desktop"
+      dest: "/usr/share/applications/HamIQ.desktop"
+      mode: 0644
+    when: is_iq|bool
+
+  - name: Create HamIQ script in /usr/bin
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/bin/about_hamiq"
+      dest: "/usr/bin/about_hamiq"
+      mode: 0755
+    when: is_iq|bool
+
