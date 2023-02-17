@@ -13,6 +13,7 @@
 + Freddi
 + Will Sciaroni, W1AZZ
 + Christopher Adden
++ Thomas Bray, W8TJB
 
 ##### THANK YOU TO ALL HAMPI / HAMPC CONTRIBUTORS!
 
