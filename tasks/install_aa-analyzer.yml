@@ -1,0 +1,55 @@
+#
+# Copyright 2020 - 2023, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install aa-analyzer
+  hosts: all
+  gather_facts: no
+  tasks:
+
+#
+# Install aa-analyzer
+#
+
+  - name: Create directory hamradio
+    become: yes
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Install Perl module dependency
+    become: yes
+    shell: cpan -i Device::SerialPort
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Download and Unarchive latest KB1OIQ - aa-analyzer
+    become: yes
+    unarchive:
+      src: https://sourceforge.net/projects/aa-analyzer/files/latest/download
+      dest: /home/{{ ham_user }}/hamradio
+      remote_src: yes
+      validate_certs: no
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Install aa-analyzer
+    become: yes
+    command: ./install_it
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/aa-analyzer-0.09
+
+  - name: Set aa-analyzer to executable by all
+    become: yes
+    file:
+      path: /usr/local/bin/aa-analyzer.pl
+      mode: a+x
+
+  - name: Remove aa-analyzer build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/aa-analyzer-0.09
+      state: absent

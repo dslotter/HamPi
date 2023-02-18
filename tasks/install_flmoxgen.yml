@@ -1,0 +1,52 @@
+#
+# Copyright 2020 - 2023, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install Fl_MoxGen
+  hosts: all
+  gather_facts: no
+  tasks:
+
+#
+# Install Fl_MoxGen
+#
+
+  - name: Create directory hamradio
+    become: yes
+    file:
+      path: /home/{{ ham_user }}/hamradio
+      state: directory
+
+  - name: Download and Unarchive latest KB1OIQ - Fl_MoxGen
+    become: yes
+    unarchive:
+      src: https://sourceforge.net/projects/flmoxgen/files/latest/download
+      dest: /home/{{ ham_user }}/hamradio
+      remote_src: yes
+      validate_certs: no
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Build Fl_MoxGen
+    command: make
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/Fl_MoxGen-1.00
+
+  - name: Install Fl_MoxGen
+    become: yes
+    command: make install
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/Fl_MoxGen-1.00
+
+  - name: Copy Fl_MoxGen desktop file
+    become: yes
+    copy:
+      src: "{{ playbook_dir }}/../files/usr/local/share/applications/Fl_MoxGen.desktop"
+      dest: "/usr/local/share/applications/Fl_MoxGen.desktop"
+
+  - name: Remove Fl_MoxGen build directory
+    file:
+      path: /home/{{ ham_user }}/hamradio/Fl_MoxGen-1.00
+      state: absent

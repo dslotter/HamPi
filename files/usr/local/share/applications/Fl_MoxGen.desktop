@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Type=Application
+Name=Fl_MoxGen
+Exec=fl_moxgen
+Terminal=false
+Comment=Fl_MoxGen
+Categories=HamRadio Antenna Analyzer
+Keywords=HamRadio
