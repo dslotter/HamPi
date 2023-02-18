@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Switched license to GPL 3.0.
 - Added aa-analyzer script
 - Added Fl_MoxGen analyzer
+- Added OWX (Open Wouxun) package
 
 ## [3.2 32-bit] - 2023-01-01
 - Added groundwork for hlog curses-based logger

@@ -190,6 +190,16 @@
     register: result
     until: result.failed == false
 
+  - name: Install OWX (Open Wouxun) Package
+    become: yes
+    package:
+      name: owx
+      state: present
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
   - name: Install wwl Package (Calculates distance and azimuth between two Maidenhead locators)
     become: yes
     package:
