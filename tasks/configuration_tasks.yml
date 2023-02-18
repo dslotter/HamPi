@@ -299,6 +299,10 @@
         # FIX WSJT-X POPUP BAND/FREQUENCY MENU DISPLAY
         export QT_QPA_PLATFORMTHEME=cleanlooks
 
+        # GO LANGUAGE CONFIGURATION
+        export GOPATH=$HOME/go
+        export PATH=/usr/go/bin:$PATH:$GOPATH/bin
+
         # QRZ.COM AUTHENTICATION FOR WSJTX_TO_N3FJP LOG ADAPTER
         export QRZ_USERNAME=FILLIN
         export QRZ_PASSWORD=FILLIN

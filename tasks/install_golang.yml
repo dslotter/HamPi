@@ -31,10 +31,5 @@
     register: result
     until: result.failed == false
 
-  - name: Insert .bash_local configuration
-    blockinfile:
-      dest: "/home/{{ ham_user }}/.bash_local"
-      create: yes
-      block: |
-        export GOPATH=$HOME/go
-        export PATH=/usr/go/bin:$PATH:$GOPATH/bin
+# Note: .bash_local configuration for GO added in
+#  tasks/configuration_tasks.yml
