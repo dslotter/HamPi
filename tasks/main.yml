@@ -170,6 +170,7 @@
 - import_playbook: install_dmrhost.yml
 - import_playbook: install_golang.yml
 - import_playbook: install_callrec.yml
+- import_playbook: install_adifmt.yml
 - import_playbook: install_aa-analyzer.yml
 - import_playbook: install_flmoxgen.yml
 - import_playbook: update_release_notes.yml

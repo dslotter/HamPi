@@ -1,0 +1,11 @@
+#
+# Copyright 2020 - 2023, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install ADIF Multitool
+  hosts: all
+  gather_facts: no
+  tasks:
+
+  - name: Install ADIF Multitool
+    command: /usr/go/bin/go install github.com/flwyd/adif-multitool/adifmt@latest
