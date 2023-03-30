@@ -217,11 +217,11 @@
     args:
       chdir: /home/{{ ham_user }}/hamradio/direwolf
 
-  - name: Fix check for DRAWS support
-    lineinfile:
-      path: /home/{{ ham_user }}/hamradio/direwolf/src/dwgpsd.c
-      regexp: '^#if GPSD_API_MAJOR_VERSION \< 5 \|\| GPSD_API_MAJOR_VERSION \> 12'
-      line: '#if GPSD_API_MAJOR_VERSION < 5 || GPSD_API_MAJOR_VERSION > 13'
+#  - name: Fix check for DRAWS support
+#    lineinfile:
+#      path: /home/{{ ham_user }}/hamradio/direwolf/src/dwgpsd.c
+#      regexp: '^#if GPSD_API_MAJOR_VERSION \< 5 \|\| GPSD_API_MAJOR_VERSION \> 12'
+#      line: '#if GPSD_API_MAJOR_VERSION < 5 || GPSD_API_MAJOR_VERSION > 13'
 
   - name: Create directory direwolf/build
     file:
@@ -229,7 +229,7 @@
       state: directory
 
   - name: Build Dev Direwolf CMakeFiles
-    command: cmake ..
+    command: cmake --install-prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/direwolf/build
 
