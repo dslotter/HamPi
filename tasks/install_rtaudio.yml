@@ -58,7 +58,7 @@
       state: directory
 
   - name: Build RtAudio CMakeFiles
-    command: cmake --prefix=/usr ..
+    command: cmake --install-prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/rtaudio/build
 
