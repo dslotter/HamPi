@@ -253,7 +253,7 @@
   - name: Modify categories for direwolf.desktop
     become: yes
     lineinfile:
-      path: /usr/local/share/applications/direwolf.desktop
+      path: /usr/share/applications/direwolf.desktop
       regexp: '^Categories=.*'
       line: Categories=HamRadio APRS
 
