@@ -46,7 +46,7 @@
       name: "{{ item }}"
       state: present
     when: is_rpi|bool and is_bullseye|bool and not is_arm|bool
-    with:
+    with_items:
       - libgfortran4
       - libqt5websockets5-dev
     retries: 5
