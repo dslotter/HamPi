@@ -12,94 +12,39 @@
       path: /home/{{ ham_user }}/hamradio/
       state: directory
 
-  - include_tasks: ../library/install_buster_repo.yml
-
-  - name: Install Chirp prerequisite packages (Raspberry Pi Bullseye)
-    become: yes
-    package:
-      name: python2.7
-      state: present
-    when: is_rpi|bool and is_bullseye|bool
-    retries: 5
-    delay: 30
-    register: result
-    until: result.failed == false
-
-  - name: Install Chirp prerequisite packages (Raspberry Pi Common)
+  - name: Install Chirp prerequisite packages (Common)
     become: yes
     package:
       name: "{{ item }}"
       state: present
     with_items:
-      - python-libxml2
-      - python-gtk2
-      - python-serial
-    when: is_rpi|bool
-    retries: 5
-    delay: 30
-    register: result
-    until: result.failed == false
-
-  - name: Install Chirp prerequisite packages (Xubuntu)
-    become: yes
-    package:
-      name: "{{ item }}"
-      state: present
-    with_items:
-      - python-libxml2
-      - python-wxgtk3.0
+      - git
+      - python3-wxgtk4.0
       - python3-serial
-    when: is_ubuntu|bool
+      - python3-six
+      - python3-future
+      - python3-requests
+      - python3-pip
     retries: 5
     delay: 30
     register: result
     until: result.failed == false
 
-  - name: Install dependent Python component python-gtk for Chirp (Xubuntu)
-    become: yes
-    apt:
-      deb: http://archive.ubuntu.com/ubuntu/pool/universe/p/pygtk/python-gtk2_2.24.0-5.1ubuntu2_amd64.deb
-    when: is_ubuntu|bool
-    retries: 5
-    delay: 30
-    register: result
-    until: result.failed == false
-
-  - name: Determine latest version of Chirp on web
-    shell: curl --silent "https://trac.chirp.danplanet.com/chirp_daily/LATEST/" | grep -Po "chirp-daily-[0-9]+.tar.gz" | uniq | egrep -o "[0-9]+"
+  - name: Determine latest version of Chirp Next on web
+    shell: curl --silent "https://trac.chirp.danplanet.com/chirp_next/" | grep -Po "next-[0-9]+" | grep -Po "[0-9]+" | head -n 1
     args:
       warn: no
     retries: 5
     delay: 30
-    register: download_date
-    until: download_date.failed == false
+    register: download_version
+    until: download_version.failed == false
 
-  - name: Download and Unarchive Chirp {{ download_date.stdout }}
-    unarchive:
-      src: "https://trac.chirp.danplanet.com/chirp_daily/LATEST/chirp-daily-{{ download_date.stdout }}.tar.gz"
-      dest: /home/{{ ham_user }}/hamradio/
-      remote_src: yes
-      validate_certs: no
-    retries: 5
-    delay: 30
-    register: result
-    until: result.failed == false
+  - name: Install Chirp {{ download_version.stdout }}
+    command: pip3 install https://trac.chirp.danplanet.com/chirp_next/next-{{ download_version.stdout }}/chirp-{{ download_version.stdout }}-py3-none-any.whl
 
-  - name: Install Chirp {{ download_date.stdout }}
-    become: yes
-    command: python setup.py install --prefix /usr
-    args:
-      chdir: /home/{{ ham_user }}/hamradio/chirp-daily-{{ download_date.stdout }}
-
-  - name: Modify categories for chirp.desktop
-    become: yes
-    lineinfile:
-      path: /usr/share/applications/chirp.desktop
-      regexp: '^Categories=.*'
-      line: Categories=HamRadio
-
-  - name: Remove Chirp {{ download_date.stdout }} build directory
-    become: yes
-    file:
-      path: /home/{{ ham_user }}/hamradio/chirp-daily-{{ download_date.stdout }}
-      state: absent
+#  - name: Modify categories for chirp.desktop
+#    become: yes
+#    lineinfile:
+#      path: /usr/share/applications/chirp.desktop
+#      regexp: '^Categories=.*'
+#      line: Categories=HamRadio
