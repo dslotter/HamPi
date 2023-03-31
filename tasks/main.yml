@@ -4,7 +4,7 @@
 
 ---
 
-- name: HamPi 32/64-bit / HamPC / HamIQ v3.2 (December 2022) Playbook by W3DJS
+- name: HamPi 32/64-bit / HamPC / HamIQ v3.3 (March 2022) Playbook by W3DJS
   hosts: all
   # hosts: nuc
   # hosts: vm
@@ -36,7 +36,6 @@
 - import_playbook: install_hamlib.yml
 - import_playbook: install_rtaudio.yml
 - import_playbook: include_DRAWS_support.yml
-- import_playbook: install_ambeserver.yml
 - import_playbook: install_airspy.yml
 - import_playbook: install_airspyhf.yml
 - import_playbook: install_soapy_sdr.yml
@@ -106,8 +105,8 @@
 - import_playbook: install_wsjtx.yml
 
 # Fails to build under aarch64:
-- import_playbook: install_js8call.yml
-- import_playbook: install_js8callutilities.yml
+#DJS- import_playbook: install_js8call.yml
+#DJS- import_playbook: install_js8callutilities.yml
 # Fails to build under aarch64:
 - import_playbook: install_jtdx.yml
 - import_playbook: download_country_files.yml
@@ -162,17 +161,21 @@
 - import_playbook: install_dxspider.yml
 - import_playbook: install_hamrs.yml
 - import_playbook: install_mshv.yml
-- import_playbook: install_trlog.yml
-- import_playbook: install_hlog.yml
+#BROKEN- import_playbook: install_trlog.yml
+#BROKEN- import_playbook: install_hlog.yml
 - import_playbook: install_noaa_apt.yml
+# ^^^ Takes 25 minutes on RPi 4 to build ^^^
 - import_playbook: install_brandmeister-dmr-sea.yml
 - import_playbook: install_dmrlink.yml
 - import_playbook: install_dmrhost.yml
 - import_playbook: install_golang.yml
-- import_playbook: install_callrec.yml
+#BROKEN- import_playbook: install_callrec.yml
 - import_playbook: install_adifmt.yml
 - import_playbook: install_aa-analyzer.yml
 - import_playbook: install_flmoxgen.yml
+- import_playbook: install_xwefax.yml
+- import_playbook: install_wordsworth.yml
+- import_playbook: terminate_ansible_early.yml
 - import_playbook: update_release_notes.yml
 
 # Final tasks
