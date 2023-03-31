@@ -7,11 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.3 32-bit] - 2023-03-30
 - Updated copyright year to 2023
 - Switched license to GPL 3.0.
 - Added aa-analyzer script
 - Added Fl_MoxGen analyzer
 - Added OWX (Open Wouxun) package
+- Added Wordsworth (CW trainer)
+- Added ADIF Multitool
+- Added xwefax (weather)
 
 ## [3.2 32-bit] - 2023-01-01
 - Added groundwork for hlog curses-based logger
