@@ -1,0 +1,79 @@
+#
+# Copyright 2020 - 2023, Dave Slotter (W3DJS). All rights reserved.
+#
+
+- name: Install xwefax
+  hosts: all
+  gather_facts: no
+  environment:
+    # Build-Time Tuning:
+    CXXFLAGS: -O2 -march=native -mtune=native
+    CFLAGS: -O2 -march=native -mtune=native
+    MAKEFLAGS: -j {{ ansible_processor_vcpus }}
+  tasks:
+
+    - name: Create directory hamradio
+      file:
+        path: /home/{{ ham_user }}/hamradio/
+        state: directory
+
+    - name: Determine latest version of xwefax on web
+      shell: curl --silent "https://www.qsl.net/5b4az/pkg/xwefax/" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+\.tar\.bz2" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq | tail -n 1
+      args:
+        warn: no
+      register: download_version
+      retries: 5
+      delay: 30
+      until: download_version.failed == false
+
+    - name: Download xwefax {{ download_version.stdout }}
+      get_url:
+        url: "https://www.qsl.net/5b4az/pkg/xwefax/xwefax-{{ download_version.stdout }}.tar.bz2"
+        dest: /home/{{ ham_user }}/hamradio/
+      retries: 5
+      delay: 30
+      register: result
+      until: result.failed == false
+
+    - name: Extract xwefax {{ download_version.stdout }}
+      command: tar -vjxf xwefax-{{ download_version.stdout }}.tar.bz2
+      args:
+        chdir: /home/{{ ham_user }}/hamradio
+
+    - name: Configure xwefax {{ download_version.stdout }}
+      command: ./configure --prefix=/usr
+      args:
+        chdir: /home/{{ ham_user }}/hamradio/xwefax-{{ download_version.stdout }}
+
+    - name: Build xwefax {{ download_version.stdout }}
+      command: make all
+      args:
+        chdir: /home/{{ ham_user }}/hamradio/xwefax-{{ download_version.stdout }}
+
+    - name: Install xwefax {{ download_version.stdout }}
+      become: yes
+      command: make install
+      args:
+        chdir: /home/{{ ham_user }}/hamradio/xwefax-{{ download_version.stdout }}
+
+    - name: Install data files for xwefax {{ download_version.stdout }}
+      command: cp -av xwefax /home/{{ ham_user }}
+      args:
+        chdir: /home/{{ ham_user }}/hamradio/xwefax-{{ download_version.stdout }}
+
+#    - name: Modify categories for flrig.desktop
+#      become: yes
+#      lineinfile:
+#        path: /usr/share/applications/flrig.desktop
+#        regexp: '^Categories=.*'
+#        line: Categories=HamRadio Fldigi
+
+    - name: Remove xwefax {{ download_version.stdout }} build directory
+      file:
+        path: /home/{{ ham_user }}/hamradio/xwefax-{{ download_version.stdout }}
+        state: absent
+
+    - name: Remove xwefax {{ download_version.stdout }} download archive
+      file:
+        path: /home/{{ ham_user }}/hamradio/xwefax-{{ download_version.stdout }}.tar.bz2
+        state: absent
