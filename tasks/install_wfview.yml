@@ -38,6 +38,8 @@
       - libqcustomplot-dev
       - libopus-dev
       - libeigen3-dev
+      - libqt5gamepad5
+      - libqt5gamepad5-dev
     retries: 5
     delay: 30
     register: result
@@ -77,6 +79,12 @@
   - name: Rewrite RtAudio include directories servermain.h
     replace:
       path: /home/{{ ham_user }}/hamradio/wfview/servermain.h
+      regexp: '#include "rtaudio/RtAudio.h"'
+      replace: '#include "RtAudio.h"'
+
+  - name: Rewrite RtAudio include directories audiodevices.h
+    replace:
+      path: /home/{{ ham_user }}/hamradio/wfview/audiodevices.h
       regexp: '#include "rtaudio/RtAudio.h"'
       replace: '#include "RtAudio.h"'
 
