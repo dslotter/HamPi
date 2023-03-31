@@ -16,10 +16,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added Wordsworth (CW trainer)
 - Added ADIF Multitool
 - Added xwefax (weather)
+- Update D-Rats to 0.4.0
+- Broken packages (not installed this version):
+  - JS8Call
+  - Trlog
+  - Hlog
+  - Callrec
 
 ## [3.2 32-bit] - 2023-01-01
+- Note: HamPi no longer fits on 16GB card
+  Use 32GB card or larger
+- Added support for Inovato Quadra: HamIQ(tm)
+- Most applications moved to /usr instead of /usr/local
+- Add DMRLink + HBLink3
+- Add DMRHost
+- Add DMR CallRec + Go language
+- A bunch of minor bugfixes
 - Added groundwork for hlog curses-based logger
 - Added groundwork for TRlog contest logger
+- Not included in this release:
+  * JS8Call (bitrot)
+  * D-Rats (under heavy development upstream)
+  * TRlog
+  * Hlog
+  * SDRAngel
 
 ## [3.1 32-bit] - 2022-10-02
 
