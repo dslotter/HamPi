@@ -16,13 +16,6 @@
     register: result
     until: result.failed == false
 
-  - name: Install D-Rats update script
-    become: yes
-    template:
-      src: "{{ playbook_dir }}/../templates/usr/local/bin/update_d-rats.j2"
-      dest: "/usr/local/bin/update_d-rats"
-      mode: a+x
-
   - name: Modify categories for d-rats.desktop
     become: yes
     lineinfile:
@@ -37,11 +30,16 @@
       regexp: '^Categories=.*'
       line: Categories=HamRadio D-Rats
 
-  - name: Run D-Rats update script (which builds and installs D-Rats from Git)
-    command: /usr/local/bin/update_d-rats
-
-  - name: Copy D-Rats update script desktop file
+  - name: Copy D-Rats desktop file
     become: yes
     copy:
-      src: "{{ playbook_dir }}/../files/usr/local/share/applications/update-drats.desktop"
-      dest: "/usr/local/share/applications/update-drats.desktop"
+      src: "/home/{{ ham_user }}/hamradio/D-Rats/share/d-rats.desktop"
+      dest: "/usr/local/share/applications/d-rats.desktop"
+      remote_src: yes
+
+  - name: Copy D-Rats Repeater desktop file
+    become: yes
+    copy:
+      src: "/home/{{ ham_user }}/hamradio/D-Rats/share/d-rats_repeater.desktop"
+      dest: "/usr/local/share/applications/d-rats_repeater.desktop"
+      remote_src: yes
