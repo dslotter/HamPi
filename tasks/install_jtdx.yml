@@ -43,9 +43,12 @@
   - name: Install dependent components (Raspberry Pi Bullseye)
     become: yes
     package:
-      name: libgfortran4
+      name: "{{ item }}"
       state: present
     when: is_rpi|bool and is_bullseye|bool and not is_arm|bool
+    with:
+      - libgfortran4
+      - libqt5websockets5-dev
     retries: 5
     delay: 30
     register: result
@@ -81,7 +84,7 @@
       state: directory
 
   - name: Build Dev JTDX CMakeFiles
-    command: cmake -DWSJT_SKIP_MANPAGES=ON --prefix=/usr ..
+    command: cmake -DWSJT_SKIP_MANPAGES=ON ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/jtdx/build
 
@@ -99,7 +102,7 @@
   - name: Modify categories for jtdx.desktop
     become: yes
     lineinfile:
-      path: /usr/share/applications/jtdx.desktop
+      path: /usr/local/share/applications/jtdx.desktop
       regexp: '^Categories=.*'
       line: Categories=HamRadio Weak Signal
 
