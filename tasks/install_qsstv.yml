@@ -47,54 +47,45 @@
     register: result
     until: result.failed == false
 
-  - name: Determine latest version of QSSTV on web
-    shell: curl --silent "http://users.telenet.be/on4qz/qsstv/downloads/" | grep -Po "[0-9]+\.[0-9]+\.[0-9]+" | uniq | tail -n 1
-    args:
-      warn: no
-    register: download_date
+  - name: Download QSSTV sources
+    git:
+      repo: https://github.com/ON4QZ/QSSTV.git
+      dest: /home/{{ ham_user }}/hamradio/qsstv
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
 
-  - name: Download and Unarchive QSSTV {{ download_date.stdout }}
-    unarchive:
-      src: "http://users.telenet.be/on4qz/qsstv/downloads/qsstv_{{ download_date.stdout }}.tar.gz"
-      dest: "/home/{{ ham_user }}/hamradio/"
-      remote_src: yes
-
-  - name: Normalize QSSTV directory name {{ download_date.stdout }}
-    shell: mv qsstv* "qsstv_{{ download_date.stdout }}"
-    ignore_errors: yes
-    args:
-      chdir: "/home/{{ ham_user }}/hamradio/"
-
-  - name: Build QSSTV Makefile {{ download_date.stdout }}
+  - name: Build QSSTV Makefile
     command: qmake
     args:
-      chdir: "/home/{{ ham_user }}/hamradio/qsstv_{{ download_date.stdout }}"
+      chdir: /home/{{ ham_user }}/hamradio/qsstv/src
 
-  - name: Build QSSTV {{ download_date.stdout }}
+  - name: Build QSSTV
     command: make
     args:
-      chdir: "/home/{{ ham_user }}/hamradio/qsstv_{{ download_date.stdout }}"
+      chdir: /home/{{ ham_user }}/hamradio/qsstv/src
 
-  - name: Install QSSTV {{ download_date.stdout }}
+  - name: Install QSSTV
     become: yes
     command: make install
     args:
-      chdir: "/home/{{ ham_user }}/hamradio/qsstv_{{ download_date.stdout }}"
+      chdir: /home/{{ ham_user }}/hamradio/qsstv/src
 
   - name: Modify categories for qsstv.desktop
     lineinfile:
-      path: "/home/{{ ham_user }}/hamradio/qsstv_{{ download_date.stdout }}/qsstv.desktop"
+      path: "/home/{{ ham_user }}/hamradio/qsstv/qsstv.desktop"
       regexp: '^Categories=.*'
       line: Categories=HamRadio
 
   - name: Copy qsstv.desktop to /usr/local/share/applications
     become: yes
     copy:
-      src: "/home/{{ ham_user }}/hamradio/qsstv_{{ download_date.stdout }}/qsstv.desktop"
+      src: "/home/{{ ham_user }}/hamradio/qsstv/qsstv.desktop"
       dest: /usr/local/share/applications/qsstv.desktop
       remote_src: yes
 
-  - name: Remove QSSTV {{ download_date.stdout }} build directory
+  - name: Remove QSSTV build directory
     file:
-      path: /home/{{ ham_user }}/hamradio/qsstv_{{ download_date.stdout }}
+      path: /home/{{ ham_user }}/hamradio/qsstv
       state: absent

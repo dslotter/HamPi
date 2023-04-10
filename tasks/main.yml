@@ -120,7 +120,7 @@
 - import_playbook: install_pat.yml
 - import_playbook: install_ardop_utils.yml
 - import_playbook: install_HamClock_by_WB0OEW.yml
-# Page 404 - import_playbook: install_qsstv.yml
+- import_playbook: install_qsstv.yml
 - import_playbook: install_quisk.yml
 - import_playbook: install_pmon.yml
 - import_playbook: install_pybombs.yml
