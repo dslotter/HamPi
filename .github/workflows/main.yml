@@ -1,26 +1,22 @@
-name: Run Ansible playbook
+name: Run Ansible Playbook
+
 on:
   push:
     branches:
       - master
+
 jobs:
-  ansible-in-docker:
+  run-ansible:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Run Ansible playbook
-        uses: isweluiz/action-ansible-in-docker@v1.0.0
+      - uses: actions/checkout@v3
+      - name: Build and run Ansible container
+        uses: docker/build-push-action@v3
         with:
-          playbookName: tasks/main.yaml
-          inventoryFile: hosts
-          requirementsFile: requirements.yml
-          galaxyGithubUser: mygithubusername
-          galaxyGithubToken: ${{ secrets.GALAXY_GITHUB_TOKEN }}
-          rolesPath: /opt/ansible/roles
-          keyFile: mykeyfile.pem
-          keyFileVaultPass: ${{ secrets.mykeyfilepassword }} 
-          extraVars: '{"foo": "bar", "baz": 42}'
-          extraFile: vars.yml
-          verbosity: vvv
+          push: false
+          tags: |
+            ghcr.io/${{ github.repository }}/ansible-runner:latest
+      - name: Run Ansible Playbook
+        uses: docker/run-action@v3
+        with:
+          image: ghcr.io/${{ github.repository }}/ansible-runner:latest
