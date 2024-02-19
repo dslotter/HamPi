@@ -1,19 +1,26 @@
-name: Run Ansible Playbook
-
+name: Run Ansible playbook
 on:
   push:
     branches:
       - master
-
 jobs:
-  run-ansible:
+  ansible-in-docker:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Use Ansible in Docker Action
-        uses: isweluiz/ansible-in-docker-action@v2
-        with:
-          image: ubuntu:latest
-          playbook: tasks/main.yml
-          inventory: hosts
+      - name: Checkout code
+        uses: actions/checkout@v3
 
+      - name: Run Ansible playbook
+        uses: isweluiz/action-ansible-in-docker@v1.0.0
+        with:
+          playbookName: tasks/main.yaml
+          inventoryFile: hosts
+          requirementsFile: requirements.yml
+          galaxyGithubUser: mygithubusername
+          galaxyGithubToken: ${{ secrets.GALAXY_GITHUB_TOKEN }}
+          rolesPath: /opt/ansible/roles
+          keyFile: mykeyfile.pem
+          keyFileVaultPass: ${{ secrets.mykeyfilepassword }} 
+          extraVars: '{"foo": "bar", "baz": 42}'
+          extraFile: vars.yml
+          verbosity: vvv
