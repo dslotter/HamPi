@@ -1,0 +1,19 @@
+name: Run Ansible Playbook
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  run-ansible:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Ansible in Docker Action
+        uses: isweluiz/ansible-in-docker-action@v2
+        with:
+          image: ubuntu:latest
+          playbook: tasks/main.yml
+          inventory: hosts
+
