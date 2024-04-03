@@ -60,13 +60,13 @@
 #
 
   - name: Build volk CMakeFiles (ARM)
-    command: cmake --prefix=/usr -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchains/arm_cortex_a72_hardfp_native.cmake ..
+    command: cmake --install-prefix=/usr -DCMAKE_TOOLCHAIN_FILE=../cmake/Toolchains/arm_cortex_a72_hardfp_native.cmake ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/volk/build
     when: is_arm|bool
 
   - name: Build volk CMakeFiles (x86)
-    command: cmake --prefix=/usr ..
+    command: cmake --install-prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/volk/build
     when: is_i386|bool or is_x86_64|bool
@@ -102,7 +102,7 @@
       state: directory
 
   - name: Build SoapyVOLKConverters CMakeFiles
-    command: cmake --prefix=/usr ..
+    command: cmake --install-prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/SoapyVOLKConverters/build
 

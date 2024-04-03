@@ -52,7 +52,7 @@
       state: directory
 
   - name: Build UHD CMakeFiles
-    command: cmake --prefix=/usr ..
+    command: cmake --install-prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/uhd/host/build
 

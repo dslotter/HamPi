@@ -31,7 +31,7 @@
       state: directory
 
   - name: Build SoapyMultiSDR CMakeFiles
-    command: cmake --prefix=/usr ..
+    command: cmake --install-prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/SoapyMultiSDR/build
 

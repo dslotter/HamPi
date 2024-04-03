@@ -45,7 +45,7 @@
       state: directory
 
   - name: Build bladeRF library CMakeFiles
-    command: cmake --prefix=/usr ..
+    command: cmake --install-prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/bladeRF/host/build
 

@@ -45,7 +45,7 @@
       state: directory
 
   - name: Build SoapyRedPitaya CMakeFiles
-    command: cmake --prefix=/usr ..
+    command: cmake --install-prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/SoapyRedPitaya/build
 

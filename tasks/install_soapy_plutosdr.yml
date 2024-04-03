@@ -55,7 +55,7 @@
       state: directory
 
   - name: Build LibIIO CMakeFiles
-    command: cmake --prefix=/usr ..
+    command: cmake --install-prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/libiio/build
 
@@ -96,7 +96,7 @@
       state: directory
 
   - name: Build IIO AD9361 CMakeFiles
-    command: cmake --prefix=/usr ..
+    command: cmake --install-prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/libad9361-iio/build
 
@@ -131,7 +131,7 @@
       state: directory
 
   - name: Build SoapyPlutoSDR CMakeFiles
-    command: cmake --prefix=/usr ..
+    command: cmake --install-prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/SoapyPlutoSDR/build
 

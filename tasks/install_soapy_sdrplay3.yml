@@ -145,7 +145,7 @@
       state: directory
 
   - name: Build SoapySDRPlay3 CMakeFiles
-    command: cmake --prefix=/usr ..
+    command: cmake --install-prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/SoapySDRPlay3/build
 
