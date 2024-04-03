@@ -4,4 +4,4 @@ VER=`grep -o '".*"' /etc/hampi-release | sed 's/"//g' | head -n 1`
 SUPPORT_URL=`grep -o 'SUPPORT_URL.*' /etc/hampi-release | sed -e 's/SUPPORT_URL=//g' -e 's/"//g' | head -n 1`
 BUG_REPORT_URL=`grep -o 'BUG_REPORT_URL.*' /etc/hampi-release | sed -e 's/BUG_REPORT_URL=//g' -e 's/"//g' | head -n 1`
 
-zenity --info --width=450 --title "About HamPi" --text "${VER}\n\nSupport url: <a href=\"${SUPPORT_URL}\">${SUPPORT_URL}</a>\n\nBug report url: <a href=\"${BUG_REPORT_URL}\">${BUG_REPORT_URL}</a>\n\nCopyright 2020 - 2023, Dave Slotter (<a href=\"https://qrz.com/db/W3DJS\">W3DJS</a>)"
+zenity --info --width=450 --title "About HamPi" --text "${VER}\n\nSupport url: <a href=\"${SUPPORT_URL}\">${SUPPORT_URL}</a>\n\nBug report url: <a href=\"${BUG_REPORT_URL}\">${BUG_REPORT_URL}</a>\n\nCopyright 2020 - 2024, Dave Slotter (<a href=\"https://qrz.com/db/W3DJS\">W3DJS</a>)"
