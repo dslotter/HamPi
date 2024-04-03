@@ -265,6 +265,24 @@
 #
 # Install DRAWS Manager
 #
+  - name: Download Node Version Manager
+    become: yes
+    shell: wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+    when: is_hampi|bool and is_bookworm|bool
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Install NVM 18
+    become: yes
+    shell: nvm install 18
+    when: is_hampi|bool and is_bookworm|bool
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
   - name: Update npm
     become: yes
     shell: npm install -g npm
