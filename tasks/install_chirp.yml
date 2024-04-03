@@ -40,7 +40,7 @@
     until: download_version.failed == false
 
   - name: Install Chirp {{ download_version.stdout }}
-    command: pip3 install https://trac.chirp.danplanet.com/chirp_next/next-{{ download_version.stdout }}/chirp-{{ download_version.stdout }}-py3-none-any.whl
+    command: pip3 install --break-system-packages https://trac.chirp.danplanet.com/chirp_next/next-{{ download_version.stdout }}/chirp-{{ download_version.stdout }}-py3-none-any.whl
 
 #  - name: Modify categories for chirp.desktop
 #    become: yes
