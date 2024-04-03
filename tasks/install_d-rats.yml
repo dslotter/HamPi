@@ -7,6 +7,12 @@
   gather_facts: no
   tasks:
 
+  - name: Create directory /usr/local/share/applications
+    become: yes
+    file:
+      path: /usr/local/share/applications
+      state: directory
+
   - name: Download D-Rats sources from John and Maurizio's GitHub
     git:
       repo: https://github.com/ham-radio-software/D-Rats.git
