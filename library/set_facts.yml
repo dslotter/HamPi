@@ -59,6 +59,7 @@
     set_fact:
       is_buster: True
       is_bullseye: False
+      is_bookworm: False
       is_jammy: False
     when: (is_debian|bool or is_ubuntu|bool) and ansible_distribution_major_version == "10"
 
@@ -66,13 +67,23 @@
     set_fact:
       is_buster: False
       is_bullseye: True
+      is_bookworm: False
       is_jammy: False
     when: (is_debian|bool or is_ubuntu|bool) and ansible_distribution_release == "bullseye"
+
+  - name: Set facts for Debian Bookworm
+    set_fact:
+      is_buster: False
+      is_bullseye: False
+      is_bookworm: True
+      is_jammy: False
+    when: (is_debian|bool or is_ubuntu|bool) and ansible_distribution_release == "bookworm"
 
   - name: Set facts for Ubuntu Jammy
     set_fact:
       is_buster: False
       is_bullseye: True
+      is_bookworm: False
       is_jammy: True
     when: (is_debian|bool or is_ubuntu|bool) and ansible_distribution_release == "jammy"
 
@@ -80,6 +91,7 @@
     set_fact:
       is_buster: False
       is_bullseye: True
+      is_bookworm: False
       is_jammy: False
       is_impish: True
     when: (is_debian|bool or is_ubuntu|bool) and ansible_distribution_release == "impish"
@@ -88,6 +100,9 @@
     set_fact:
       is_buster: False
       is_bullseye: True
+      is_bookworm: False
+      is_jammy: False
+      is_impish: False
     when: (is_debian|bool or is_ubuntu|bool) and ansible_distribution_major_version == "21"
 
   - name: Set facts for Raspberry Pi

@@ -4,7 +4,7 @@
 
 ---
 
-- name: HamPi 32/64-bit / HamPC / HamIQ v3.3 (March 2022) Playbook by W3DJS
+- name: HamPi 32/64-bit / HamPC / HamIQ v3.4 (December 2023) Playbook by W3DJS
   hosts: all
   # hosts: nuc
   # hosts: vm
@@ -14,7 +14,7 @@
       assert:
         that: "ansible_version.full is version_compare('2.12', '>=')"
         msg: >
-          "You must update Ansible to at least 2.12 to install this version of HamPi / HamPC by W3DJS."
+          "You must update Ansible to at least 2.12 to install this version of HamPi / HamPC /HamIQ by W3DJS."
 
 - import_playbook: ../library/set_facts.yml
 - import_playbook: init_task.yml

@@ -125,11 +125,14 @@
     register: result
     until: result.failed == false
 
-  - name: Install powermgmt-base Package for unattended-upgrades
+  - name: Install unattended-upgrades and powermgmt-base Packages
     become: yes
     package:
-      name: powermgmt-base
+      name: "{{ item }}"
       state: present
+    with_items:
+      - powermgmt-base
+      - unattended-upgrades
     retries: 5
     delay: 30
     register: result

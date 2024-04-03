@@ -1,8 +1,8 @@
 name: HamPi and HamPC
 description: >-
-  HamPi and HamPC are a ham radio software distribution
-  for the Raspberry Pi and x86_64 Linux PC
-version: 2.0.0
+  HamPi, HamPC and HamIQ are a ham radio software distribution
+  for the Raspberry Pi, x86_64 Linux PC, and Inovato Quadra
+version: 3.4.0
 type: sw.application
 assets:
   repository:
@@ -16,6 +16,7 @@ assets:
 data:
   defaultDeviceType: raspberrypi4
   supportedDeviceTypes:
+    - raspberrypi5
     - raspberrypi4
     - raspberrypi3
     - raspberrypizerow2
