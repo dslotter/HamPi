@@ -113,7 +113,7 @@
       line: Categories=HamRadio SDR
 
   - name: Build GQRX CMakeFiles
-    command: cmake --prefix=/usr ..
+    command: cmake --install-prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/gqrx-source/build
 
