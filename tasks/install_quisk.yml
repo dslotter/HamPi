@@ -35,7 +35,7 @@
 
   - name: Install quisk
     become: yes
-    command: python3 -m pip install --upgrade quisk
+    command: python3 -m pip install --upgrade --break-system-packages quisk
     retries: 5
     delay: 30
     register: result
