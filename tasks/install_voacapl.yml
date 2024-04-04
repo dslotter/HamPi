@@ -88,7 +88,7 @@
 
   - name: Install dependent python module matplotlib
     become: yes
-    command: pip3 install matplotlib
+    command: pip3 install --break-system-packages matplotlib
     args:
       chdir: /home/{{ ham_user }}/hamradio
     retries: 5
