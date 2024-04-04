@@ -32,7 +32,7 @@
       state: directory
 
   - name: Build DMRHost CMakefiles
-    command: cmake -DCMAKE_BUILD_TYPE=Release --prefix=/usr ..
+    command: cmake -DCMAKE_BUILD_TYPE=Release --install-prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/DMRHost/build
 
