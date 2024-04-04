@@ -1,10 +1,10 @@
 #
-# Copyright 2020 - 2023, Dave Slotter (W3DJS). All rights reserved.
+# Copyright 2020 - 2024, Dave Slotter (W3DJS). All rights reserved.
 #
 
 ---
 
-- name: HamPi 32/64-bit / HamPC / HamIQ v3.4 (December 2023) Playbook by W3DJS
+- name: HamPi 32/64-bit / HamPC / HamIQ v4.0a1 (March 2024) Playbook by W3DJS
   hosts: all
   # hosts: nuc
   # hosts: vm
@@ -35,7 +35,7 @@
 #
 - import_playbook: install_hamlib.yml
 - import_playbook: install_rtaudio.yml
-- import_playbook: include_DRAWS_support.yml
+### DJS: Node.js install broken under Bookworm - import_playbook: include_DRAWS_support.yml
 - import_playbook: install_airspy.yml
 - import_playbook: install_airspyhf.yml
 - import_playbook: install_soapy_sdr.yml
@@ -43,21 +43,21 @@
 - import_playbook: install_soapy_multi.yml
 - import_playbook: install_soapy_netsdr.yml
 - import_playbook: install_soapy_remote.yml
-- import_playbook: install_soapy_airspy.yml
-- import_playbook: install_soapy_airspyhf.yml
-- import_playbook: install_soapy_bladeRF.yml
-- import_playbook: install_soapy_fcdpp.yml
-- import_playbook: install_soapy_hackrf.yml
-- import_playbook: install_soapy_osmo.yml
-- import_playbook: install_soapy_plutosdr.yml
-- import_playbook: install_soapy_redpitaya.yml
-- import_playbook: install_soapy_rtlsdr.yml
+### DJS: Build broken under Bookworm - import_playbook: install_soapy_airspy.yml
+### DJS: Build broken under Bookworm - import_playbook: install_soapy_airspyhf.yml
+### DJS: Build broken under Bookworm - import_playbook: install_soapy_bladeRF.yml
+### DJS: Build broken under Bookworm - import_playbook: install_soapy_fcdpp.yml
+### DJS: Build broken under Bookworm - import_playbook: install_soapy_hackrf.yml
+### DJS: Build broken under Bookworm - import_playbook: install_soapy_osmo.yml
+### DJS: Build broken under Bookworm - import_playbook: install_soapy_plutosdr.yml
+### DJS: Build broken under Bookworm - import_playbook: install_soapy_redpitaya.yml
+### DJS: Build broken under Bookworm - import_playbook: install_soapy_rtlsdr.yml
 # Fails to build under aarch64:
-- import_playbook: install_soapy_sdrplay3.yml
+### DJS: Build broken under Bookworm - import_playbook: install_soapy_sdrplay3.yml
 # Fails to build under aarch64:
-- import_playbook: install_soapy_volkconverters.yml
+### DJS: Build broken under Bookworm - import_playbook: install_soapy_volkconverters.yml
 # ^^^ This part takes about 1 hour, 15 minutes to build on a RPi 4 ^^^
-- import_playbook: install_soapy_uhd.yml
+### DJS: Build broken under Bookworm - import_playbook: install_soapy_uhd.yml
 # ^^^ UHD / SoapyUHD takes about 45 minutes to build on a RPi 4 ^^^
 
 #
@@ -82,12 +82,12 @@
 #
 
 # Install SDR GUI apps after all pre-requisite SDR drivers are installed
-- import_playbook: install_cutesdr.yml
-- import_playbook: install_leansdr.yml
-- import_playbook: install_lysdr.yml
-- import_playbook: install_gqrx.yml
-- import_playbook: install_cubicsdr.yml
-- import_playbook: install_sdrplusplus.yml
+#- import_playbook: install_cutesdr.yml
+### DJS SKIP FOR NOW - import_playbook: install_leansdr.yml
+### DJS SKIP FOR NOW - import_playbook: install_lysdr.yml
+### DJS SKIP FOR NOW - import_playbook: install_gqrx.yml
+### DJS SKIP FOR NOW - import_playbook: install_cubicsdr.yml
+### DJS SKIP FOR NOW - import_playbook: install_sdrplusplus.yml
 
 #- import_playbook: install_sdrangel.yml
 # ^^^ SDRAngel takes about 65 minutes to build on a RPi 4 and 42 minutes on a x86_64 ^^^
@@ -105,8 +105,8 @@
 - import_playbook: install_wsjtx.yml
 
 # Fails to build under aarch64:
-#DJS- import_playbook: install_js8call.yml
-#DJS- import_playbook: install_js8callutilities.yml
+- import_playbook: install_js8call.yml
+- import_playbook: install_js8callutilities.yml
 # Fails to build under aarch64:
 - import_playbook: install_jtdx.yml
 - import_playbook: download_country_files.yml
@@ -124,14 +124,14 @@
 - import_playbook: install_quisk.yml
 - import_playbook: install_pmon.yml
 - import_playbook: install_pybombs.yml
-- import_playbook: install_tqsl.yml
+### Build broken under Bookworm - import_playbook: install_tqsl.yml
 - import_playbook: install_boinc.yml
 - import_playbook: install_qslware.yml
-- import_playbook: install_twclock.yml
-- import_playbook: install_twhamqth.yml
+### DJS Website gone - import_playbook: install_twclock.yml
+### DJS Website gone - import_playbook: install_twhamqth.yml
 - import_playbook: install_wxtoimg.yml
-- import_playbook: install_freedv.yml
-- import_playbook: install_dump1090.yml
+### Build broken under Bookworm - import_playbook: install_freedv.yml
+### Build broken under Bookworm - import_playbook: install_dump1090.yml
 - import_playbook: install_acarsdec.yml
 - import_playbook: install_voacapl.yml
 ### NEON:
@@ -154,16 +154,16 @@
 - import_playbook: install_f4htbpna.yml
 - import_playbook: install_tentenqsologger.yml
 - import_playbook: install_ladyheather.yml
-- import_playbook: install_opendv.yml
+# Build broken under Bookworm - import_playbook: install_opendv.yml
 # ^^^ Takes a long time to build ^^^
-- import_playbook: install_droidstar.yml
-- import_playbook: install_rpitx.yml
+# Build broken under Bookworm - import_playbook: install_droidstar.yml
+# Build broken under Bookworm - import_playbook: install_rpitx.yml
 - import_playbook: install_dxspider.yml
 - import_playbook: install_hamrs.yml
 - import_playbook: install_mshv.yml
 #BROKEN- import_playbook: install_trlog.yml
 #BROKEN- import_playbook: install_hlog.yml
-- import_playbook: install_noaa_apt.yml
+# Build broken under Bookworm - Rust installer doesn't work right?- import_playbook: install_noaa_apt.yml
 # ^^^ Takes 25 minutes on RPi 4 to build ^^^
 - import_playbook: install_brandmeister-dmr-sea.yml
 - import_playbook: install_dmrlink.yml
