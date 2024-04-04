@@ -296,7 +296,7 @@
 
   - name: Install prerequisite for update_wsjtx_log
     become: yes
-    command: pip3 install watchdog
+    command: pip3 install --break-system-packages watchdog
     args:
       chdir: /home/{{ ham_user }}/hamradio
     retries: 5
