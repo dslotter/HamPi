@@ -48,7 +48,7 @@
       state: directory
 
   - name: Build SDR++ CMakefiles
-    command: cmake --prefix=/usr ..
+    command: cmake --install-prefix=/usr ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/SDRPlusPlus/build
 
