@@ -36,27 +36,27 @@
     register: result
     until: result.failed == false
 
-  - name: Install dependent libraries
+  - name: Install dependent libraries (Not Jammy or Bookworm)
     become: yes
     package:
       name: "{{ item }}"
       state: present
     with_items:
       - libyaml-cpp0.6
-    when: not is_jammy|bool
+    when: not is_jammy|bool and not is_bookworm|bool
     retries: 5
     delay: 30
     register: result
     until: result.failed == false
 
-  - name: Install dependent libraries (Jammy)
+  - name: Install dependent libraries (Jammy or Bookworm)
     become: yes
     package:
       name: "{{ item }}"
       state: present
     with_items:
       - libyaml-cpp0.7
-    when: is_jammy|bool
+    when: is_jammy|bool or is_bookworm|bool
     retries: 5
     delay: 30
     register: result
@@ -99,14 +99,14 @@
   - name: Modify categories for qdmr.desktop
     become: yes
     lineinfile:
-      path: /usr/local/share/applications/qdmr.desktop
+      path: /usr/share/applications/qdmr.desktop
       regexp: '^Categories=.*'
       line: Categories=HamRadio
 
   - name: Modify icon path for qdmr.desktop
     become: yes
     lineinfile:
-      path: /usr/local/share/applications/qdmr.desktop
+      path: /usr/share/applications/qdmr.desktop
       regexp: '^Icon=qdmr'
       line: Icon=/usr/share/icons/hicolor/64x64/qdmr.png 
 
