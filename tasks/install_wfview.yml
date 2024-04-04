@@ -33,7 +33,6 @@
       - libqt5multimedia5
       - libqt5multimedia5-plugins
       - qtmultimedia5-dev
-      - libqcustomplot2.0
       - libqcustomplot-doc
       - libqcustomplot-dev
       - libopus-dev
@@ -45,12 +44,34 @@
     register: result
     until: result.failed == false
 
+  - name: Install dependent libraries (ARM Buster or Bullseye)
+    become: yes
+    package:
+      name: libqcustomplot2.0
+      state: present
+    when: is_arm|bool and (is_buster|bool or is_bullseye|bool)
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
   - name: Install dependent libraries (ARM Buster)
     become: yes
     package:
       name: qt5-default
       state: present
     when: is_arm|bool and is_buster|bool
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
+  - name: Install dependent libraries (ARM Bookworm)
+    become: yes
+    package:
+      name: libqcustomplot2.1
+      state: present
+    when: is_arm|bool and is_bookworm|bool
     retries: 5
     delay: 30
     register: result
