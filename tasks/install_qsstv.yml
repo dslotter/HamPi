@@ -47,6 +47,20 @@
     register: result
     until: result.failed == false
 
+  - name: Install dependent libraries (Raspberry Pi Bookworm)
+    become: yes
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+    - qt5-qmake
+    - qtbase5-dev
+    when: is_rpi|bool and is_bookworm|bool
+    retries: 5
+    delay: 30
+    register: result
+    until: result.failed == false
+
   - name: Download QSSTV sources
     git:
       repo: https://github.com/ON4QZ/QSSTV.git
