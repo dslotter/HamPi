@@ -69,14 +69,14 @@
   - name: Modify categories for rbnc.desktop
     become: yes
     lineinfile:
-      path: /usr/local/share/applications/rbnc.desktop
+      path: /usr/share/applications/rbnc.desktop
       regexp: '^Categories=.*'
       line: Categories=HamRadio
 
   - name: Modify icon path for rbnc.desktop
     become: yes
     lineinfile:
-      path: /usr/local/share/applications/rbnc.desktop
+      path: /usr/share/applications/rbnc.desktop
       regexp: '^Icon=rbnc'
       line: Icon=/usr/local/share/icons/hicolor/64x64/apps/rbnc.png 
 
