@@ -22,7 +22,7 @@
 
   - name: Install Python module - PyBOMBS
     become: yes
-    command: pip3 install --upgrade git+https://github.com/gnuradio/pybombs.git
+    command: pip3 install --upgrade --break-system-packages git+https://github.com/gnuradio/pybombs.git
     retries: 5
     delay: 30
     register: result
