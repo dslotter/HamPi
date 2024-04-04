@@ -167,7 +167,7 @@
 
   - name: Install Python module - Cython
     become: yes
-    command: pip3 install cython
+    command: pip3 install --break-system-packages cython
     retries: 5
     delay: 30
     register: result
@@ -175,7 +175,7 @@
 
   - name: Install Python module - sphinx
     become: yes
-    command: pip3 install sphinx
+    command: pip3 install --break-system-packages sphinx
     retries: 5
     delay: 30
     register: result
@@ -183,7 +183,7 @@
 
   - name: Install Python module - numpy
     become: yes
-    command: pip3 install numpy
+    command: pip3 install --break-system-packages numpy
     retries: 5
     delay: 30
     register: result
@@ -191,7 +191,7 @@
 
   - name: Install Python module - matplotlib>=1.3.0
     become: yes
-    command: pip3 install matplotlib>=1.3.0
+    command: pip3 install --break-system-packages matplotlib>=1.3.0
     retries: 5
     delay: 30
     register: result
@@ -199,7 +199,7 @@
 
   - name: Install Python module - cairocffi
     become: yes
-    command: pip3 install cairocffi
+    command: pip3 install --break-system-packages cairocffi
     retries: 5
     delay: 30
     register: result
@@ -207,7 +207,7 @@
 
   - name: Install Python module - geocoder
     become: yes
-    command: pip3 install geocoder
+    command: pip3 install --break-system-packages geocoder
     retries: 5
     delay: 30
     register: result
@@ -217,7 +217,7 @@
 
 #  - name: Install Python module - cartopy>=0.16.0
 #    become: yes
-#    command: pip3 install cartopy>=0.16.0
+#    command: pip3 install --break-system-packages cartopy>=0.16.0
 #    retries: 5
 #    delay: 30
 #    register: result
@@ -241,7 +241,7 @@
 
   - name: Install PyQSO systemwide
     become: yes
-    command: make install
+    command: pip3 install --break-system-packages .
     args:
       chdir: /home/{{ ham_user }}/hamradio/pyqso
 
@@ -252,6 +252,7 @@
       dest: "/usr/share/applications/pyqso.desktop"
 
   - name: Remove pyqso source directory
+    become: yes
     file:
       path: /home/{{ ham_user }}/hamradio/pyqso
       state: absent
