@@ -44,7 +44,7 @@
 
   - name: Install Python module dependencies for Universal Ham Radio Remote (UHRR)
     become: yes
-    command: pip3 install tornado pyalsaaudio numpy pyrtlsdr
+    command: pip3 install tornado pyalsaaudio numpy pyrtlsdr --break-system-packages
     retries: 5
     delay: 30
     register: result
