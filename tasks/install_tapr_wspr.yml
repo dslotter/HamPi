@@ -169,7 +169,7 @@
 
   - name: pip3 install setuptools
     become: yes
-    command: "pip3 install setuptools --upgrade --no-binary :all:"
+    command: "pip3 install setuptools --break-system-packages --upgrade --no-binary :all:"
     args:
       chdir: /home/{{ ham_user }}/hamradio
     retries: 5
@@ -179,7 +179,7 @@
 
   - name: pip3 install PySSTV
     become: yes
-    command: pip3 install PySSTV
+    command: pip3 install PySSTV --break-system-packages
     args:
       chdir: /home/{{ ham_user }}/hamradio
     retries: 5
