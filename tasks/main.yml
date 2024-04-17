@@ -130,7 +130,7 @@
 ### DJS Website gone - import_playbook: install_twclock.yml
 ### DJS Website gone - import_playbook: install_twhamqth.yml
 - import_playbook: install_wxtoimg.yml
-### Build broken under Bookworm - import_playbook: install_freedv.yml
+- import_playbook: install_freedv.yml
 ### Build broken under Bookworm - import_playbook: install_dump1090.yml
 - import_playbook: install_acarsdec.yml
 - import_playbook: install_voacapl.yml

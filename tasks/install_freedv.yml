@@ -90,8 +90,15 @@
     register: result
     until: result.failed == false
 
-  - name: Build freedv-gui Binaries
+  - name: Build freedv-gui Binaries (not 32-bit ARM)
+    when: ansible_architecture != "armhf" and ansible_architecture != "armv7l"
     command: ./build_linux.sh pulseaudio
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/freedv-gui
+
+  - name: Build freedv-gui Binaries (32-bit ARM)
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    command: LPCNET_DISABLE=1 ./build_linux.sh pulseaudio
     args:
       chdir: /home/{{ ham_user }}/hamradio/freedv-gui
 
@@ -138,23 +145,28 @@
     delay: 30
     register: result
     until: result.failed == false
+    when: ansible_architecture != "armhf" and ansible_architecture != "armv7l"
 
   - name: Create directory LPCNet/build
+    when: ansible_architecture != "armhf" and ansible_architecture != "armv7l"
     file:
       path: /home/{{ ham_user }}/hamradio/LPCNet/build
       state: directory
 
   - name: Build LPCNet CMakeFiles
+    when: ansible_architecture != "armhf" and ansible_architecture != "armv7l"
     command: cmake ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/LPCNet/build
 
   - name: Build LPCNet
+    when: ansible_architecture != "armhf" and ansible_architecture != "armv7l"
     command: make
     args:
       chdir: /home/{{ ham_user }}/hamradio/LPCNet/build
 
   - name: Install LPCNet
+    when: ansible_architecture != "armhf" and ansible_architecture != "armv7l"
     become: yes
     command: make install
     args:
@@ -174,8 +186,15 @@
       path: /home/{{ ham_user }}/hamradio/codec2/build
       state: directory
 
-  - name: Build Codec2 CMakeFiles
+  - name: Build Codec2 CMakeFiles (not 32-bit ARM)
+    when: ansible_architecture != "armhf" and ansible_architecture != "armv7l"
     command: cmake -Wno-dev -DLPCNET_BUILD_DIR=/home/{{ ham_user }}/hamradio/LPCNet/build ..
+    args:
+      chdir: /home/{{ ham_user }}/hamradio/codec2/build
+
+  - name: Build Codec2 CMakeFiles (32-bit ARM)
+    when: ansible_architecture == "armhf" or ansible_architecture == "armv7l"
+    command: cmake -Wno-dev ..
     args:
       chdir: /home/{{ ham_user }}/hamradio/codec2/build
 
@@ -195,6 +214,7 @@
     command: ldconfig
 
   - name: Remove LPCNet build directory
+    when: ansible_architecture != "armhf" and ansible_architecture != "armv7l"
     file:
       path: /home/{{ ham_user }}/hamradio/LPCNet
       state: absent
